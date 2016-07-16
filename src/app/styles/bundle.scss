@@ -1,0 +1,19 @@
+$blue:   #5176C7;
+$yellow: #FFCC39;
+$green:  #6CB132;
+$red:    #C83E31;
+
+body {
+	font-family: Roboto;
+}
+
+@keyframes spectrum {
+	0% { fill: $blue; }
+	25% { fill: $yellow; }
+	50% { fill: $green; }
+	75% { fill: $red; }
+	100% { fill: $blue; }
+}
+.loading {
+	animation: spectrum 4s infinite;
+}
