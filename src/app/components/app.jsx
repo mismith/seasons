@@ -5,25 +5,26 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {login, user, logout} from '../actions/firebase';
 
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import injectTapEventPlugin from 'react-tap-event-plugin';
+injectTapEventPlugin();
+
+import AppBar from 'material-ui/AppBar';
+
 const App = React.createClass({
 	componentWillMount(){
 		this.props.user();
 	},
 	render() {
 		return (
-			<div>
-				<header>
-				{ !this.props.currentUser &&
-					<button onClick={this.props.login}>Login</button>
-				}
-				{ this.props.currentUser &&
-					<button onClick={this.props.logout}>Logout</button>
-				}
-				</header>
-				<main>
-					{this.props.children}
-				</main>
-			</div>
+			<MuiThemeProvider>
+				<div>
+					<AppBar title="Seasons" />
+					<main>
+						{this.props.children}
+					</main>
+				</div>
+			</MuiThemeProvider>
 		);
 	},
 });

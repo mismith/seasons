@@ -10,33 +10,76 @@ import SeatIcon from '../images/seat.svg';
 
 import data from '../data.js';
 
+
+import {List, ListItem} from 'material-ui/List';
+import Avatar from 'material-ui/Avatar';
+
+const Seat = React.createClass({
+	getDefaultProps() {
+		return {
+			info: {},
+			data: {},
+			game: {},
+		};
+	},
+	render() {
+		let backgroundColor;
+		if (this.props.data.type === 'sale') {
+			if (this.props.data.sold) {
+				backgroundColor = '#6CB132';
+			} else {
+				if (moment().isBefore(this.props.game.datetime)) {
+					backgroundColor = '#FFCC39';
+				} else {
+					backgroundColor = '#C83E31';
+				}
+			}
+		} else if(this.props.data.type === 'user') {
+			if (this.props.data.userId !== undefined) {
+				backgroundColor = '#5176C7';
+			}
+		}
+		return (
+			<Avatar size={30} backgroundColor={backgroundColor} style={{margin: 1}}>
+			{this.props.data.userId !== undefined ?
+				<span>{data.users[this.props.data.userId].name.replace(/(^| )([a-z])[a-z-]+/ig, '$2')}</span>
+			:
+				<img src={SeatIcon} height="18" style={{opacity: .5}} />
+			}
+			</Avatar>
+		);
+	},
+});
+
 const Home = React.createClass({
 	render() {
 		return (
 			<div>
-				<h1>Seasons</h1>
-				<pre>{JSON.stringify(this.props.currentUser, null, 4)}</pre>
+				<List>
+				{data.games.map((game, gameId) => {
+					let d = moment(game.datetime);
+					return (
+						<ListItem
+							key={gameId}
+							primaryText={game.opponent}
+							secondaryText={d.format('h:mma, ddd, MMM D, YYYY')}
+							leftAvatar={<Avatar className="avatar-calendar">
+								<div>{d.format('MMM')}</div>
+								<div>{d.format('D')}</div>
+							</Avatar>}
+							rightAvatar={<div style={{display: 'inline-flex', marginTop: 6}}>
+							{data.seats.map((seat, seatId) => 
+								<Seat key={seatId} info={seat} data={data['games:seats'][gameId][seatId]} game={game} />
+							)}
+							</div>}
+							innerDivStyle={{paddingRight: 56 + 12 + 32 * (data.seats.length - 1)}}
+						/>
+					)
+				})}
+				</List>
+
 				<img src={LogoImg} />
 				<Loading />
-
-				<ul>
-				{data.games.map((game, gameId) =>
-					<li key={gameId}>
-						<time title={game.datetime}>{moment(game.datetime).format('YYYY-MM-DD')}</time>
-						<div>{game.opponent}</div>
-						<ul>
-						{data.seats.map((seat, seatId) => 
-							<li key={seatId}>
-								{seat.seat}
-								{data['games:seats'][gameId][seatId].type}
-								{data['games:seats'][gameId][seatId].type === 'user' ? data.users[data['games:seats'][gameId][seatId].userId].name : ''}
-								{data['games:seats'][gameId][seatId].type === 'sale' ? '$' + parseFloat(data['games:seats'][gameId][seatId].price).toFixed(2) : ''}
-							</li>
-						)}
-						</ul>
-					</li>
-				)}
-				</ul>
 			</div>
 		)
 	},

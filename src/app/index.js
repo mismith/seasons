@@ -15,6 +15,8 @@ import './styles/bundle.scss';
 const createStoreWithMiddleware = applyMiddleware(ReduxPromise)(createStore);
 
 
-ReactDOM.render(<Provider store={createStoreWithMiddleware(reducers)}>
-	<Router history={browserHistory} routes={routes}></Router>
-</Provider>, document.querySelector('#app'));
+ReactDOM.render(
+	<Provider store={createStoreWithMiddleware(reducers)}>
+		<Router history={browserHistory} routes={routes}></Router>
+	</Provider>
+, document.querySelector('#app'));

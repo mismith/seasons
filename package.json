@@ -2,6 +2,7 @@
   "name": "seasons",
   "version": "0.1.0",
   "description": "Track your season tickets",
+  "repo": "https://github.com/mismith/seasons",
   "main": "index.js",
   "scripts": {
     "dev": "webpack-dev-server --config ./webpack/webpack-dev.config.js --watch --colors",
@@ -40,11 +41,13 @@
     "express": "^4.14.0",
     "firebase": "^3.1.0",
     "lodash": "^3.10.1",
+    "material-ui": "^0.15.2",
     "moment": "^2.14.1",
     "react": "^15.2.1",
     "react-dom": "^15.2.1",
     "react-redux": "^4.4.5",
     "react-router": "^2.5.2",
+    "react-tap-event-plugin": "^1.0.0",
     "redux": "^3.5.2",
     "redux-promise": "^0.5.3"
   }
