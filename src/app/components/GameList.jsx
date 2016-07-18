@@ -6,10 +6,11 @@ import {List, ListItem} from 'material-ui/List';
 import Subheader from 'material-ui/Subheader';
 import Avatar from 'material-ui/Avatar';
 
-import Data from '../data';
 import SeatAvatar from './SeatAvatar';
 
-const Home = React.createClass({
+import Data from '../data';
+
+export default React.createClass({
 	getDefaultProps() {
 		return {
 			seasonId: 0,
@@ -62,5 +63,3 @@ const Home = React.createClass({
 		)
 	},
 });
-
-export default Home;
