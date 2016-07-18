@@ -16,20 +16,10 @@ const SeatAvatar = React.createClass({
 	},
 	getBackgroundColor() {
 		let backgroundColor;
-		if (this.props.data.type === 'sale') {
-			if (this.props.data.sold) {
-				backgroundColor = '#6CB132';
-			} else {
-				if (moment().isBefore(this.props.game.datetime)) {
-					backgroundColor = '#FFCC39';
-				} else {
-					backgroundColor = '#C83E31';
-				}
-			}
-		} else if(this.props.data.type === 'user') {
-			if (this.props.data.userId !== undefined) {
-				backgroundColor = '#5176C7';
-			}
+		if (this.props.data.sold) {
+			backgroundColor = '#6CB132';
+		} else if (this.props.data.userId !== undefined) {
+			backgroundColor = '#5176C7';
 		}
 		return backgroundColor;
 	},
