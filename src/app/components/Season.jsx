@@ -46,6 +46,7 @@ export default React.createClass({
 					<div style={{paddingLeft: 16, paddingRight: 16, paddingBottom: 16}}>
 						<TextField defaultValue={this.season.name} floatingLabelText="Season name" fullWidth={true} />
 						<TextField defaultValue={this.season.cost} floatingLabelText="Total cost" fullWidth={true} />
+						<TextField defaultValue={this.season.seats.length} floatingLabelText="Number of seats" fullWidth={true} />
 					</div>
 					<Divider />
 					<List>
