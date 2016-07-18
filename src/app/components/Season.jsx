@@ -4,7 +4,11 @@ import moment from 'moment';
 import {Tabs, Tab} from 'material-ui/Tabs';
 import {List, ListItem} from 'material-ui/List';
 import Subheader from 'material-ui/Subheader';
+import Divider from 'material-ui/Divider';
 import Avatar from 'material-ui/Avatar';
+import TextField from 'material-ui/TextField';
+import ChevronRightIcon from 'material-ui/svg-icons/navigation/chevron-right';
+import AddIcon from 'material-ui/svg-icons/content/add';
 
 import SeatAvatar from './SeatAvatar';
 
@@ -16,6 +20,11 @@ export default React.createClass({
 			seasonId: 0,
 		};
 	},
+
+	componentWillMount() {
+		this.season = Data.seasons[this.props.seasonId];
+	},
+
 	render() {
 		let gamesByMonth = [],
 			previousMonthId;
@@ -33,6 +42,25 @@ export default React.createClass({
 
 		return (
 			<Tabs>
+				<Tab label="Info">
+					<div style={{paddingLeft: 16, paddingRight: 16, paddingBottom: 16}}>
+						<TextField defaultValue={this.season.name} floatingLabelText="Season name" fullWidth={true} />
+						<TextField defaultValue={this.season.cost} floatingLabelText="Total cost" fullWidth={true} />
+					</div>
+					<Divider />
+					<List>
+						<Subheader>Seats</Subheader>
+					{this.season.seats.map((seat, seatId) =>
+						<ListItem
+							key={seatId}
+							leftAvatar={<div><SeatAvatar /></div>}
+							rightIcon={<ChevronRightIcon />}
+						>{`Section ${seat.section}, Row ${seat.row}, Seat ${seat.seat}`}</ListItem>
+					)}
+						<Divider inset={true} />
+						<ListItem insetChildren={true} rightIcon={<AddIcon />}>Add new seat</ListItem>
+					</List>
+				</Tab>
 				<Tab label="Schedule">
 					<List>
 					{gamesByMonth.map((games, monthIndex) =>
@@ -46,7 +74,7 @@ export default React.createClass({
 							leftAvatar={<Avatar>{game.$datetime.format('D')}</Avatar>}
 							rightAvatar={<div style={{display: 'inline-flex', marginTop: 6}}>
 							{Data.seasons[this.props.seasonId].seats.map((seat, seatId) => 
-								<SeatAvatar key={seatId} info={seat} data={(Data['seasons:data'][this.props.seasonId].seats[game.$id] || [])[seatId]} game={game} />
+								<SeatAvatar key={seatId} info={seat} data={(Data['seasons:data'][this.props.seasonId].seats[game.$id] || [])[seatId]} game={game} style={{margin: 1}} />
 							)}
 							</div>}
 							innerDivStyle={{paddingRight: 56 + 12 + 32 * (Data.seasons[this.props.seasonId].seats.length - 1)}}
@@ -55,9 +83,6 @@ export default React.createClass({
 					</div>
 					)}
 					</List>
-				</Tab>
-				<Tab label="Stats">
-					<Subheader>Stats will go here.</Subheader>
 				</Tab>
 			</Tabs>
 		)

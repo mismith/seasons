@@ -1,5 +1,6 @@
 import React from 'react';
 import moment from 'moment';
+import initialize from './helpers/initialize';
 
 import Avatar from 'material-ui/Avatar';
 
@@ -12,6 +13,7 @@ const SeatAvatar = React.createClass({
 			info: {},
 			data: {},
 			game: {},
+			size: 30,
 		};
 	},
 	getBackgroundColor() {
@@ -25,9 +27,9 @@ const SeatAvatar = React.createClass({
 	},
 	render() {
 		return (
-			<Avatar size={30} backgroundColor={this.getBackgroundColor()} style={{margin: 1}}>
+			<Avatar size={this.props.size} backgroundColor={this.getBackgroundColor()}>
 			{this.props.data.userId !== undefined ?
-				Data.users[this.props.data.userId].name.replace(/(^| )([a-z])[a-z-]+/ig, '$2') :
+				initialize(Data.users[this.props.data.userId].name) :
 				<img src={SeatIcon} height="18" style={{opacity: .5}} />
 			}
 			</Avatar>
