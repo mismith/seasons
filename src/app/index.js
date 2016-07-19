@@ -8,7 +8,6 @@ injectTapEventPlugin();
 
 // components
 import App from './components/App';
-import Season from './components/Season';
 
 // styles
 import './styles/bundle.scss';
@@ -16,8 +15,6 @@ import './styles/bundle.scss';
 
 ReactDOM.render(
 	<MuiThemeProvider>
-		<App>
-			<Season />
-		</App>
+		<App />
 	</MuiThemeProvider>
 , document.getElementById('app'));

@@ -5,22 +5,20 @@ import initialize from './helpers/initialize';
 import Avatar from 'material-ui/Avatar';
 
 import SeatIcon from '../images/seat.svg';
-import Data from '../data.js';
 
 const SeatAvatar = React.createClass({
 	getDefaultProps() {
 		return {
-			info: {},
-			data: {},
-			game: {},
-			size: 30,
+			sold: false,
+			user: undefined,
+			size: undefined,
 		};
 	},
 	getBackgroundColor() {
 		let backgroundColor;
-		if (this.props.data.sold) {
+		if (this.props.sold) {
 			backgroundColor = '#6CB132';
-		} else if (this.props.data.userId !== undefined) {
+		} else if (this.props.user) {
 			backgroundColor = '#5176C7';
 		}
 		return backgroundColor;
@@ -28,8 +26,8 @@ const SeatAvatar = React.createClass({
 	render() {
 		return (
 			<Avatar size={this.props.size} backgroundColor={this.getBackgroundColor()}>
-			{this.props.data.userId !== undefined ?
-				initialize(Data.users[this.props.data.userId].name) :
+			{this.props.user && !this.props.sold ?
+				initialize(this.props.user.name) :
 				<img src={SeatIcon} height="18" style={{opacity: .5}} />
 			}
 			</Avatar>
