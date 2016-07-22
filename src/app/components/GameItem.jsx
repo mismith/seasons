@@ -1,4 +1,5 @@
 import React from 'react';
+import Router from '../router';
 import moment from 'moment';
 
 import {ListItem} from 'material-ui/List';
@@ -21,6 +22,7 @@ export default React.createClass({
 
 		return (
 			<ListItem
+				href={Router.href('game', {seasonId: season.$id, gameId: game.$id})}
 				primaryText={game.opponent}
 				secondaryText={game.$datetime.format('h:mma, ddd, MMM D, YYYY')}
 				leftAvatar={showDayAvatar ? <Avatar>{game.$datetime.format('D')}</Avatar> : null}

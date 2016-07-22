@@ -80,7 +80,7 @@ export default React.createClass({
 				{season.users.map((user, userId) => 
 					<ListItem
 						key={userId}
-						leftAvatar={<div><SeatAvatar user={user} /></div>}
+						leftAvatar={<div><SeatAvatar user={user} backgroundColor={this.getUserSeatIndex(userId) >= 0 ? '#5176C7' : null} /></div>}
 						rightToggle={<Toggle defaultToggled={this.getUserSeatIndex(userId) >= 0} onToggle={e=>this.handleGameUserToggle(e, userId)} disabled={this.getUserSeatIndex(userId) < 0 && game.seats && game.seats.length >= season.seats.length} />}
 					>{user.name}</ListItem>
 				)}

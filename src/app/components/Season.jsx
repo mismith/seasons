@@ -29,45 +29,51 @@ export default React.createClass({
 
 	groupGamesByMonth() {
 		let gamesByMonth = [],
-			previousMonthId;
-		Data['seasons:games'][this.props.seasonId].map((game, gameIndex) => {
-			game.$id = gameIndex;
-			game.$datetime = moment(game.datetime);
+			previousMonthId,
+			games = Data['seasons:games'][this.props.seasonId];
 
-			let monthId = game.$datetime.format('YYYY-MM');
-			if (monthId !== previousMonthId) {
-				gamesByMonth.push([]);
-				previousMonthId = monthId;
-			}
-			gamesByMonth[gamesByMonth.length - 1].push(game);
-		});
+		if (games) {
+			games.map((game, gameIndex) => {
+				game.$id = gameIndex;
+				game.$datetime = moment(game.datetime);
+
+				let monthId = game.$datetime.format('YYYY-MM');
+				if (monthId !== previousMonthId) {
+					gamesByMonth.push([]);
+					previousMonthId = monthId;
+				}
+				gamesByMonth[gamesByMonth.length - 1].push(game);
+			});
+		}
 		return gamesByMonth;
 	},
 
 	render() {
+		let {season} = this.state;
+		let {tab} = this.props;
 		return (
 			<Tabs>
 				<Tab label="Schedule">
 					<List>
 					{this.groupGamesByMonth().map((games, monthIndex) =>
-					<div key={monthIndex}>
-						<Subheader>{games[0].$datetime.format('MMMM')} {games[0].$datetime.format('M') === '1' && games[0].$datetime.format('YYYY')}</Subheader>
+						<div key={monthIndex}>
+							<Subheader>{games[0].$datetime.format('MMMM')} {games[0].$datetime.format('M') === '1' && games[0].$datetime.format('YYYY')}</Subheader>
 						{games.map(game => 
-						<GameItem key={game.$id} game={game} season={this.state.season} />
+							<GameItem key={game.$id} game={game} season={season} />
 						)}
-					</div>
+						</div>
 					)}
 					</List>
 				</Tab>
 				<Tab label="Info">
 					<div style={{paddingLeft: 16, paddingRight: 16, paddingBottom: 16}}>
-						<TextField defaultValue={this.state.season.name} floatingLabelText="Season name" fullWidth={true} />
-						<TextField defaultValue={this.state.season.cost} floatingLabelText="Total cost" fullWidth={true} />
+						<TextField defaultValue={season.name} floatingLabelText="Season name" fullWidth={true} />
+						<TextField defaultValue={season.cost} floatingLabelText="Total cost" fullWidth={true} />
 					</div>
 					<Divider />
 					<List>
 						<Subheader>Seats</Subheader>
-					{this.state.season.seats.map((seat, seatId) =>
+					{season.seats.map((seat, seatId) =>
 						<ListItem
 							key={seatId}
 							leftAvatar={<div><SeatAvatar /></div>}

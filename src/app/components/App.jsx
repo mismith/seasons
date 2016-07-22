@@ -1,4 +1,5 @@
 import React from 'react';
+import Router from '../router';
 import moment from 'moment';
 
 import AppBar from 'material-ui/AppBar';
@@ -25,9 +26,10 @@ export default React.createClass({
 	getInitialState() {
 		return {
 			drawerOpen: false,
-			page: 'season',
-			seasonId: undefined,
-			gameId: undefined,
+
+			page: null,
+			seasonId: null,
+			gameId: null,
 		};
 	},
 
@@ -71,10 +73,25 @@ export default React.createClass({
 	getPage(page = this.state.page) {
 		switch (page) {
 			case 'season':
-				return <Season seasonId={this.state.seasonId} />
+				return <Season seasonId={this.state.seasonId} tab={'info'} />
 			case 'game':
 				return <Game seasonId={this.state.seasonId} gameId={this.state.gameId} />
+			default:
+				return <h1>404: Not Found</h1>
 		}
+	},
+
+	componentWillMount() {
+		const route = () => {
+			let location = Router.lookup(window.location.hash.substring(1));
+
+			this.setState({
+				page: location.name,
+				...location.options,
+			});
+		};
+		route();
+		window.addEventListener('hashchange', route);
 	},
 
 	render() {
@@ -95,7 +112,6 @@ export default React.createClass({
 							game={game}
 							season={game.$season}
 							showDayAvatar={false}
-							onTouchTap={e=>this.setState({page: 'game', seasonId: game.$season.$id, gameId: game.$id})}
 						/>
 					)}
 						<Divider />
@@ -106,12 +122,13 @@ export default React.createClass({
 						<Subheader>Seasons</Subheader>
 					{Data.seasons.map((season, seasonIndex) => 
 						<ListItem
+							href={Router.href('season', {seasonId: seasonIndex})}
 							key={seasonIndex}
 							primaryText={season.name}
-							onTouchTap={e=>this.setState({page: 'season', seasonId: seasonIndex})}
 						/>
 					)}
 						<ListItem
+							href={Router.href('season', {seasonId: 'new'})}
 							primaryText="Add new season"
 							rightIcon={<AddIcon />}
 						/>

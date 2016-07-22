@@ -24,10 +24,11 @@ const SeatAvatar = React.createClass({
 		return backgroundColor;
 	},
 	render() {
+		let {size, user, sold, ...props} = this.props;
 		return (
-			<Avatar size={this.props.size} backgroundColor={this.getBackgroundColor()}>
-			{this.props.user && !this.props.sold ?
-				initialize(this.props.user.name) :
+			<Avatar size={size} backgroundColor={this.getBackgroundColor()} {...props}>
+			{user && !sold ?
+				initialize(user.name) :
 				<img src={SeatIcon} height="18" style={{opacity: .5}} />
 			}
 			</Avatar>
