@@ -1,6 +1,8 @@
 import React from 'react';
-import moment from 'moment';
 import {Link} from 'react-router';
+
+import moment from 'moment';
+import fire from '../utils/firebase';
 
 import {Tabs, Tab} from 'material-ui/Tabs';
 import {List, ListItem} from 'material-ui/List';
@@ -14,7 +16,6 @@ import AddIcon from 'material-ui/svg-icons/content/add';
 import GameItem from './GameItem';
 import SeatAvatar from './SeatAvatar';
 
-import fire from '../utils/firebase';
 
 export const Season = React.createClass({
 	getDefaultProps() {

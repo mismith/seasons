@@ -1,5 +1,7 @@
 import React from 'react';
+
 import moment from 'moment';
+import fire from '../utils/firebase';
 
 import {List, ListItem} from 'material-ui/List';
 import Subheader from 'material-ui/Subheader';
@@ -11,7 +13,6 @@ import TextField from 'material-ui/TextField';
 
 import SeatAvatar from './SeatAvatar';
 
-import fire from '../utils/firebase';
 
 
 export const Game = React.createClass({

@@ -1,7 +1,8 @@
 import React from 'react';
 import {Link, browserHistory} from 'react-router';
+
 import moment from 'moment';
-import _ from 'lodash';
+import fire from '../utils/firebase';
 
 import Drawer from 'material-ui/Drawer';
 import {List, ListItem} from 'material-ui/List';
@@ -19,7 +20,6 @@ import PowerSettingsIcon from 'material-ui/svg-icons/action/power-settings-new';
 
 import GameItem from './GameItem';
 
-import fire from '../utils/firebase';
 
 export default React.createClass({
 	getDefaultProps() {
@@ -79,13 +79,6 @@ export default React.createClass({
 		this.unbindPageData();
 	},
 
-	handleDrawerToggle() {
-		this.setState({drawerOpen: !this.state.drawerOpen});
-	},
-	handleDrawerClose() {
-		this.setState({drawerOpen: false});
-	},
-
 	collectRelevantGames() {
 		let relevantGames = [],
 			seasons = fire.toArray(this.state.seasons);
@@ -116,9 +109,9 @@ export default React.createClass({
 		return relevantGames;
 	},
 	getTitle() {
-		if (this.props.params.gameId) {
+		if (this.state.game.opponent) {
 			return this.state.game.opponent;
-		} else if (this.props.params.seasonId) {
+		} else if (this.state.season.name) {
 			return this.state.season.name;
 		} else {
 			return 'Seasons';
@@ -138,6 +131,12 @@ export default React.createClass({
 		return path;
 	},
 
+	handleDrawerToggle() {
+		this.setState({drawerOpen: !this.state.drawerOpen});
+	},
+	handleDrawerClose() {
+		this.setState({drawerOpen: false});
+	},
 	render() {
 		let relevantGames = this.collectRelevantGames();
 		return (
