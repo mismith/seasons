@@ -88,10 +88,22 @@ export default React.createClass({
 		});
 		return relevantGames;
 	},
+	getParentUrl() {
+		let path = '';
+		if (this.props.routes) {
+			const routes = this.props.routes.filter(route => route.path && route.path.length > 1); // trim root and any RouteIndex/empty-path-routes
+			if (routes.length > 1) { // can only have a parent if it's not the only route
+				for (let i = 0; i < routes.length - 1; i++) { // all but the last one
+					path += '/' + routes[i].path;
+				}
+				path = path.replace(/:\w+/ig, key => this.props.params[key.substring(1)]); // replace params with current values
+			}
+		}
+		return path;
+	},
 
 	render() {
 		let relevantGames = this.collectRelevantGames();
-
 		return (
 			<div>
 				<Drawer
@@ -108,11 +120,11 @@ export default React.createClass({
 							containerElement={<Link to={'/season/' + seasonIndex} />}
 						/>
 					)}
-						<ListItem
+						{/*<ListItem
 							primaryText="Add new season"
 							rightIcon={<AddIcon />}
 							containerElement={<Link to="/season/new" />}
-						/>
+						/>*/}
 						<Divider />
 					</List>
 
@@ -142,7 +154,7 @@ export default React.createClass({
 				</Drawer>
 				<AppBar
 					title={this.props.params.gameId ? this.state.game.opponent : this.state.season.name}
-					onTitleTouchTap={e=>browserHistory.push('/season/0')}
+					onTitleTouchTap={e=>browserHistory.push(this.getParentUrl())}
 					onLeftIconButtonTouchTap={this.handleDrawerToggle}
 					iconElementRight={
 						<IconMenu
@@ -158,8 +170,9 @@ export default React.createClass({
 						}
 						</IconMenu>
 					}
+					style={{position: 'fixed'}}
 				/>
-				<main>{this.props.children}</main>
+				<main style={{paddingTop: 64}}>{this.props.children}</main>
 			</div>
 		);
 	},
