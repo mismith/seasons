@@ -20,37 +20,33 @@ export const Game = React.createClass({
 		return {
 			season: {seats: [], users: []},
 			game:   {seats: []},
+			handleChange: () => {},
 		};
 	},
 
 	getUserSeatIndex(userId) {
 		return this.props.game.seats ? this.props.game.seats.indexOf(userId) : -1;
 	},
-	handleGameChange(e, field, value) {
-		this.setState({
-			game: Object.assign(this.state.game, {[field]: value !== undefined ? value : e.currentTarget.value}),
-		});
-	},
 	handleGameUserToggle(e, userId) {
 		if (userId === 'sold') {
-			let sold = !!this.state.game.sold,
-				soldPrice = this.state.game.soldPrice + 0;
+			let sold = !!this.props.game.sold,
+				soldPrice = this.props.game.soldPrice + 0;
 			if (e.currentTarget.checked) {
 				sold = true;
 				soldPrice = soldPrice || prompt('How much did they sell for?');
 			} else {
 				sold = false;
 			}
-			this.handleGameChange(e, 'sold', sold);
-			this.handleGameChange(e, 'soldPrice', soldPrice);
+			this.props.handleChange('game', 'sold', sold);
+			this.props.handleChange('game', 'soldPrice', soldPrice);
 		} else {
-			let seats = [].concat(this.state.game.seats || []);
+			let seats = [].concat(this.props.game.seats || []);
 			if (e.currentTarget.checked) {
 				seats.push(userId);
 			} else {
 				seats.splice(this.getUserSeatIndex(userId), 1);
 			}
-			this.handleGameChange(e, 'seats', seats);
+			this.props.handleChange('game', 'seats', seats);
 		}
 	},
 
@@ -81,7 +77,7 @@ export const Game = React.createClass({
 				>Sold</ListItem>
 			{game.sold &&
 				<div style={{paddingLeft: 16, paddingRight: 16, paddingBottom: 16}}>
-					<TextField type="number" value={game.soldPrice || 0} onChange={e=>this.handleGameChange(e, 'soldPrice')} floatingLabelText="Sold Price" fullWidth={true} />
+					<TextField type="number" value={game.soldPrice || 0} onChange={e=>this.props.handleChange('game', 'soldPrice', e.currentTarget.value)} floatingLabelText="Sold Price" fullWidth={true} />
 				</div>
 			}
 			</List>
@@ -94,28 +90,24 @@ export const GameInfo = React.createClass({
 		return {
 			season: {seats: [], users: []},
 			game:   {seats: []},
+			handleChange: () => {},
 		};
 	},
 
-	handleGameChange(e, field, value) {
-		this.setState({
-			game: Object.assign(this.state.game, {[field]: value !== undefined ? value : e.currentTarget.value}),
-		});
-	},
 	handleGameDateTimeChange(type, date) {
 		let $datetime = moment(date);
 		if (type === 'date') {
 			// prevent clearing the existing time
 			$datetime = moment($datetime.format('YYYY-MM-DD') + ' ' + moment(this.props.game.datetime).format('h:mma'), 'YYYY-MM-DD h:mma');
 		}
-		this.handleGameChange(null, 'datetime', $datetime.format());
+		this.props.handleChange('game', 'datetime', $datetime.format());
 	},
 
 	render() {
 		return (
 			<List>
 				<div style={{paddingLeft: 16, paddingRight: 16, paddingBottom: 16}}>
-					<TextField value={this.props.game.opponent} onChange={e=>this.handleGameChange(e, 'opponent')} floatingLabelText="Opponent" fullWidth={true} />
+					<TextField value={this.props.game.opponent} onChange={e=>this.props.handleChange('game', 'opponent', e.currentTarget.value)} floatingLabelText="Opponent" fullWidth={true} />
 					<DatePicker value={moment(this.props.game.datetime).toDate()} onChange={(e, date)=>this.handleGameDateTimeChange('date', date)} formatDate={date=>moment(date).format('ddd, MMM D, YYYY')} floatingLabelText="Date" autoOk={true} style={{display: 'inline-flex', width: '50%'}} />
 					<TimePicker value={moment(this.props.game.datetime).toDate()} onChange={(e, date)=>this.handleGameDateTimeChange('time', date)}  floatingLabelText="Time" autoOk={true} pedantic={true} style={{display: 'inline-flex', width: '50%'}} />
 				</div>

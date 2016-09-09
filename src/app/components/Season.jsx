@@ -66,21 +66,16 @@ export const SeasonInfo = React.createClass({
 	getDefaultProps() {
 		return {
 			season: {seats: [], users: []},
+			handleChange: () => {},
 		};
-	},
-
-	handleSeasonChange(e, field, value) {
-		this.setState({
-			season: Object.assign(this.props.season, {[field]: value !== undefined ? value : e.currentTarget.value}),
-		});
 	},
 
 	render() {
 		return (
 			<div>
 				<div style={{paddingLeft: 16, paddingRight: 16, paddingBottom: 16}}>
-					<TextField value={this.props.season.name} onChange={e=>this.handleSeasonChange(e, 'name')} floatingLabelText="Season name" fullWidth={true} />
-					<TextField type="number" value={this.props.season.cost} onChange={e=>this.handleSeasonChange(e, 'cost')} floatingLabelText="Total cost" fullWidth={true} />
+					<TextField value={this.props.season.name || ''} onChange={e=>this.props.handleChange('season', 'name', e.currentTarget.value)} floatingLabelText="Season name" fullWidth={true} />
+					<TextField value={this.props.season.cost || ''} onChange={e=>this.props.handleChange('season', 'cost', e.currentTarget.value)} floatingLabelText="Total cost" fullWidth={true} type="number" />
 				</div>
 				<Divider />
 				<List>

@@ -137,6 +137,14 @@ export default React.createClass({
 	handleDrawerClose() {
 		this.setState({drawerOpen: false});
 	},
+	handleChange(name, field, value) {
+		this.setState({
+			[name]: Object.assign(this.state[name], {
+				[field]: value,
+			}),
+		});
+	},
+
 	render() {
 		let relevantGames = this.collectRelevantGames();
 		return (
@@ -208,7 +216,7 @@ export default React.createClass({
 					}
 					style={{position: 'fixed'}}
 				/>
-				<main style={{paddingTop: 64}}>{React.cloneElement(this.props.children, this.state)}</main>
+				<main style={{paddingTop: 64}}>{React.cloneElement(this.props.children, {...this.state, handleChange: this.handleChange})}</main>
 			</div>
 		);
 	},
