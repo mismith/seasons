@@ -14,38 +14,20 @@ import AddIcon from 'material-ui/svg-icons/content/add';
 import GameItem from './GameItem';
 import SeatAvatar from './SeatAvatar';
 
-import Data from '../data';
+import fire from '../utils/firebase';
 
 export const Season = React.createClass({
 	getDefaultProps() {
 		return {
-			params: {
-				seasonId: 0,
-			},
-		};
-	},
-	getInitialState() {
-		return {
 			season: {seats: [], users: []},
+			games:  {},
 		};
-	},
-	componentWillMount() {
-		const nextProps = this.props;
-		this.setState({
-			season: Data.seasons[nextProps.params.seasonId],
-		});
-	},
-	componentWillReceiveProps(nextProps) {
-		this.setState({
-			season: Data.seasons[nextProps.params.seasonId],
-		});
 	},
 
 	groupGamesByMonth() {
 		let gamesByMonth = [],
 			previousMonthId;
-		Data['seasons:games'][this.props.params.seasonId].map((game, gameIndex) => {
-			game.$id = gameIndex;
+		fire.toArray(this.props.games[this.props.params.seasonId]).map(game => {
 			game.$datetime = moment(game.datetime);
 
 			let monthId = game.$datetime.format('YYYY-MM');
@@ -68,7 +50,7 @@ export const Season = React.createClass({
 					<GameItem
 						key={game.$id}
 						game={game}
-						season={this.state.season}
+						season={this.props.season}
 						containerElement={<Link to={'/season/' + this.props.params.seasonId + '/game/' + game.$id} />}
 					/>
 					)}
@@ -82,31 +64,13 @@ export const Season = React.createClass({
 export const SeasonInfo = React.createClass({
 	getDefaultProps() {
 		return {
-			params: {
-				seasonId: 0,
-			},
-		};
-	},
-	getInitialState() {
-		return {
 			season: {seats: [], users: []},
 		};
-	},
-	componentWillMount() {
-		let nextProps = this.props;
-		this.setState({
-			season: Data.seasons[nextProps.params.seasonId],
-		});
-	},
-	componentWillReceiveProps(nextProps) {
-		this.setState({
-			season: Data.seasons[nextProps.params.seasonId],
-		});
 	},
 
 	handleSeasonChange(e, field, value) {
 		this.setState({
-			season: Object.assign(this.state.season, {[field]: value !== undefined ? value : e.currentTarget.value}),
+			season: Object.assign(this.props.season, {[field]: value !== undefined ? value : e.currentTarget.value}),
 		});
 	},
 
@@ -114,13 +78,13 @@ export const SeasonInfo = React.createClass({
 		return (
 			<div>
 				<div style={{paddingLeft: 16, paddingRight: 16, paddingBottom: 16}}>
-					<TextField value={this.state.season.name} onChange={e=>this.handleSeasonChange(e, 'name')} floatingLabelText="Season name" fullWidth={true} />
-					<TextField type="number" value={this.state.season.cost} onChange={e=>this.handleSeasonChange(e, 'cost')} floatingLabelText="Total cost" fullWidth={true} />
+					<TextField value={this.props.season.name} onChange={e=>this.handleSeasonChange(e, 'name')} floatingLabelText="Season name" fullWidth={true} />
+					<TextField type="number" value={this.props.season.cost} onChange={e=>this.handleSeasonChange(e, 'cost')} floatingLabelText="Total cost" fullWidth={true} />
 				</div>
 				<Divider />
 				<List>
 					<Subheader>Seats</Subheader>
-				{this.state.season.seats.map((seat, seatId) =>
+				{this.props.season.seats.map((seat, seatId) =>
 					<ListItem
 						key={seatId}
 						leftAvatar={<div><SeatAvatar /></div>}

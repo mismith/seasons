@@ -1,6 +1,7 @@
 import React from 'react';
-import moment from 'moment';
 import {Link, browserHistory} from 'react-router';
+import moment from 'moment';
+import _ from 'lodash';
 
 import Drawer from 'material-ui/Drawer';
 import {List, ListItem} from 'material-ui/List';
@@ -18,7 +19,7 @@ import PowerSettingsIcon from 'material-ui/svg-icons/action/power-settings-new';
 
 import GameItem from './GameItem';
 
-import Data from '../data';
+import fire from '../utils/firebase';
 
 export default React.createClass({
 	getDefaultProps() {
@@ -32,22 +33,50 @@ export default React.createClass({
 	getInitialState() {
 		return {
 			drawerOpen: false,
-			season: {seats: [], users: []},
-			game:   {seats: []},
+			season:  {seats: [], users: []},
+			game:    {seats: []},
+			games:   {},
+			seasons: {},
 		};
 	},
-	componentWillMount() {
-		const nextProps = this.props;
-		this.setState({
-			season: Data.seasons[nextProps.params.seasonId],
-			game:   Data['seasons:games'][nextProps.params.seasonId][nextProps.params.gameId],
+
+
+	unbindPageData() {
+		if (this.seasonRef) fire.rebase.removeBinding(this.seasonRef);
+		if (this.gameRef) fire.rebase.removeBinding(this.gameRef);
+	},
+	bindPageData(props = this.props) {
+		this.unbindPageData();
+
+		this.seasonRef = fire.rebase.bindToState('seasons/' + props.params.seasonId, {
+			context: this,
+			state: 'season',
+		});
+		this.gameRef = fire.rebase.bindToState('seasons:games/' + props.params.seasonId + '/' + props.params.gameId, {
+			context: this,
+			state: 'game',
 		});
 	},
-	componentWillReceiveProps(nextProps) {
-		this.setState({
-			season: Data.seasons[nextProps.params.seasonId],
-			game:   Data['seasons:games'][nextProps.params.seasonId][nextProps.params.gameId],
+	componentWillMount() {
+		this.seasonsRef = fire.rebase.bindToState('seasons', {
+			context: this,
+			state: 'seasons',
 		});
+		this.gamesRef = fire.rebase.bindToState('seasons:games', {
+			context: this,
+			state: 'games',
+		});
+
+		this.bindPageData();
+	},
+	componentWillReceiveProps(nextProps) {
+		this.bindPageData(nextProps);
+	},
+	componentWillUnmount() {
+		fire.rebase.removeBinding(this.seasonsRef);
+		fire.rebase.removeBinding(this.gamesRef);
+
+		this.unbindPageData();
 	},
 
 	handleDrawerToggle() {
@@ -58,10 +87,10 @@ export default React.createClass({
 	},
 
 	collectRelevantGames() {
-		let relevantGames = [];
-		Data['seasons:games'].map((games, seasonIndex) => {
-			games.filter((game, gameIndex) => {
-				game.$id = gameIndex;
+		let relevantGames = [],
+			seasons = fire.toArray(this.state.seasons);
+		fire.toArray(this.state.games).map(games => {
+			fire.toArray(games).filter(game => {
 				let dayDiff = moment(game.datetime).diff('2016-10-21', 'days');
 				if (dayDiff < 0) {
 					// game has passed
@@ -80,12 +109,20 @@ export default React.createClass({
 					}
 				}
 			}).map(game => {
-				game.$season = Data.seasons[seasonIndex];
-				game.$season.$id = seasonIndex;
+				game.$season = seasons[games.$id];
 				relevantGames.push(game);
 			});
 		});
 		return relevantGames;
+	},
+	getTitle() {
+		if (this.props.params.gameId) {
+			return this.state.game.opponent;
+		} else if (this.props.params.seasonId) {
+			return this.state.season.name;
+		} else {
+			return 'Seasons';
+		}
 	},
 	getParentUrl() {
 		let path = '';
@@ -112,11 +149,11 @@ export default React.createClass({
 				>
 					<List onTouchTap={this.handleDrawerClose}>
 						<Subheader>Seasons</Subheader>
-					{Data.seasons.map((season, seasonIndex) => 
+					{fire.toArray(this.state.seasons).map(season => 
 						<ListItem
-						 	key={seasonIndex}
+						 	key={season.$id}
 							primaryText={season.name}
-							containerElement={<Link to={'/season/' + seasonIndex} />}
+							containerElement={<Link to={'/season/' + season.$id} />}
 						/>
 					)}
 						{/*<ListItem
@@ -152,10 +189,11 @@ export default React.createClass({
 					</List>
 				</Drawer>
 				<AppBar
-					title={this.props.params.gameId ? this.state.game.opponent : this.state.season.name}
+					title={this.getTitle()}
 					onTitleTouchTap={e=>browserHistory.push(this.getParentUrl())}
 					onLeftIconButtonTouchTap={this.handleDrawerToggle}
 					iconElementRight={
+						this.props.params.seasonId &&
 						<IconMenu
 							iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
 							targetOrigin={{horizontal: 'right', vertical: 'top'}}
@@ -171,7 +209,7 @@ export default React.createClass({
 					}
 					style={{position: 'fixed'}}
 				/>
-				<main style={{paddingTop: 64}}>{this.props.children}</main>
+				<main style={{paddingTop: 64}}>{React.cloneElement(this.props.children, this.state)}</main>
 			</div>
 		);
 	},

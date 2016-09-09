@@ -11,40 +11,19 @@ import TextField from 'material-ui/TextField';
 
 import SeatAvatar from './SeatAvatar';
 
-import Data from '../data';
+import fire from '../utils/firebase';
 
 
 export const Game = React.createClass({
 	getDefaultProps() {
 		return {
-			params: {
-				seasonId: 0,
-				gameId: 0,
-			},
-		};
-	},
-	getInitialState() {
-		return {
 			season: {seats: [], users: []},
 			game:   {seats: []},
 		};
 	},
-	componentWillMount() {
-		const nextProps = this.props;
-		this.setState({
-			season: Data.seasons[nextProps.params.seasonId],
-			game:   Data['seasons:games'][nextProps.params.seasonId][nextProps.params.gameId],
-		});
-	},
-	componentWillReceiveProps(nextProps) {
-		this.setState({
-			season: Data.seasons[nextProps.params.seasonId],
-			game:   Data['seasons:games'][nextProps.params.seasonId][nextProps.params.gameId],
-		});
-	},
 
 	getUserSeatIndex(userId) {
-		return this.state.game.seats ? this.state.game.seats.indexOf(userId) : -1;
+		return this.props.game.seats ? this.props.game.seats.indexOf(userId) : -1;
 	},
 	handleGameChange(e, field, value) {
 		this.setState({
@@ -75,7 +54,7 @@ export const Game = React.createClass({
 	},
 
 	render() {
-		let {season, game} = this.state;
+		let {season, game} = this.props;
 		return (
 			<List>
 			{!game.sold &&
@@ -112,30 +91,9 @@ export const Game = React.createClass({
 export const GameInfo = React.createClass({
 	getDefaultProps() {
 		return {
-			params: {
-				seasonId: 0,
-				gameId: 0,
-			},
-		};
-	},
-	getInitialState() {
-		return {
 			season: {seats: [], users: []},
 			game:   {seats: []},
 		};
-	},
-	componentWillMount() {
-		const nextProps = this.props;
-		this.setState({
-			season: Data.seasons[nextProps.params.seasonId],
-			game:   Data['seasons:games'][nextProps.params.seasonId][nextProps.params.gameId],
-		});
-	},
-	componentWillReceiveProps(nextProps) {
-		this.setState({
-			season: Data.seasons[nextProps.params.seasonId],
-			game:   Data['seasons:games'][nextProps.params.seasonId][nextProps.params.gameId],
-		});
 	},
 
 	handleGameChange(e, field, value) {
@@ -147,19 +105,18 @@ export const GameInfo = React.createClass({
 		let $datetime = moment(date);
 		if (type === 'date') {
 			// prevent clearing the existing time
-			$datetime = moment($datetime.format('YYYY-MM-DD') + ' ' + moment(this.state.game.datetime).format('h:mma'), 'YYYY-MM-DD h:mma');
+			$datetime = moment($datetime.format('YYYY-MM-DD') + ' ' + moment(this.props.game.datetime).format('h:mma'), 'YYYY-MM-DD h:mma');
 		}
 		this.handleGameChange(null, 'datetime', $datetime.format());
 	},
 
 	render() {
-		let {season, game} = this.state;
 		return (
 			<List>
 				<div style={{paddingLeft: 16, paddingRight: 16, paddingBottom: 16}}>
-					<TextField value={game.opponent} onChange={e=>this.handleGameChange(e, 'opponent')} floatingLabelText="Opponent" fullWidth={true} />
-					<DatePicker value={moment(game.datetime).toDate()} onChange={(e, date)=>this.handleGameDateTimeChange('date', date)} formatDate={date=>moment(date).format('ddd, MMM D, YYYY')} floatingLabelText="Date" autoOk={true} style={{display: 'inline-flex', width: '50%'}} />
-					<TimePicker value={moment(game.datetime).toDate()} onChange={(e, date)=>this.handleGameDateTimeChange('time', date)}  floatingLabelText="Time" autoOk={true} pedantic={true} style={{display: 'inline-flex', width: '50%'}} />
+					<TextField value={this.props.game.opponent} onChange={e=>this.handleGameChange(e, 'opponent')} floatingLabelText="Opponent" fullWidth={true} />
+					<DatePicker value={moment(this.props.game.datetime).toDate()} onChange={(e, date)=>this.handleGameDateTimeChange('date', date)} formatDate={date=>moment(date).format('ddd, MMM D, YYYY')} floatingLabelText="Date" autoOk={true} style={{display: 'inline-flex', width: '50%'}} />
+					<TimePicker value={moment(this.props.game.datetime).toDate()} onChange={(e, date)=>this.handleGameDateTimeChange('time', date)}  floatingLabelText="Time" autoOk={true} pedantic={true} style={{display: 'inline-flex', width: '50%'}} />
 				</div>
 			</List>
 		);
