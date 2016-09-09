@@ -5,6 +5,8 @@ import {List, ListItem} from 'material-ui/List';
 import Subheader from 'material-ui/Subheader';
 import Divider from 'material-ui/Divider';
 import Toggle from 'material-ui/Toggle';
+import DatePicker from 'material-ui/DatePicker';
+import TimePicker from 'material-ui/TimePicker';
 import TextField from 'material-ui/TextField';
 
 import SeatAvatar from './SeatAvatar';
@@ -44,15 +46,20 @@ export const Game = React.createClass({
 	getUserSeatIndex(userId) {
 		return this.state.game.seats ? this.state.game.seats.indexOf(userId) : -1;
 	},
-	handleToggle(e, userId) {
+	handleGameChange(e, field, value) {
+		this.setState({
+			game: Object.assign(this.state.game, {[field]: value !== undefined ? value : e.currentTarget.value}),
+		});
+	},
+	handleGameUserToggle(e, userId) {
 		if (userId === 'sold') {
 			let sold = this.state.game.sold + 0;
 			if (e.currentTarget.checked) {
-				sold = 1;
+				sold = prompt('How much did they sell for?');
 			} else {
 				sold = null;
 			}
-			this.setState({game: Object.assign(this.state.game, {sold})});
+			this.handleGameChange(e, 'sold', sold);
 		} else {
 			let seats = [].concat(this.state.game.seats || []);
 			if (e.currentTarget.checked) {
@@ -60,28 +67,29 @@ export const Game = React.createClass({
 			} else {
 				seats.splice(this.getUserSeatIndex(userId), 1);
 			}
-			this.setState({game: Object.assign(this.state.game, {seats})});
+			this.handleGameChange(e, 'seats', seats);
 		}
 	},
 
 	render() {
+		let {season, game} = this.state;
 		return (
 			<List>
 				<Subheader style={{display: 'flex', justifyContent: 'space-between', paddingRight: 16}}>
 					<span>Attendees</span>
-					<span>{!this.state.game.sold && this.state.game.seats ? this.state.game.seats.length : 0} / {this.state.season.seats.length}</span>
+					<span>{!game.sold && game.seats ? game.seats.length : 0} / {season.seats.length}</span>
 				</Subheader>
-			{this.state.season.users.map((user, userId) => 
+			{season.users.map((user, userId) => 
 				<ListItem
 					key={userId}
-					leftAvatar={<div><SeatAvatar user={user} setBackgroundColor={!this.state.game.sold && this.getUserSeatIndex(userId) >= 0} /></div>}
-					rightToggle={<Toggle toggled={!this.state.game.sold && this.getUserSeatIndex(userId) >= 0} onToggle={e=>this.handleToggle(e, userId)} disabled={!!this.state.game.sold || (this.getUserSeatIndex(userId) < 0 && this.state.game.seats && this.state.game.seats.length >= this.state.season.seats.length)} />}
+					leftAvatar={<div><SeatAvatar user={user} setBackgroundColor={!game.sold && this.getUserSeatIndex(userId) >= 0} /></div>}
+					rightToggle={<Toggle toggled={!game.sold && this.getUserSeatIndex(userId) >= 0} onToggle={e=>this.handleGameUserToggle(e, userId)} disabled={!!game.sold || (this.getUserSeatIndex(userId) < 0 && game.seats && game.seats.length >= season.seats.length)} />}
 				>{user.name}</ListItem>
 			)}
 				<Divider />
 				<ListItem
-					leftAvatar={<div><SeatAvatar sold={true} setBackgroundColor={this.state.game.sold > 0} /></div>}
-					rightToggle={<Toggle toggled={this.state.game.sold > 0} onToggle={e=>this.handleToggle(e, 'sold')} />}
+					leftAvatar={<div><SeatAvatar sold={true} setBackgroundColor={game.sold > 0} /></div>}
+					rightToggle={<Toggle toggled={!!game.sold} onToggle={e=>this.handleGameUserToggle(e, 'sold')} />}
 				>Sold</ListItem>
 			</List>
 		);
@@ -117,17 +125,31 @@ export const GameInfo = React.createClass({
 		});
 	},
 
-	handleChange(e, key) {
-		this.setState({game: Object.assign(this.state.game, {[key]: e.currentTarget.value})});
+	handleGameChange(e, field, value) {
+		this.setState({
+			game: Object.assign(this.state.game, {[field]: value !== undefined ? value : e.currentTarget.value}),
+		});
+	},
+	handleGameDateTimeChange(type, date) {
+		let $datetime = moment(date);
+		if (type === 'date') {
+			// prevent clearing the existing time
+			$datetime = moment($datetime.format('YYYY-MM-DD') + ' ' + moment(this.state.game.datetime).format('h:mma'), 'YYYY-MM-DD h:mma');
+		}
+		this.handleGameChange(null, 'datetime', $datetime.format());
 	},
 
 	render() {
+		let {season, game} = this.state;
 		return (
 			<List>
 				<div style={{paddingLeft: 16, paddingRight: 16, paddingBottom: 16}}>
-					<TextField value={this.state.game.opponent} onChange={e=>this.handleChange(e, 'opponent')} floatingLabelText="Opponent" fullWidth={true} />
-					<TextField type="datetime" value={this.state.game.datetime} onChange={e=>this.handleChange(e, 'datetime')} floatingLabelText="Date & Time" fullWidth={true} />
-					<TextField type="number" value={this.state.game.sold || ''} onChange={e=>this.handleChange(e, 'sold')} floatingLabelText="Sold Price" fullWidth={true} />
+					<TextField value={game.opponent} onChange={e=>this.handleGameChange(e, 'opponent')} floatingLabelText="Opponent" fullWidth={true} />
+					<DatePicker value={moment(game.datetime).toDate()} onChange={(e, date)=>this.handleGameDateTimeChange('date', date)} formatDate={date=>moment(date).format('ddd, MMM D, YYYY')} floatingLabelText="Date" autoOk={true} style={{display: 'inline-flex', width: '50%'}} />
+					<TimePicker value={moment(game.datetime).toDate()} onChange={(e, date)=>this.handleGameDateTimeChange('time', date)}  floatingLabelText="Time" autoOk={true} pedantic={true} style={{display: 'inline-flex', width: '50%'}} />
+
+
+					<TextField type="number" value={game.sold || ''} onChange={e=>this.handleGameChange(e, 'sold')} floatingLabelText="Sold Price" fullWidth={true} />
 				</div>
 			</List>
 		);

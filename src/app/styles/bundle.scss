@@ -17,31 +17,3 @@ body {
 .loading {
 	animation: spectrum 4s infinite;
 }
-
-.avatar-calendar {
-	flex-direction: column;
-	align-items: stretch;
-	overflow: hidden;
-
-	> * {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		width: 100%;
-
-		&:first-child {
-			flex-grow: 1;
-			background-color: #666;
-			font-size: 10px;
-			line-height: 1;
-			text-transform: uppercase;
-			padding-top: 3px;
-		}
-		&:last-child {
-			flex-grow: 3;
-			color: #666;
-			padding-bottom: 1px;
-		}
-	}
-}
