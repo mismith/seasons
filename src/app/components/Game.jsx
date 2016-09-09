@@ -53,13 +53,16 @@ export const Game = React.createClass({
 	},
 	handleGameUserToggle(e, userId) {
 		if (userId === 'sold') {
-			let sold = this.state.game.sold + 0;
+			let sold = !!this.state.game.sold,
+				soldPrice = this.state.game.soldPrice + 0;
 			if (e.currentTarget.checked) {
-				sold = prompt('How much did they sell for?');
+				sold = true;
+				soldPrice = soldPrice || prompt('How much did they sell for?');
 			} else {
-				sold = null;
+				sold = false;
 			}
 			this.handleGameChange(e, 'sold', sold);
+			this.handleGameChange(e, 'soldPrice', soldPrice);
 		} else {
 			let seats = [].concat(this.state.game.seats || []);
 			if (e.currentTarget.checked) {
@@ -75,22 +78,32 @@ export const Game = React.createClass({
 		let {season, game} = this.state;
 		return (
 			<List>
-				<Subheader style={{display: 'flex', justifyContent: 'space-between', paddingRight: 16}}>
-					<span>Attendees</span>
-					<span>{!game.sold && game.seats ? game.seats.length : 0} / {season.seats.length}</span>
-				</Subheader>
-			{season.users.map((user, userId) => 
-				<ListItem
-					key={userId}
-					leftAvatar={<div><SeatAvatar user={user} setBackgroundColor={!game.sold && this.getUserSeatIndex(userId) >= 0} /></div>}
-					rightToggle={<Toggle toggled={!game.sold && this.getUserSeatIndex(userId) >= 0} onToggle={e=>this.handleGameUserToggle(e, userId)} disabled={!!game.sold || (this.getUserSeatIndex(userId) < 0 && game.seats && game.seats.length >= season.seats.length)} />}
-				>{user.name}</ListItem>
-			)}
-				<Divider />
+			{!game.sold &&
+				<div>
+					<Subheader style={{display: 'flex', justifyContent: 'space-between', paddingRight: 16}}>
+						<span>Attendees</span>
+						<span>{!game.sold && game.seats ? game.seats.length : 0} / {season.seats.length}</span>
+					</Subheader>
+				{season.users.map((user, userId) => 
+					<ListItem
+						key={userId}
+						leftAvatar={<div><SeatAvatar user={user} setBackgroundColor={!game.sold && this.getUserSeatIndex(userId) >= 0} /></div>}
+						rightToggle={<Toggle toggled={!game.sold && this.getUserSeatIndex(userId) >= 0} onToggle={e=>this.handleGameUserToggle(e, userId)} disabled={!!game.sold || (this.getUserSeatIndex(userId) < 0 && game.seats && game.seats.length >= season.seats.length)} />}
+					>{user.name}</ListItem>
+				)}
+					<Divider />
+				</div>
+			}
+
 				<ListItem
 					leftAvatar={<div><SeatAvatar sold={true} setBackgroundColor={game.sold > 0} /></div>}
 					rightToggle={<Toggle toggled={!!game.sold} onToggle={e=>this.handleGameUserToggle(e, 'sold')} />}
 				>Sold</ListItem>
+			{game.sold &&
+				<div style={{paddingLeft: 16, paddingRight: 16, paddingBottom: 16}}>
+					<TextField type="number" value={game.soldPrice || 0} onChange={e=>this.handleGameChange(e, 'soldPrice')} floatingLabelText="Sold Price" fullWidth={true} />
+				</div>
+			}
 			</List>
 		);
 	},
@@ -147,9 +160,6 @@ export const GameInfo = React.createClass({
 					<TextField value={game.opponent} onChange={e=>this.handleGameChange(e, 'opponent')} floatingLabelText="Opponent" fullWidth={true} />
 					<DatePicker value={moment(game.datetime).toDate()} onChange={(e, date)=>this.handleGameDateTimeChange('date', date)} formatDate={date=>moment(date).format('ddd, MMM D, YYYY')} floatingLabelText="Date" autoOk={true} style={{display: 'inline-flex', width: '50%'}} />
 					<TimePicker value={moment(game.datetime).toDate()} onChange={(e, date)=>this.handleGameDateTimeChange('time', date)}  floatingLabelText="Time" autoOk={true} pedantic={true} style={{display: 'inline-flex', width: '50%'}} />
-
-
-					<TextField type="number" value={game.sold || ''} onChange={e=>this.handleGameChange(e, 'sold')} floatingLabelText="Sold Price" fullWidth={true} />
 				</div>
 			</List>
 		);

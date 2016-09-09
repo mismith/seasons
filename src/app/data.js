@@ -35,7 +35,8 @@ export default {
         datetime: '2016-10-18T19:00:00-06:00',
         opponent: 'Buffalo',
         //seats: [0, 3],
-        sold: 100.00,
+        sold: true,
+        soldPrice: 100.00,
       },
       {
         datetime: '2016-10-20T19:00:00-06:00',
