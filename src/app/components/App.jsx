@@ -2,7 +2,6 @@ import React from 'react';
 import moment from 'moment';
 import {Link, browserHistory} from 'react-router';
 
-
 import Drawer from 'material-ui/Drawer';
 import {List, ListItem} from 'material-ui/List';
 import Subheader from 'material-ui/Subheader';

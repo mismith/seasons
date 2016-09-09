@@ -39,12 +39,13 @@
   },
   "dependencies": {
     "express": "^4.14.0",
-    "firebase": "^3.1.0",
+    "firebase": "^3.3.2",
     "lodash": "^3.10.1",
     "material-ui": "^0.15.2",
     "moment": "^2.14.1",
-    "react": "^15.2.1",
-    "react-dom": "^15.2.1",
+    "react": "^15.3.1",
+    "react-dom": "^15.3.1",
+    "react-router": "^2.7.0",
     "react-tap-event-plugin": "^1.0.0"
   },
   "babel": {
