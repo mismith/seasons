@@ -1,34 +1,54 @@
 import React from 'react';
 import moment from 'moment';
+import {Link, browserHistory} from 'react-router';
 
-import AppBar from 'material-ui/AppBar';
+
 import Drawer from 'material-ui/Drawer';
 import {List, ListItem} from 'material-ui/List';
 import Subheader from 'material-ui/Subheader';
 import Divider from 'material-ui/Divider';
 
-//import MenuItem from 'material-ui/MenuItem';
-//import IconButton from 'material-ui/IconButton';
-//import IconMenu from 'material-ui/IconMenu';
-//import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
+import AppBar from 'material-ui/AppBar';
+import MenuItem from 'material-ui/MenuItem';
+import IconButton from 'material-ui/IconButton';
+import IconMenu from 'material-ui/IconMenu';
+import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 
 import AddIcon from 'material-ui/svg-icons/content/add';
 import PowerSettingsIcon from 'material-ui/svg-icons/action/power-settings-new';
 
-import Season from './Season';
-import Game from './Game';
 import GameItem from './GameItem';
 
 import Data from '../data';
 
 export default React.createClass({
+	getDefaultProps() {
+		return {
+			params: {
+				seasonId: 0,
+				gameId: 0,
+			},
+		};
+	},
 	getInitialState() {
 		return {
 			drawerOpen: false,
-			page: 'season',
-			seasonId: undefined,
-			gameId: undefined,
+			season: {seats: [], users: []},
+			game:   {seats: []},
 		};
+	},
+	componentWillMount() {
+		const nextProps = this.props;
+		this.setState({
+			season: Data.seasons[nextProps.params.seasonId],
+			game:   Data['seasons:games'][nextProps.params.seasonId][nextProps.params.gameId],
+		});
+	},
+	componentWillReceiveProps(nextProps) {
+		this.setState({
+			season: Data.seasons[nextProps.params.seasonId],
+			game:   Data['seasons:games'][nextProps.params.seasonId][nextProps.params.gameId],
+		});
 	},
 
 	handleDrawerToggle() {
@@ -68,14 +88,6 @@ export default React.createClass({
 		});
 		return relevantGames;
 	},
-	getPage(page = this.state.page) {
-		switch (page) {
-			case 'season':
-				return <Season seasonId={this.state.seasonId} />
-			case 'game':
-				return <Game seasonId={this.state.seasonId} gameId={this.state.gameId} />
-		}
-	},
 
 	render() {
 		let relevantGames = this.collectRelevantGames();
@@ -85,7 +97,25 @@ export default React.createClass({
 				<Drawer
 					docked={false}
 					open={this.state.drawerOpen}
+					containerStyle={{display: 'flex', flexDirection: 'column'}}
 				>
+					<List onTouchTap={this.handleDrawerClose}>
+						<Subheader>Seasons</Subheader>
+					{Data.seasons.map((season, seasonIndex) => 
+						<ListItem
+						 	key={seasonIndex}
+							primaryText={season.name}
+							containerElement={<Link to={'/season/' + seasonIndex} />}
+						/>
+					)}
+						<ListItem
+							primaryText="Add new season"
+							rightIcon={<AddIcon />}
+							containerElement={<Link to="/season/new" />}
+						/>
+						<Divider />
+					</List>
+
 				{relevantGames.length > 0 && 
 					<List onTouchTap={this.handleDrawerClose}>
 						<Subheader>Games</Subheader>
@@ -95,29 +125,14 @@ export default React.createClass({
 							game={game}
 							season={game.$season}
 							showDayAvatar={false}
-							onTouchTap={e=>this.setState({page: 'game', seasonId: game.$season.$id, gameId: game.$id})}
+							containerElement={<Link to={'/season/' + game.$season.$id + '/game/' + game.$id} />}
 						/>
 					)}
 						<Divider />
 					</List>
 				}
 
-					<List onTouchTap={this.handleDrawerClose}>
-						<Subheader>Seasons</Subheader>
-					{Data.seasons.map((season, seasonIndex) => 
-						<ListItem
-							key={seasonIndex}
-							primaryText={season.name}
-							onTouchTap={e=>this.setState({page: 'season', seasonId: seasonIndex})}
-						/>
-					)}
-						<ListItem
-							primaryText="Add new season"
-							rightIcon={<AddIcon />}
-						/>
-						<Divider />
-					</List>
-					<List onTouchTap={this.handleDrawerClose}>
+					<List onTouchTap={this.handleDrawerClose} style={{marginTop: 'auto'}}>
 						<Subheader>Account</Subheader>
 						<ListItem
 							primaryText="Logout"
@@ -126,21 +141,25 @@ export default React.createClass({
 					</List>
 				</Drawer>
 				<AppBar
-					title={"Seasons"}
+					title={this.props.params.gameId ? this.state.game.opponent : this.state.season.name}
+					onTitleTouchTap={e=>browserHistory.push('/season/0')}
 					onLeftIconButtonTouchTap={this.handleDrawerToggle}
-					// iconElementRight={
-					// 	<IconMenu
-					// 		iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
-					// 		targetOrigin={{horizontal: 'right', vertical: 'top'}}
-					// 		anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-					// 	>
-					// 		<MenuItem>View/Edit Season</MenuItem>
-					// 	</IconMenu>
-					// }
+					iconElementRight={
+						<IconMenu
+							iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
+							targetOrigin={{horizontal: 'right', vertical: 'top'}}
+							anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+						>
+						{this.props.params.seasonId && !this.props.params.gameId && 
+							<MenuItem containerElement={<Link to={'/season/' + this.props.params.seasonId + '/edit'} />}>Edit Details</MenuItem>
+						}
+						{this.props.params.seasonId && this.props.params.gameId && 
+							<MenuItem containerElement={<Link to={'/season/' + this.props.params.seasonId + '/game/' + this.props.params.gameId + '/edit'} />}>Edit Details</MenuItem>
+						}
+						</IconMenu>
+					}
 				/>
-				<main>
-					{this.getPage()}
-				</main>
+				<main>{this.props.children}</main>
 			</div>
 		);
 	},
