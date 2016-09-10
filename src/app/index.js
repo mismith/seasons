@@ -11,18 +11,18 @@ injectTapEventPlugin();
 
 // components
 import App from './components/App';
+import Home from './components/Home';
 import {Season, SeasonInfo} from './components/Season';
 import {Game, GameInfo} from './components/Game';
 
 // styles
 import './styles/bundle.scss';
 
-
 ReactDOM.render(
 	<MuiThemeProvider>
 		<Router history={browserHistory}>
 			<Route path="/" component={App}>
-				<IndexRoute />
+				<IndexRoute component={Home} />
 				<Route path="season/:seasonId">
 					<IndexRoute component={Season} />
 					<Route path="edit" component={SeasonInfo} />

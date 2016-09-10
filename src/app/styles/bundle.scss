@@ -3,6 +3,13 @@ $yellow: #FFCC39;
 $green:  #6CB132;
 $red:    #C83E31;
 
+html,
+body {
+	width: 100%;
+	height: 100%;
+	padding: 0;
+	margin: 0;
+}
 body {
 	font-family: Roboto;
 }
