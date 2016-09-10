@@ -20,7 +20,6 @@ import PowerSettingsIcon from 'material-ui/svg-icons/action/power-settings-new';
 
 import GameItem from './GameItem';
 
-
 export default React.createClass({
 	getDefaultProps() {
 		return {
@@ -33,8 +32,8 @@ export default React.createClass({
 	getInitialState() {
 		return {
 			drawerOpen: false,
-			season:  {seats: [], users: []},
-			game:    {seats: []},
+			season:  {},
+			game:    {},
 			games:   {},
 			seasons: {},
 		};
@@ -42,27 +41,27 @@ export default React.createClass({
 
 
 	unbindPageData() {
-		if (this.seasonRef) fire.rebase.removeBinding(this.seasonRef);
-		if (this.gameRef) fire.rebase.removeBinding(this.gameRef);
+		if (this.seasonRef) fire.base.removeBinding(this.seasonRef);
+		if (this.gameRef) fire.base.removeBinding(this.gameRef);
 	},
 	bindPageData(props = this.props) {
 		this.unbindPageData();
 
-		this.seasonRef = fire.rebase.bindToState('seasons/' + props.params.seasonId, {
+		this.seasonRef = props.params.seasonId && fire.base.bindToState('seasons/' + props.params.seasonId, {
 			context: this,
 			state: 'season',
 		});
-		this.gameRef = fire.rebase.bindToState('seasons:games/' + props.params.seasonId + '/' + props.params.gameId, {
+		this.gameRef = props.params.gameId && fire.base.bindToState('seasons:games/' + props.params.seasonId + '/' + props.params.gameId, {
 			context: this,
 			state: 'game',
 		});
 	},
 	componentWillMount() {
-		this.seasonsRef = fire.rebase.bindToState('seasons', {
+		this.seasonsRef = fire.base.bindToState('seasons', {
 			context: this,
 			state: 'seasons',
 		});
-		this.gamesRef = fire.rebase.bindToState('seasons:games', {
+		this.gamesRef = fire.base.bindToState('seasons:games', {
 			context: this,
 			state: 'games',
 		});
@@ -73,15 +72,15 @@ export default React.createClass({
 		this.bindPageData(nextProps);
 	},
 	componentWillUnmount() {
-		fire.rebase.removeBinding(this.seasonsRef);
-		fire.rebase.removeBinding(this.gamesRef);
+		fire.base.removeBinding(this.seasonsRef);
+		fire.base.removeBinding(this.gamesRef);
 
 		this.unbindPageData();
 	},
 
 	collectRelevantGames() {
 		let relevantGames = [],
-			seasons = fire.toArray(this.state.seasons);
+			seasons = this.state.seasons;
 		fire.toArray(this.state.games).map(games => {
 			fire.toArray(games).filter(game => {
 				let dayDiff = moment(game.datetime).diff('2016-10-21', 'days');
@@ -103,18 +102,19 @@ export default React.createClass({
 				}
 			}).map(game => {
 				game.$season = seasons[games.$id];
+				game.$season.$id = games.$id;
 				relevantGames.push(game);
 			});
 		});
 		return relevantGames;
 	},
 	getTitle() {
-		if (this.state.game.opponent) {
+		if (this.props.params.gameId) {
 			return this.state.game.opponent;
-		} else if (this.state.season.name) {
+		} else if (this.props.params.seasonId) {
 			return this.state.season.name;
 		} else {
-			return 'Seasons';
+			return '';
 		}
 	},
 	getParentUrl() {
@@ -137,12 +137,15 @@ export default React.createClass({
 	handleDrawerClose() {
 		this.setState({drawerOpen: false});
 	},
-	handleChange(name, field, value) {
-		this.setState({
-			[name]: Object.assign(this.state[name], {
-				[field]: value,
-			}),
-		});
+	handleChanges(name, changes) {
+		switch(name) {
+			case 'season':
+				fire.base.database().ref('seasons/' + this.props.params.seasonId).update(changes);
+				break;
+			case 'game':
+				fire.base.database().ref('seasons:games/' + this.props.params.seasonId + '/' + this.props.params.gameId).update(changes);
+				break;
+		}
 	},
 
 	render() {
@@ -216,7 +219,7 @@ export default React.createClass({
 					}
 					style={{position: 'fixed'}}
 				/>
-				<main style={{paddingTop: 64}}>{React.cloneElement(this.props.children, {...this.state, handleChange: this.handleChange})}</main>
+				<main style={{paddingTop: 64}}>{React.cloneElement(this.props.children, {...this.state, handleChanges: this.handleChanges})}</main>
 			</div>
 		);
 	},

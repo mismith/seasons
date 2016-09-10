@@ -26,11 +26,11 @@ export default React.createClass({
 				secondaryText={game.$datetime.format('h:mma, ddd, MMM D, YYYY')}
 				leftAvatar={showDayAvatar ? <Avatar>{game.$datetime.format('D')}</Avatar> : null}
 				rightAvatar={<div style={{display: 'inline-flex', marginTop: 6}}>
-				{season.seats.map((seat, seatId) => 
-					<SeatAvatar key={seatId} size={30} user={game.seats && game.seats[seatId] !== undefined ? season.users[game.seats[seatId]] : undefined} sold={game.sold} />
+				{season.seats && season.seats.map((seat, seatId) => 
+					<SeatAvatar key={seatId} size={30} user={season.users && game.seats && game.seats[seatId] !== undefined ? season.users[game.seats[seatId]] : undefined} sold={game.sold} />
 				)}
 				</div>}
-				innerDivStyle={{paddingRight: 56 + 12 + 32 * (season.seats.length - 1)}}
+				innerDivStyle={{paddingRight: 56 + 12 + 32 * (season.seats ? season.seats.length - 1 : 0)}}
 				{...props}
 			/>
 		)
