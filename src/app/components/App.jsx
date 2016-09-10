@@ -190,13 +190,13 @@ export default React.createClass({
 					</List>
 				}
 
-					<List onTouchTap={this.handleDrawerClose} style={{marginTop: 'auto'}}>
+					{/*<List onTouchTap={this.handleDrawerClose} style={{marginTop: 'auto'}}>
 						<Subheader>Account</Subheader>
 						<ListItem
 							primaryText="Logout"
 							rightIcon={<PowerSettingsIcon />}
 						/>
-					</List>
+					</List>*/}
 				</Drawer>
 				<AppBar
 					title={this.getTitle()}
