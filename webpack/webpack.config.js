@@ -4,7 +4,7 @@ const Webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = (options) => {
-  const ExtractSASS = new ExtractTextPlugin(`/styles/${options.cssFileName}`);
+  const ExtractSASS = new ExtractTextPlugin(`styles/${options.cssFileName}`);
 
   const webpackConfig = {
     devtool: options.devtool,
@@ -15,7 +15,7 @@ module.exports = (options) => {
     ],
     output: {
       path: Path.join(__dirname, '../html'),
-      filename: `/scripts/${options.jsFileName}`,
+      filename: `scripts/${options.jsFileName}`,
     },
     resolve: {
       extensions: ['', '.js', '.jsx'],

@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 // routing
-import {Router, Route, IndexRoute, browserHistory} from 'react-router';
+import {Router, Route, IndexRoute, Redirect, browserHistory} from 'react-router';
 
 // material-ui
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
@@ -21,6 +21,7 @@ import './styles/bundle.scss';
 ReactDOM.render(
 	<MuiThemeProvider>
 		<Router history={browserHistory}>
+			<Redirect from="/" to="/season/-KRGF6NbHPrSyljL3m3r" />
 			<Route path="/" component={App}>
 				<IndexRoute component={Home} />
 				<Route path="season/:seasonId">
