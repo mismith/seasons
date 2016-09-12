@@ -1,6 +1,5 @@
 import React from 'react';
 
-import moment from 'moment';
 import getInitials from './helpers/getInitials';
 
 import Avatar from 'material-ui/Avatar';

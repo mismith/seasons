@@ -80,6 +80,11 @@ export const Game = React.createClass({
 					<TextField value={game.soldPrice || 0} onChange={e=>this.props.handleChanges('game', {soldPrice: e.currentTarget.value})} floatingLabelText="Sold Price" fullWidth={true} type="number" />
 				</div>
 			}
+
+				<Divider />
+				<div style={{paddingLeft: 16, paddingRight: 16, paddingBottom: 16}}>
+					<TextField value={this.props.game.notes || ''} onChange={e=>this.props.handleChanges('game', {notes: e.currentTarget.value})} floatingLabelText="Notes" multiLine={true} fullWidth={true} />
+				</div>
 			</List>
 		);
 	},

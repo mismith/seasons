@@ -104,7 +104,7 @@ export default React.createClass({
 			seasons = this.state.seasons;
 		fire.toArray(this.state.games).map(games => {
 			fire.toArray(games).filter(game => {
-				let dayDiff = moment(game.datetime).diff('2016-10-21', 'days');
+				let dayDiff = moment(game.datetime).diff(undefined, 'days');
 				if (dayDiff < 0) {
 					// game has passed
 					if(!game.seats && !game.sold) {

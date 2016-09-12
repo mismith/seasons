@@ -1,6 +1,6 @@
 import React from 'react';
 
-import moment from 'moment';
+import formatDate from './helpers/formatDate';
 
 import {ListItem} from 'material-ui/List';
 import Avatar from 'material-ui/Avatar';
@@ -18,12 +18,11 @@ export default React.createClass({
 
 	render() {
 		let {game, season, showDayAvatar, ...props} = this.props;
-		game.$datetime = game.$datetime || moment(game.datetime);
 
 		return (
 			<ListItem
-				primaryText={game.opponent}
-				secondaryText={game.$datetime.format('h:mma, ddd, MMM D, YYYY')}
+				primaryText={game.opponent + (game.notes ? ' 📝' : '')}
+				secondaryText={formatDate(game.datetime)}
 				leftAvatar={showDayAvatar ? <Avatar>{game.$datetime.format('D')}</Avatar> : null}
 				rightAvatar={<div style={{display: 'inline-flex', marginTop: 6}}>
 				{season.seats && season.seats.map((seat, seatId) => 
