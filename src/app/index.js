@@ -18,6 +18,9 @@ import {Game, GameInfo} from './components/Game';
 // styles
 import './styles/bundle.scss';
 
+// assets
+require('./images/touchicon.png');
+
 ReactDOM.render(
 	<MuiThemeProvider>
 		<Router history={browserHistory}>

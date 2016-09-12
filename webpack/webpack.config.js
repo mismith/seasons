@@ -1,7 +1,7 @@
-const Path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const Webpack = require('webpack');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const Path = require('path'),
+      Webpack = require('webpack'),
+      HtmlWebpackPlugin = require('html-webpack-plugin'),
+      ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = (options) => {
 	const ExtractSASS = new ExtractTextPlugin(`/styles/${options.cssFileName}`);
@@ -20,13 +20,9 @@ module.exports = (options) => {
 		},
 		module: {
 			loaders: [
-				{test: /\.jsx?$/i, exclude: /node_modules/i, include: Path.join(__dirname, '../src/app'), loader: 'babel'},
+				{test: /\.jsx?$/i, include: Path.join(__dirname, '../src/app'), loader: 'babel'},
 				{test: /\.css$/i, loader: 'style!css'},
-				{test: /\.eot(\?v=\d+\.\d+\.\d+)?$/i, loader: 'file'},
-				{test: /\.(woff|woff2)$/i, loader: 'url?prefix=font/&limit=5000'},
-				{test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/i, loader: 'url?limit=10000&mimetype=application/octet-stream'},
-				{test: /\.svg(\?v=\d+\.\d+\.\d+)?$/i, loader: 'url?limit=10000&mimetype=image/svg+xml'},
-				{test: /\.(png|gif|jpe?g)(\?v=\d+\.\d+\.\d+)?$/i, loader: 'url'},
+				{test: /\.(svg|png|gif|jpe?g)(\?v=.+?)?$/i, loader: 'file?name=images/[name].[ext]'},
 			],
 		},
 		plugins: [
