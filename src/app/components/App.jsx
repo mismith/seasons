@@ -18,6 +18,7 @@ import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import AddIcon from 'material-ui/svg-icons/content/add';
 import PowerSettingsIcon from 'material-ui/svg-icons/action/power-settings-new';
 
+import Loader from './helpers/Loader';
 import GameItem from './GameItem';
 
 export default React.createClass({
@@ -32,10 +33,16 @@ export default React.createClass({
 	getInitialState() {
 		return {
 			drawerOpen: false,
+
 			season:  {},
 			game:    {},
 			games:   {},
 			seasons: {},
+
+			seasonLoaded: false,
+			gameLoaded: false,
+			seasonsLoaded: false,
+			gamesLoaded: false,
 		};
 	},
 
@@ -43,6 +50,11 @@ export default React.createClass({
 	unbindPageData() {
 		if (this.seasonRef) fire.base.removeBinding(this.seasonRef);
 		if (this.gameRef) fire.base.removeBinding(this.gameRef);
+
+		this.setState({
+			seasonLoaded: false,
+			gameLoaded: false,
+		});
 	},
 	bindPageData(props = this.props) {
 		this.unbindPageData();
@@ -50,20 +62,24 @@ export default React.createClass({
 		this.seasonRef = props.params.seasonId && fire.base.bindToState('seasons/' + props.params.seasonId, {
 			context: this,
 			state: 'season',
+			then: () => this.setState({seasonLoaded: true}),
 		});
 		this.gameRef = props.params.gameId && fire.base.bindToState('seasons:games/' + props.params.seasonId + '/' + props.params.gameId, {
 			context: this,
 			state: 'game',
+			then: () => this.setState({gameLoaded: true}),
 		});
 	},
 	componentWillMount() {
 		this.seasonsRef = fire.base.bindToState('seasons', {
 			context: this,
 			state: 'seasons',
+			then: () => this.setState({seasonsLoaded: true}),
 		});
 		this.gamesRef = fire.base.bindToState('seasons:games', {
 			context: this,
 			state: 'games',
+			then: () => this.setState({gamesLoaded: true}),
 		});
 
 		this.bindPageData();
@@ -74,6 +90,11 @@ export default React.createClass({
 	componentWillUnmount() {
 		fire.base.removeBinding(this.seasonsRef);
 		fire.base.removeBinding(this.gamesRef);
+
+		this.setState({
+			seasonsLoaded: false,
+			gamesLoaded: false,
+		});
 
 		this.unbindPageData();
 	},
@@ -107,6 +128,15 @@ export default React.createClass({
 			});
 		});
 		return relevantGames;
+	},
+	isLoaded() {
+		if (this.props.params.gameId) {
+			return this.state.gameLoaded;
+		} else if (this.props.params.seasonId) {
+			return this.state.seasonLoaded;
+		} else {
+			return false;
+		}
 	},
 	getTitle() {
 		if (this.props.params.gameId) {
@@ -159,13 +189,13 @@ export default React.createClass({
 				>
 					<List onTouchTap={this.handleDrawerClose}>
 						<Subheader>Seasons</Subheader>
-					{fire.toArray(this.state.seasons).map(season => 
+					{this.state.seasonsLoaded ? fire.toArray(this.state.seasons).map(season => 
 						<ListItem
 						 	key={season.$id}
 							primaryText={season.name}
 							containerElement={<Link to={'/season/' + season.$id} />}
 						/>
-					)}
+					) : <Loader />}
 						{/*<ListItem
 							primaryText="Add new season"
 							rightIcon={<AddIcon />}
@@ -177,7 +207,7 @@ export default React.createClass({
 				{relevantGames.length > 0 && 
 					<List onTouchTap={this.handleDrawerClose}>
 						<Subheader>Games</Subheader>
-					{relevantGames.map((game, gameIndex) => 
+					{this.state.gamesLoaded ? relevantGames.map((game, gameIndex) => 
 						<GameItem
 							key={gameIndex}
 							game={game}
@@ -185,7 +215,7 @@ export default React.createClass({
 							showDayAvatar={false}
 							containerElement={<Link to={'/season/' + game.$season.$id + '/game/' + game.$id} />}
 						/>
-					)}
+					) : <Loader />}
 						<Divider />
 					</List>
 				}
@@ -219,7 +249,11 @@ export default React.createClass({
 					}
 					style={{position: 'fixed'}}
 				/>
-				<main style={{paddingTop: 64}}>{React.cloneElement(this.props.children, {...this.state, handleChanges: this.handleChanges})}</main>
+				<main style={{paddingTop: 64}}>{
+					this.isLoaded() ?
+						React.cloneElement(this.props.children, {...this.state, handleChanges: this.handleChanges}) :
+						<Loader />
+				}</main>
 			</div>
 		);
 	},
