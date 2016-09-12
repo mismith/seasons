@@ -22,7 +22,8 @@ module.exports = (options) => {
 			loaders: [
 				{test: /\.jsx?$/i, include: Path.join(__dirname, '../src/app'), loader: 'babel'},
 				{test: /\.css$/i, loader: 'style!css'},
-				{test: /\.(svg|png|gif|jpe?g)(\?v=.+?)?$/i, loader: 'file?name=images/[name].[ext]'},
+				{test: /\.(svg)(\?v=.+?)?$/i, loader: 'file?name=/images/[name].[ext]&mimetype=image/svg+xml'},
+				{test: /\.(png|gif|jpe?g)(\?v=.+?)?$/i, loader: 'file?name=/images/[name].[ext]'},
 			],
 		},
 		plugins: [
