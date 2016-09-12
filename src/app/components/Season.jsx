@@ -85,11 +85,34 @@ export const SeasonInfo = React.createClass({
 						key={seatId}
 						leftAvatar={<div><SeatAvatar /></div>}
 						rightIcon={<ChevronRightIcon />}
+						containerElement={<Link to={'/season/' + this.props.params.seasonId + '/edit/seat/' + seatId} />}
 					>{`Section ${seat.section}, Row ${seat.row}, Seat ${seat.seat}`}</ListItem>
 				)}
-					<Divider inset={true} />
-					<ListItem insetChildren={true} rightIcon={<AddIcon />}>Add new seat</ListItem>
+					{/*<Divider inset={true} />
+					<ListItem insetChildren={true} rightIcon={<AddIcon />}>Add new seat</ListItem>*/}
 				</List>
+			</div>
+		)
+	},
+});
+
+
+export const SeasonSeat = React.createClass({
+	getDefaultProps() {
+		return {
+			seat: {},
+			handleChanges: () => {},
+		};
+	},
+
+	render() {
+		return (
+			<div>
+				<div style={{paddingLeft: 16, paddingRight: 16, paddingBottom: 16}}>
+					<TextField value={this.props.seat.section || ''} onChange={e=>this.props.handleChanges('seat', {section: e.currentTarget.value})} floatingLabelText="Section" fullWidth={true} />
+					<TextField value={this.props.seat.row || ''} onChange={e=>this.props.handleChanges('seat', {row: e.currentTarget.value})} floatingLabelText="Row" fullWidth={true} />
+					<TextField value={this.props.seat.seat || ''} onChange={e=>this.props.handleChanges('seat', {seat: e.currentTarget.value})} floatingLabelText="Seat" fullWidth={true} />
+				</div>
 			</div>
 		)
 	},

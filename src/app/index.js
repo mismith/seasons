@@ -12,7 +12,7 @@ injectTapEventPlugin();
 // components
 import App from './components/App';
 import Home from './components/Home';
-import {Season, SeasonInfo} from './components/Season';
+import {Season, SeasonInfo, SeasonSeat} from './components/Season';
 import {Game, GameInfo} from './components/Game';
 
 // styles
@@ -29,7 +29,10 @@ ReactDOM.render(
 				<IndexRoute component={Home} />
 				<Route path="season/:seasonId">
 					<IndexRoute component={Season} />
-					<Route path="edit" component={SeasonInfo} />
+					<Route path="edit">
+						<IndexRoute component={SeasonInfo} />
+						<Route path="seat/:seatId" component={SeasonSeat} />
+					</Route>
 					<Route path="new" component={SeasonInfo} />
 					<Route path="game/:gameId">
 						<IndexRoute component={Game} />

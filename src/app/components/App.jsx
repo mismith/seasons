@@ -43,6 +43,7 @@ export default React.createClass({
 			gameLoaded: false,
 			seasonsLoaded: false,
 			gamesLoaded: false,
+			seatLoaded: false,
 		};
 	},
 
@@ -50,10 +51,12 @@ export default React.createClass({
 	unbindPageData() {
 		if (this.seasonRef) fire.base.removeBinding(this.seasonRef);
 		if (this.gameRef) fire.base.removeBinding(this.gameRef);
+		if (this.seatRef) fire.base.removeBinding(this.seatRef);
 
 		this.setState({
 			seasonLoaded: false,
 			gameLoaded: false,
+			seatLoaded: false,
 		});
 	},
 	bindPageData(props = this.props) {
@@ -68,6 +71,11 @@ export default React.createClass({
 			context: this,
 			state: 'game',
 			then: () => this.setState({gameLoaded: true}),
+		});
+		this.seatRef = props.params.seatId && fire.base.bindToState('seasons/' + props.params.seasonId + '/seats/' + props.params.seatId, {
+			context: this,
+			state: 'seat',
+			then: () => this.setState({seatLoaded: true}),
 		});
 	},
 	componentWillMount() {
@@ -174,6 +182,9 @@ export default React.createClass({
 				break;
 			case 'game':
 				fire.base.database().ref('seasons:games/' + this.props.params.seasonId + '/' + this.props.params.gameId).update(changes);
+				break;
+			case 'seat':
+				fire.base.database().ref('seasons/' + this.props.params.seasonId + '/seats/' + this.props.params.seatId).update(changes);
 				break;
 		}
 	},
