@@ -1,6 +1,6 @@
 {
   "rules": {
-    ".read": "1 === 1 || auth != null",
-    ".write": "1 === 1 || auth != null"
+    ".read": "auth != null",
+    ".write": "auth != null"
   }
 }
