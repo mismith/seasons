@@ -39,13 +39,13 @@ export default React.createClass({
 			games:   {},
 			seasons: {},
 
-			relevantGames: [],
-
 			seasonLoaded: false,
 			gameLoaded: false,
 			seasonsLoaded: false,
 			gamesLoaded: false,
 			seatLoaded: false,
+
+			relevantGames: [],
 		};
 	},
 
@@ -124,10 +124,12 @@ export default React.createClass({
 								relevantGames.push(game);
 							});
 						});
+
 						// pad with upcoming games, if under 3 games
 						while (relevantGames.length < 3 && upcomingGames.length) {
 							relevantGames.push(upcomingGames.shift());
 						}
+
 						this.setState({
 							relevantGames,
 							gamesLoaded: true,
@@ -160,7 +162,7 @@ export default React.createClass({
 		} else if (this.props.params.seasonId) {
 			return this.state.seasonLoaded;
 		} else {
-			return false;
+			return true;
 		}
 	},
 	getTitle() {
