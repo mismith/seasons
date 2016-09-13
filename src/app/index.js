@@ -19,6 +19,7 @@ import {Game, GameInfo} from './components/Game';
 import './styles/bundle.scss';
 
 // assets
+require('./images/logo.png');
 require('./images/touchicon.png');
 
 ReactDOM.render(
