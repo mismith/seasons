@@ -29,15 +29,14 @@ export const Game = React.createClass({
 	},
 	handleGameUserToggle(e, userId) {
 		if (userId === 'sold') {
-			let sold, soldPrice;
+			let sold;
 
 			if (e.currentTarget.checked) {
 				sold = true;
-				soldPrice = this.props.game.soldPrice || prompt('How much did they sell for?');
 			} else {
 				sold = false;
 			}
-			this.props.handleChanges('game', {sold, soldPrice: parseFloat(soldPrice) || null});
+			this.props.handleChanges('game', {sold});
 		} else {
 			let seats = [].concat(this.props.game.seats || []);
 
@@ -46,7 +45,7 @@ export const Game = React.createClass({
 			} else {
 				seats.splice(this.getUserSeatIndex(userId), 1);
 			}
-			this.props.handleChanges('game', {seats: seats});
+			this.props.handleChanges('game', {seats});
 		}
 	},
 
