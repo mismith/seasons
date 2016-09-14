@@ -1,7 +1,6 @@
 import React from 'react';
 
 import moment from 'moment';
-import fire from '../utils/firebase';
 
 import {List, ListItem} from 'material-ui/List';
 import Subheader from 'material-ui/Subheader';

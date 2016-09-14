@@ -9,6 +9,9 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin();
 
+// firebase
+import firebase from './utils/firebase';
+
 // components
 import App from './components/App';
 import Home from './components/Home';
@@ -25,10 +28,9 @@ require('./images/touchicon.png');
 ReactDOM.render(
 	<MuiThemeProvider>
 		<Router history={browserHistory}>
-			<Redirect from="/" to="/season/-KRGF6NbHPrSyljL3m3r" />
 			<Route path="/" component={App}>
 				<IndexRoute component={Home} />
-				<Route path="season/:seasonId">
+				<Route path="season/:seasonId" onEnter={firebase.requireAuth}>
 					<IndexRoute component={Season} />
 					<Route path="edit">
 						<IndexRoute component={SeasonInfo} />

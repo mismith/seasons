@@ -2,7 +2,7 @@ import React from 'react';
 import {Link, browserHistory} from 'react-router';
 
 import moment from 'moment';
-import fire from '../utils/firebase';
+import firebase from '../utils/firebase';
 
 import Drawer from 'material-ui/Drawer';
 import {List, ListItem} from 'material-ui/List';
@@ -14,12 +14,13 @@ import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
 import IconMenu from 'material-ui/IconMenu';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
+import FlatButton from 'material-ui/FlatButton';
 
 import AddIcon from 'material-ui/svg-icons/content/add';
 import PowerSettingsIcon from 'material-ui/svg-icons/action/power-settings-new';
 
-import Loader from './helpers/Loader';
 import GameItem from './GameItem';
+import Loader from './helpers/Loader';
 
 export default React.createClass({
 	getDefaultProps() {
@@ -34,16 +35,19 @@ export default React.createClass({
 		return {
 			drawerOpen: false,
 
+			me: null,
+
 			season:  {},
 			game:    {},
+			seat:    {},
 			games:   {},
 			seasons: {},
 
-			seasonLoaded: false,
-			gameLoaded: false,
+			seasonLoaded:  false,
+			gameLoaded:    false,
+			seatLoaded:    false,
 			seasonsLoaded: false,
-			gamesLoaded: false,
-			seatLoaded: false,
+			gamesLoaded:   false,
 
 			relevantGames: [],
 		};
@@ -51,51 +55,69 @@ export default React.createClass({
 
 
 	unbindPageData() {
-		if (this.seasonRef) fire.base.removeBinding(this.seasonRef);
-		if (this.gameRef) fire.base.removeBinding(this.gameRef);
-		if (this.seatRef) fire.base.removeBinding(this.seatRef);
+		if (this.seasonRef) firebase.removeBinding(this.seasonRef);
+		if (this.gameRef) firebase.removeBinding(this.gameRef);
+		if (this.seatRef) firebase.removeBinding(this.seatRef);
 
 		this.setState({
+			season: {},
+			game:   {},
+			seat:   {},
+			
 			seasonLoaded: false,
-			gameLoaded: false,
-			seatLoaded: false,
+			gameLoaded:   false,
+			seatLoaded:   false,
 		});
 	},
 	bindPageData(props = this.props) {
 		this.unbindPageData();
 
-		this.seasonRef = props.params.seasonId && fire.base.bindToState('seasons/' + props.params.seasonId, {
+		this.seasonRef = props.params.seasonId && firebase.bindToState('seasons/' + props.params.seasonId, {
 			context: this,
 			state: 'season',
 			then: () => this.setState({seasonLoaded: true}),
 		});
-		this.gameRef = props.params.gameId && fire.base.bindToState('seasons:games/' + props.params.seasonId + '/' + props.params.gameId, {
+		this.gameRef = props.params.gameId && firebase.bindToState('seasons:games/' + props.params.seasonId + '/' + props.params.gameId, {
 			context: this,
 			state: 'game',
 			then: () => this.setState({gameLoaded: true}),
 		});
-		this.seatRef = props.params.seatId && fire.base.bindToState('seasons/' + props.params.seasonId + '/seats/' + props.params.seatId, {
+		this.seatRef = props.params.seatId && firebase.bindToState('seasons/' + props.params.seasonId + '/seats/' + props.params.seatId, {
 			context: this,
 			state: 'seat',
 			then: () => this.setState({seatLoaded: true}),
 		});
 	},
-	componentWillMount() {
-		this.seasonsRef = fire.base.bindToState('seasons', {
+	unbindGlobalData() {
+		if (this.seasonsRef) firebase.removeBinding(this.seasonsRef);
+		if (this.gamesRef) firebase.removeBinding(this.gamesRef);
+
+		this.setState({
+			seasons: {},
+			games:   {},
+
+			seasonsLoaded: false,
+			gamesLoaded:   false,
+		});
+	},
+	bindGlobalData() {
+		this.unbindGlobalData();
+
+		this.seasonsRef = firebase.bindToState('seasons', {
 			context: this,
 			state: 'seasons',
 			then: () => {
 				this.setState({seasonsLoaded: true}),
 
-				this.gamesRef = fire.base.bindToState('seasons:games', {
+				this.gamesRef = firebase.bindToState('seasons:games', {
 					context: this,
 					state: 'games',
 					then: () => {
 						let relevantGames = [],
 							upcomingGames = [],
 							seasons = this.state.seasons;
-						fire.toArray(this.state.games).map(games => {
-							fire.toArray(games).filter(game => {
+						firebase.toArray(this.state.games).map(games => {
+							firebase.toArray(games).filter(game => {
 								// store for later
 								game.$season = seasons[games.$id];
 								game.$season.$id = games.$id;
@@ -138,21 +160,25 @@ export default React.createClass({
 				});
 			}
 		});
+	},
+	componentWillMount() {
+		firebase.auth().onAuthStateChanged(me => {
+			this.setState({me});
 
-		this.bindPageData();
+			if (me) {
+				this.bindGlobalData();
+				this.bindPageData();
+			} else {
+				this.unbindGlobalData();
+				this.unbindPageData();
+			}
+		});
 	},
 	componentWillReceiveProps(nextProps) {
 		this.bindPageData(nextProps);
 	},
 	componentWillUnmount() {
-		fire.base.removeBinding(this.seasonsRef);
-		fire.base.removeBinding(this.gamesRef);
-
-		this.setState({
-			seasonsLoaded: false,
-			gamesLoaded: false,
-		});
-
+		this.unbindGlobalData();
 		this.unbindPageData();
 	},
 
@@ -197,13 +223,13 @@ export default React.createClass({
 	handleChanges(name, changes) {
 		switch(name) {
 			case 'season':
-				fire.base.database().ref('seasons/' + this.props.params.seasonId).update(changes);
+				firebase.database().ref('seasons/' + this.props.params.seasonId).update(changes);
 				break;
 			case 'game':
-				fire.base.database().ref('seasons:games/' + this.props.params.seasonId + '/' + this.props.params.gameId).update(changes);
+				firebase.database().ref('seasons:games/' + this.props.params.seasonId + '/' + this.props.params.gameId).update(changes);
 				break;
 			case 'seat':
-				fire.base.database().ref('seasons/' + this.props.params.seasonId + '/seats/' + this.props.params.seatId).update(changes);
+				firebase.database().ref('seasons/' + this.props.params.seasonId + '/seats/' + this.props.params.seatId).update(changes);
 				break;
 		}
 	},
@@ -211,6 +237,7 @@ export default React.createClass({
 	render() {
 		return (
 			<div>
+			{this.state.me && 
 				<Drawer
 					docked={false}
 					open={this.state.drawerOpen}
@@ -218,7 +245,7 @@ export default React.createClass({
 				>
 					<List onTouchTap={this.handleDrawerClose}>
 						<Subheader>Seasons</Subheader>
-					{this.state.seasonsLoaded ? fire.toArray(this.state.seasons).map(season => 
+					{this.state.seasonsLoaded ? firebase.toArray(this.state.seasons).map(season => 
 						<ListItem
 						 	key={season.$id}
 							primaryText={season.name}
@@ -249,20 +276,23 @@ export default React.createClass({
 					</List>
 				}
 
-					{/*<List onTouchTap={this.handleDrawerClose} style={{marginTop: 'auto'}}>
+					<List onTouchTap={this.handleDrawerClose} style={{marginTop: 'auto'}}>
 						<Subheader>Account</Subheader>
 						<ListItem
 							primaryText="Logout"
 							rightIcon={<PowerSettingsIcon />}
+							onClick={firebase.logout}
 						/>
-					</List>*/}
+					</List>
 				</Drawer>
+			}
 				<AppBar
 					title={this.getTitle()}
+					showMenuIconButton={!!this.state.me}
 					onTitleTouchTap={e=>browserHistory.push(this.getParentUrl())}
 					onLeftIconButtonTouchTap={this.handleDrawerToggle}
 					iconElementRight={
-						this.props.params.seasonId &&
+						this.state.me ? this.props.params.seasonId &&
 						<IconMenu
 							iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
 							targetOrigin={{horizontal: 'right', vertical: 'top'}}
@@ -275,6 +305,7 @@ export default React.createClass({
 							<MenuItem containerElement={<Link to={'/season/' + this.props.params.seasonId + '/game/' + this.props.params.gameId + '/edit'} />}>Edit Details</MenuItem>
 						}
 						</IconMenu>
+						: <FlatButton label="Login" onClick={firebase.login} />
 					}
 					style={{position: 'fixed'}}
 				/>

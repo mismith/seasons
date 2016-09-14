@@ -2,7 +2,7 @@ import React from 'react';
 import {Link} from 'react-router';
 
 import moment from 'moment';
-import fire from '../utils/firebase';
+import firebase from '../utils/firebase';
 
 import {Tabs, Tab} from 'material-ui/Tabs';
 import {List, ListItem} from 'material-ui/List';
@@ -28,7 +28,7 @@ export const Season = React.createClass({
 	groupGamesByMonth() {
 		let gamesByMonth = [],
 			previousMonthId;
-		fire.toArray(this.props.games[this.props.params.seasonId]).map(game => {
+		firebase.toArray(this.props.games[this.props.params.seasonId]).map(game => {
 			game.$datetime = moment(game.datetime);
 
 			let monthId = game.$datetime.format('YYYY-MM');
