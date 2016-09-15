@@ -29,18 +29,18 @@ ReactDOM.render(
 	<MuiThemeProvider>
 		<Router history={browserHistory}>
 			<Route path="/" component={App}>
-				<IndexRoute component={Home} />
+				<IndexRoute component={Home} name="home" />
 				<Route path="season/:seasonId" onEnter={firebase.requireAuth}>
-					<IndexRoute component={Season} />
+					<IndexRoute component={Season} name="season" />
 					<Route path="edit">
-						<IndexRoute component={SeasonInfo} />
-						<Route path="seat/:seatId" component={SeasonSeat} />
+						<IndexRoute component={SeasonInfo} name="season.edit" />
+						<Route path="seat/:seatId" component={SeasonSeat} name="season.seat" />
 					</Route>
-					<Route path="new" component={SeasonInfo} />
+					<Route path="new" name="season.new" component={SeasonInfo} />
 					<Route path="game/:gameId">
-						<IndexRoute component={Game} />
-						<Route path="edit" component={GameInfo} />
-						<Route path="new" component={GameInfo} />
+						<IndexRoute component={Game} name="game" />
+						<Route path="edit" component={GameInfo} name="game.edit" />
+						<Route path="new" component={GameInfo} name="game.new" />
 					</Route>
 				</Route>
 			</Route>

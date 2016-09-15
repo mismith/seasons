@@ -18,6 +18,7 @@ import FlatButton from 'material-ui/FlatButton';
 
 import AddIcon from 'material-ui/svg-icons/content/add';
 import PowerSettingsIcon from 'material-ui/svg-icons/action/power-settings-new';
+import DoneIcon from 'material-ui/svg-icons/action/done';
 
 import GameItem from './GameItem';
 import Loader from './helpers/Loader';
@@ -192,13 +193,12 @@ export default React.createClass({
 		}
 	},
 	getTitle() {
-		if (this.props.params.gameId) {
-			return this.state.game.opponent;
-		} else if (this.props.params.seasonId) {
+		if (this.props.params.gameId && this.state.gameLoaded) {
+			return <span>{this.state.game.opponent} <small>on</small> {moment(this.state.game.datetime).format('MMM d')}</span>
+		} else if (this.props.params.seasonId && this.state.seasonLoaded) {
 			return this.state.season.name;
-		} else {
-			return '';
 		}
+		return '';
 	},
 	getParentUrl() {
 		let path = '';
@@ -212,6 +212,49 @@ export default React.createClass({
 			}
 		}
 		return path;
+	},
+	getRightButton() {
+		if (this.state.me) {
+			if (this.props.routes || this.props.routes.length) {
+				let name = this.props.routes[this.props.routes.length - 1].name;
+				if (name.match(/seat|edit$/)) {
+					return (
+						<IconButton onClick={e=>browserHistory.push(this.getParentUrl())}>
+							<DoneIcon />
+						</IconButton>
+					);
+				} else {
+					switch (name) {
+						case 'season':
+							return (
+								<IconMenu
+									iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
+									targetOrigin={{horizontal: 'right', vertical: 'top'}}
+									anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+								>
+									<MenuItem containerElement={<Link to={'/season/' + this.props.params.seasonId + '/edit'} />}>Edit Details</MenuItem>
+								</IconMenu>
+							);
+							break;
+						case 'game':
+							return (
+								<IconMenu
+									iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
+									targetOrigin={{horizontal: 'right', vertical: 'top'}}
+									anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+								>
+									<MenuItem containerElement={<Link to={'/season/' + this.props.params.seasonId + '/game/' + this.props.params.gameId + '/edit'} />}>Edit Details</MenuItem>
+								</IconMenu>
+							);
+					}
+				}
+			}
+		} else {
+			return (
+				<FlatButton label="Login" onClick={firebase.login} />
+			);
+		}
+		return;
 	},
 
 	handleDrawerToggle() {
@@ -291,22 +334,7 @@ export default React.createClass({
 					showMenuIconButton={!!this.state.me}
 					onTitleTouchTap={e=>browserHistory.push(this.getParentUrl())}
 					onLeftIconButtonTouchTap={this.handleDrawerToggle}
-					iconElementRight={
-						this.state.me ? this.props.params.seasonId &&
-						<IconMenu
-							iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
-							targetOrigin={{horizontal: 'right', vertical: 'top'}}
-							anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-						>
-						{this.props.params.seasonId && !this.props.params.gameId && 
-							<MenuItem containerElement={<Link to={'/season/' + this.props.params.seasonId + '/edit'} />}>Edit Details</MenuItem>
-						}
-						{this.props.params.seasonId && this.props.params.gameId && 
-							<MenuItem containerElement={<Link to={'/season/' + this.props.params.seasonId + '/game/' + this.props.params.gameId + '/edit'} />}>Edit Details</MenuItem>
-						}
-						</IconMenu>
-						: <FlatButton label="Login" onClick={firebase.login} />
-					}
+					iconElementRight={this.getRightButton()}
 					style={{position: 'fixed'}}
 				/>
 				<main style={{paddingTop: 64}}>{
