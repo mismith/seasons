@@ -12,7 +12,7 @@ export default {
 
 	// helpers
 	login() {
-		return base.auth().signInWithPopup(new base.auth.GoogleAuthProvider());
+		return base.auth().signInWithRedirect(new base.auth.GoogleAuthProvider());
 	},
 	logout() {
 		return base.auth().signOut()
