@@ -17,7 +17,6 @@ import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 
 import AddIcon from 'material-ui/svg-icons/content/add';
 import PowerSettingsIcon from 'material-ui/svg-icons/action/power-settings-new';
-import DoneIcon from 'material-ui/svg-icons/action/done';
 
 import GameItem from './GameItem';
 import Loader from './helpers/Loader';
@@ -218,13 +217,7 @@ export default React.createClass({
 		if (this.state.me) {
 			if (this.props.routes || this.props.routes.length) {
 				let name = this.props.routes[this.props.routes.length - 1].name;
-				if (name.match(/seat|edit$/)) {
-					return (
-						<IconButton onClick={e=>browserHistory.push(this.getParentUrl())}>
-							<DoneIcon />
-						</IconButton>
-					);
-				} else {
+				if (!name.match(/seat|edit$/)) {
 					switch (name) {
 						case 'season':
 							return (
