@@ -7,6 +7,7 @@ import GoogleGIcon from '../images/googleg.svg';
 import LogoImg from '../images/logo.svg';
 
 import RaisedButton from 'material-ui/RaisedButton';
+import Loader from './helpers/Loader';
 
 export const Home = React.createClass({
 	componentWillMount() {
@@ -25,13 +26,17 @@ export const Home = React.createClass({
 					<h3>Track your season tickets</h3>
 					<br />
 				</div>
-			{!this.props.me && 
+			{!this.props.me &&
 				<div style={{textAlign: 'center'}}>
+				{this.props.authLoaded ?
 					<RaisedButton
 						label="Login with Google"
 						icon={<img src={GoogleGIcon} style={{marginTop: -2}} />}
 						onClick={firebase.login}
 					/>
+				:
+					<Loader />
+				}
 				</div>
 			}
 			</div>

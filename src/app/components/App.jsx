@@ -49,6 +49,8 @@ export default React.createClass({
 			seasonsLoaded: false,
 			gamesLoaded:   false,
 
+			authLoaded: false,
+
 			relevantGames: [],
 		};
 	},
@@ -163,7 +165,7 @@ export default React.createClass({
 	},
 	componentWillMount() {
 		firebase.auth().onAuthStateChanged(me => {
-			this.setState({me});
+			this.setState({me, authLoaded: true});
 
 			if (me) {
 				this.bindGlobalData();
@@ -336,8 +338,9 @@ export default React.createClass({
 			}
 				<main id="main" style={{paddingTop: this.state.me ? 64 : 0}}>{
 					this.isLoaded() ?
-						React.cloneElement(this.props.children, {...this.state, handleChanges: this.handleChanges}) :
-						<Loader />
+						React.cloneElement(this.props.children, {...this.state, handleChanges: this.handleChanges})
+					:
+						<Loader style={{padding: 40}} />
 				}</main>
 			</div>
 		);
