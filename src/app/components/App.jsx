@@ -8,15 +8,14 @@ import Drawer from 'material-ui/Drawer';
 import {List, ListItem} from 'material-ui/List';
 import Subheader from 'material-ui/Subheader';
 import Divider from 'material-ui/Divider';
-
-import AppBar from 'material-ui/AppBar';
-import MenuItem from 'material-ui/MenuItem';
-import IconButton from 'material-ui/IconButton';
-import IconMenu from 'material-ui/IconMenu';
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
-
 import AddIcon from 'material-ui/svg-icons/content/add';
 import PowerSettingsIcon from 'material-ui/svg-icons/action/power-settings-new';
+
+import AppBar from 'material-ui/AppBar';
+import IconButton from 'material-ui/IconButton';
+import IconMenu from 'material-ui/IconMenu';
+import MenuItem from 'material-ui/MenuItem';
+import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 
 import GameItem from './GameItem';
 import Loader from './helpers/Loader';
@@ -164,8 +163,6 @@ export default React.createClass({
 	},
 	componentWillMount() {
 		firebase.auth().onAuthStateChanged(me => {
-			this.setState({me, authLoaded: true});
-
 			if (me) {
 				this.bindGlobalData();
 				this.bindPageData();
@@ -173,6 +170,11 @@ export default React.createClass({
 				this.unbindGlobalData();
 				this.unbindPageData();
 			}
+
+			this.setState({
+				me,
+				authLoaded: true,
+			});
 		});
 	},
 	componentWillReceiveProps(nextProps) {

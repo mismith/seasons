@@ -13,7 +13,7 @@ export const Home = React.createClass({
 	componentWillMount() {
 		firebase.auth().onAuthStateChanged(me => {
 			if (me) {
-				browserHistory.replace('/season/-KRGF6NbHPrSyljL3m3r');
+				browserHistory.replace('/season/-KRGF6NbHPrSyljL3m3r'); // @TODO: get dynamic season id
 			}
 		});
 	},
