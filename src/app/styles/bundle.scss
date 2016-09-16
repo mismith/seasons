@@ -14,6 +14,16 @@ body {
 	font-family: Roboto;
 }
 
+html,
+body,
+#app,
+#viewport,
+#main {
+	display: flex;
+	flex-direction: column;
+	flex-grow: 1;
+}
+
 @keyframes spectrum {
 	0% { fill: $blue; }
 	25% { fill: $yellow; }

@@ -14,7 +14,6 @@ import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
 import IconMenu from 'material-ui/IconMenu';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
-import FlatButton from 'material-ui/FlatButton';
 
 import AddIcon from 'material-ui/svg-icons/content/add';
 import PowerSettingsIcon from 'material-ui/svg-icons/action/power-settings-new';
@@ -249,10 +248,6 @@ export default React.createClass({
 					}
 				}
 			}
-		} else {
-			return (
-				<FlatButton label="Login" onClick={firebase.login} />
-			);
 		}
 		return;
 	},
@@ -279,7 +274,7 @@ export default React.createClass({
 
 	render() {
 		return (
-			<div>
+			<div id="viewport">
 			{this.state.me && 
 				<Drawer
 					docked={false}
@@ -329,6 +324,7 @@ export default React.createClass({
 					</List>
 				</Drawer>
 			}
+			{this.state.me &&
 				<AppBar
 					title={this.getTitle()}
 					showMenuIconButton={!!this.state.me}
@@ -337,7 +333,8 @@ export default React.createClass({
 					iconElementRight={this.getRightButton()}
 					style={{position: 'fixed'}}
 				/>
-				<main style={{paddingTop: 64}}>{
+			}
+				<main id="main" style={{paddingTop: this.state.me ? 64 : 0}}>{
 					this.isLoaded() ?
 						React.cloneElement(this.props.children, {...this.state, handleChanges: this.handleChanges}) :
 						<Loader />
