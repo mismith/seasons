@@ -1,4 +1,5 @@
 import React from 'react';
+import {browserHistory} from 'react-router';
 
 import firebase from '../utils/firebase';
 
@@ -7,7 +8,14 @@ import LogoImg from '../images/logo.svg';
 
 import RaisedButton from 'material-ui/RaisedButton';
 
-export default React.createClass({
+export const Home = React.createClass({
+	componentWillMount() {
+		firebase.auth().onAuthStateChanged(me => {
+			if (me) {
+				browserHistory.replace('/season/-KRGF6NbHPrSyljL3m3r');
+			}
+		});
+	},
 	render() {
 		return (
 			<div style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-around', flexGrow: 1}}>

@@ -14,7 +14,7 @@ import firebase from './utils/firebase';
 
 // components
 import App from './components/App';
-import Home from './components/Home';
+import {Home} from './components/Home';
 import {Season, SeasonInfo, SeasonSeat} from './components/Season';
 import {Game, GameInfo} from './components/Game';
 
