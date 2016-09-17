@@ -1,12 +1,12 @@
 import React from 'react';
 
-import LoadingIcon from '../../images/loading.svg';
+import LoadingImg from '../../images/loading.gif';
 
 export default allProps => {
 	let {height, style, ...props} = allProps;
 	return (
 		<div style={{textAlign: 'center', ...style}} {...props}>
-			<img src={LoadingIcon} height={height || 36} />
+			<img src={LoadingImg} height={height || 36} />
 		</div>
 	);
 }
