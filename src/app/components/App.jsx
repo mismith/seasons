@@ -162,7 +162,7 @@ export default React.createClass({
 		});
 	},
 	componentWillMount() {
-		firebase.auth().onAuthStateChanged(me => {
+		this.authUnbind = firebase.auth().onAuthStateChanged(me => {
 			if (me) {
 				this.bindGlobalData();
 				this.bindPageData();
@@ -181,6 +181,7 @@ export default React.createClass({
 		this.bindPageData(nextProps);
 	},
 	componentWillUnmount() {
+		if (this.authUnbind) this.authUnbind();
 		this.unbindGlobalData();
 		this.unbindPageData();
 	},
