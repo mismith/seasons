@@ -11,7 +11,7 @@ body {
 	margin: 0;
 }
 body {
-	font-family: Roboto;
+	font-family: Roboto, sans-serif;
 }
 
 html,
@@ -22,14 +22,4 @@ body,
 	display: flex;
 	flex-direction: column;
 	flex-grow: 1;
-}
-
-@keyframes spectrum {
-	0%, 5%, 95%, 100% { fill: $blue; }
-	20%, 30% { fill: $yellow; }
-	45%, 55% { fill: $green; }
-	70%, 80% { fill: $red; }
-}
-.loader {
-	animation: spectrum 2s infinite;
 }
