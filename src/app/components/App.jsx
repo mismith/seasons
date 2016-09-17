@@ -113,49 +113,7 @@ export default React.createClass({
 					context: this,
 					state: 'games',
 					then: () => {
-						let relevantGames = [],
-							upcomingGames = [],
-							seasons = this.state.seasons;
-						firebase.toArray(this.state.games).map(games => {
-							firebase.toArray(games).filter(game => {
-								// store for later
-								game.$season = seasons[games.$id];
-								game.$season.$id = games.$id;
-
-								let dayDiff = -1 * moment().diff(game.datetime, 'days');
-								if (dayDiff < 0) {
-									// game has passed
-									if(!game.seats && !game.sold) {
-										// we don't know if sold or attended yet
-										return true;
-									} else if (dayDiff > -3) {
-										// game was in the past 3 days
-										return true;
-									}
-								} else {
-									// game is upcoming
-									upcomingGames.push(game);
-
-									// game is upcoming soon
-									if (dayDiff < 3) {
-										// game is in the next 3 days
-										return true;
-									}
-								}
-							}).map(game => {
-								relevantGames.push(game);
-							});
-						});
-
-						// pad with upcoming games, if under 3 games
-						while (relevantGames.length < 3 && upcomingGames.length) {
-							relevantGames.push(upcomingGames.shift());
-						}
-
-						this.setState({
-							relevantGames,
-							gamesLoaded: true,
-						});
+						this.setState({gamesLoaded: true});
 					},
 				});
 			}
@@ -249,6 +207,48 @@ export default React.createClass({
 		}
 		return;
 	},
+	getRelevantGames() {
+		let relevantGames = [],
+			upcomingGames = [],
+			seasons = this.state.seasons;
+		firebase.toArray(this.state.games).map(games => {
+			firebase.toArray(games).filter(game => {
+				// store for later
+				game.$season = seasons[games.$id];
+				game.$season.$id = games.$id;
+
+				let dayDiff = -1 * moment().diff(game.datetime, 'days');
+				if (dayDiff < 0) {
+					// game has passed
+					if(!game.seats && !game.sold) {
+						// we don't know if sold or attended yet
+						return true;
+					} else if (dayDiff > -3) {
+						// game was in the past 3 days
+						return true;
+					}
+				} else {
+					// game is upcoming
+					upcomingGames.push(game);
+
+					// game is upcoming soon
+					if (dayDiff < 3) {
+						// game is in the next 3 days
+						return true;
+					}
+				}
+			}).map(game => {
+				relevantGames.push(game);
+			});
+		});
+
+		// pad with upcoming games, if under 3 games
+		while (relevantGames.length < 3 && upcomingGames.length) {
+			relevantGames.push(upcomingGames.shift());
+		}
+
+		return relevantGames;
+	},
 
 	handleDrawerToggle() {
 		this.setState({drawerOpen: !this.state.drawerOpen});
@@ -271,6 +271,8 @@ export default React.createClass({
 	},
 
 	render() {
+		let relevantGames = this.getRelevantGames();
+
 		return (
 			<div id="viewport">
 			{this.state.me && 
@@ -296,10 +298,10 @@ export default React.createClass({
 						<Divider />
 					</List>
 
-				{this.state.relevantGames.length > 0 && 
+				{relevantGames.length > 0 && 
 					<List onTouchTap={this.handleDrawerClose}>
 						<Subheader>Games</Subheader>
-					{this.state.gamesLoaded ? this.state.relevantGames.map((game, gameIndex) => 
+					{this.state.gamesLoaded ? relevantGames.map((game, gameIndex) => 
 						<GameItem
 							key={gameIndex}
 							game={game}
