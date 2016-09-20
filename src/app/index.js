@@ -25,6 +25,16 @@ import './styles/bundle.scss';
 require('./images/logo.png');
 require('./images/touchicon.png');
 
+// reload at last page on homescreen apps
+if (('standalone' in navigator) && navigator['standalone']) {
+	const lastPath = localStorage.getItem('lastPath');
+	if (lastPath && lastPath !== location.pathname) window.location = lastPath;
+
+	browserHistory.listen(function(e) {
+		localStorage.setItem('lastPath', e.pathname);
+	});
+}
+
 ReactDOM.render(
 	<MuiThemeProvider>
 		<Router history={browserHistory}>
