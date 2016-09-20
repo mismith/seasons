@@ -1,6 +1,6 @@
-import Rebase from 're-base';
+const firebase = require('firebase');
 
-const base = Rebase.createClass({
+firebase.initializeApp({
 	apiKey: "AIzaSyB9ZedTL4kWLogLr0IT5FandZJGmDHCjT8",
 	authDomain: "seasons-d6de7.firebaseapp.com",
 	databaseURL: "https://seasons-d6de7.firebaseio.com",
@@ -8,26 +8,37 @@ const base = Rebase.createClass({
 	messagingSenderId: "652680972740",
 });
 export default {
-	...base,
+	...firebase,
 
 	// helpers
 	login() {
-		return base.auth().signInWithRedirect(new base.auth.GoogleAuthProvider());
+		return firebase.auth().signInWithRedirect(new firebase.auth.GoogleAuthProvider());
 	},
 	logout() {
-		return base.auth().signOut()
-			.then(() => location.pathname = '/'); // @HACK: why needed?
+		return firebase.auth().signOut()
+			//.then(() => location.pathname = '/'); // @HACK: why needed?
 	},
 
 	requireAuth(nextState, replace, callback) {
-		base.auth().onAuthStateChanged(me => {
+		firebase.auth().onAuthStateChanged(me => {
 			if (!me) {
-				replace({
-					path: '/',
-					state: {nextPath: nextState.location.pathname},
-				});
+				replace('/');
 			}
 			callback();
+		});
+	},
+
+	sync(context, name, ...path) {
+		const ref = firebase.database().ref(path.join('/'));
+		context.bindAsObject(ref, name);
+		ref.once('value', () => context.setState({[name + 'Loaded']: true}));
+	},
+	unsync(context, ...names) {
+		names.forEach(name => {
+			if (context.firebaseRefs[name]) {
+				context.unbind(name);
+				context.setState({name: {}, [name + 'Loaded']: false});
+			}
 		});
 	},
 

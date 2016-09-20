@@ -3,6 +3,7 @@ import {Link, browserHistory} from 'react-router';
 
 import moment from 'moment';
 import firebase from '../utils/firebase';
+import ReactFireMixin from 'reactfire';
 
 import Drawer from 'material-ui/Drawer';
 import {List, ListItem} from 'material-ui/List';
@@ -21,6 +22,7 @@ import GameItem from './GameItem';
 import Loader from './helpers/Loader';
 
 export default React.createClass({
+	mixins: [ReactFireMixin],
 	getDefaultProps() {
 		return {
 			params: {
@@ -55,72 +57,33 @@ export default React.createClass({
 
 
 	unbindPageData() {
-		if (this.seasonRef) firebase.removeBinding(this.seasonRef);
-		if (this.gameRef) firebase.removeBinding(this.gameRef);
-		if (this.seatRef) firebase.removeBinding(this.seatRef);
-
-		this.setState({
-			season: {},
-			game:   {},
-			seat:   {},
-			
-			seasonLoaded: false,
-			gameLoaded:   false,
-			seatLoaded:   false,
-		});
+		firebase.unsync(this, 'season', 'game', 'seat');
 	},
 	bindPageData(props = this.props) {
 		this.unbindPageData();
 
-		this.seasonRef = props.params.seasonId && firebase.bindToState('seasons/' + props.params.seasonId, {
-			context: this,
-			state: 'season',
-			then: () => this.setState({seasonLoaded: true}),
-		});
-		this.gameRef = props.params.gameId && firebase.bindToState('seasons:games/' + props.params.seasonId + '/' + props.params.gameId, {
-			context: this,
-			state: 'game',
-			then: () => this.setState({gameLoaded: true}),
-		});
-		this.seatRef = props.params.seatId && firebase.bindToState('seasons/' + props.params.seasonId + '/seats/' + props.params.seatId, {
-			context: this,
-			state: 'seat',
-			then: () => this.setState({seatLoaded: true}),
-		});
+		if (props.params.seasonId) {
+			firebase.sync(this, 'season', 'seasons/' + props.params.seasonId)
+
+			if (props.params.gameId) {
+				firebase.sync(this, 'game', 'seasons:games/' + props.params.seasonId + '/' + props.params.gameId);
+			}
+			if (props.params.seatId ) {
+				firebase.sync(this, 'seat', 'seasons/' + props.params.seasonId + '/seats/' + props.params.seatId);
+			}
+		}
 	},
 	unbindGlobalData() {
-		if (this.seasonsRef) firebase.removeBinding(this.seasonsRef);
-		if (this.gamesRef) firebase.removeBinding(this.gamesRef);
-
-		this.setState({
-			seasons: {},
-			games:   {},
-
-			seasonsLoaded: false,
-			gamesLoaded:   false,
-		});
+		firebase.unsync(this, 'seasons', 'games');
 	},
 	bindGlobalData() {
 		this.unbindGlobalData();
 
-		this.seasonsRef = firebase.bindToState('seasons', {
-			context: this,
-			state: 'seasons',
-			then: () => {
-				this.setState({seasonsLoaded: true}),
-
-				this.gamesRef = firebase.bindToState('seasons:games', {
-					context: this,
-					state: 'games',
-					then: () => {
-						this.setState({gamesLoaded: true});
-					},
-				});
-			}
-		});
+		firebase.sync(this, 'seasons', 'seasons');
+		firebase.sync(this, 'games', 'seasons:games');
 	},
 	componentWillMount() {
-		this.authUnbind = firebase.auth().onAuthStateChanged(me => {
+		firebase.auth().onAuthStateChanged(me => {
 			if (me) {
 				this.bindGlobalData();
 				this.bindPageData();
@@ -130,7 +93,7 @@ export default React.createClass({
 			}
 
 			this.setState({
-				me,
+				me, // @TODO: why is this not setting to null on signOut?
 				authLoaded: true,
 			});
 		});
@@ -139,7 +102,6 @@ export default React.createClass({
 		this.bindPageData(nextProps);
 	},
 	componentWillUnmount() {
-		if (this.authUnbind) this.authUnbind();
 		this.unbindGlobalData();
 		this.unbindPageData();
 	},
@@ -211,40 +173,43 @@ export default React.createClass({
 		let relevantGames = [],
 			upcomingGames = [],
 			seasons = this.state.seasons;
-		firebase.toArray(this.state.games).map(games => {
-			firebase.toArray(games).filter(game => {
-				// store for later
-				game.$season = seasons[games.$id];
-				game.$season.$id = games.$id;
 
-				let dayDiff = -1 * moment().diff(game.datetime, 'days');
-				if (dayDiff < 0) {
-					// game has passed
-					if(!game.seats && !game.sold) {
-						// we don't know if sold or attended yet
-						return true;
-					} else if (dayDiff > -3) {
-						// game was in the past 3 days
-						return true;
-					}
-				} else {
-					// game is upcoming
-					upcomingGames.push(game);
+		if (seasons) {
+			firebase.toArray(this.state.games).map(games => {
+				firebase.toArray(games).filter(game => {
+					// store for later
+					game.$season = seasons[games.$id];
+					game.$season.$id = games.$id;
 
-					// game is upcoming soon
-					if (dayDiff < 3) {
-						// game is in the next 3 days
-						return true;
+					let dayDiff = -1 * moment().diff(game.datetime, 'days');
+					if (dayDiff < 0) {
+						// game has passed
+						if(!game.seats && !game.sold) {
+							// we don't know if sold or attended yet
+							return true;
+						} else if (dayDiff > -3) {
+							// game was in the past 3 days
+							return true;
+						}
+					} else {
+						// game is upcoming
+						upcomingGames.push(game);
+
+						// game is upcoming soon
+						if (dayDiff < 3) {
+							// game is in the next 3 days
+							return true;
+						}
 					}
-				}
-			}).map(game => {
-				relevantGames.push(game);
+				}).map(game => {
+					relevantGames.push(game);
+				});
 			});
-		});
 
-		// pad with upcoming games, if under 3 games
-		while (relevantGames.length < 3 && upcomingGames.length) {
-			relevantGames.push(upcomingGames.shift());
+			// pad with upcoming games, if under 3 games
+			while (relevantGames.length < 3 && upcomingGames.length) {
+				relevantGames.push(upcomingGames.shift());
+			}
 		}
 
 		return relevantGames;
