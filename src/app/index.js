@@ -36,11 +36,11 @@ ReactDOM.render(
 						<IndexRoute component={SeasonInfo} name="season.edit" />
 						<Route path="seat/:seatId" component={SeasonSeat} name="season.seat" />
 					</Route>
-					<Route path="new" name="season.new" component={SeasonInfo} />
 					<Route path="game/:gameId">
 						<IndexRoute component={Game} name="game" />
-						<Route path="edit" component={GameInfo} name="game.edit" />
-						<Route path="new" component={GameInfo} name="game.new" />
+						<Route path="edit">
+							<IndexRoute component={GameInfo} name="game.edit" />
+						</Route>
 					</Route>
 				</Route>
 			</Route>
