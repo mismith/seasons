@@ -286,7 +286,7 @@ export default React.createClass({
 						<ListItem
 							primaryText="Logout"
 							rightIcon={<PowerSettingsIcon />}
-							onClick={firebase.logout}
+							onTouchTap={firebase.logout}
 						/>
 					</List>
 				</Drawer>

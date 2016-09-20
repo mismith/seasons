@@ -25,7 +25,7 @@ export const Home = React.createClass({
 					<RaisedButton
 						label="Login with Google"
 						icon={<img src={GoogleGIcon} style={{marginTop: -2}} />}
-						onClick={firebase.login}
+						onTouchTap={firebase.login}
 					/>
 				:
 					<Loader />
