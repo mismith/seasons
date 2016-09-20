@@ -28,7 +28,8 @@ require('./images/touchicon.png');
 // reload at last page on homescreen apps
 if (('standalone' in navigator) && navigator['standalone']) {
 	const lastPath = localStorage.getItem('lastPath');
-	if (lastPath && lastPath !== location.pathname) window.location = lastPath;
+	//console.log(lastPath, location.pathname);
+	if (lastPath && lastPath !== location.pathname) browserHistory.push(lastPath);
 
 	browserHistory.listen(function(e) {
 		localStorage.setItem('lastPath', e.pathname);
