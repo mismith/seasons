@@ -117,7 +117,7 @@ export default React.createClass({
 	},
 	getTitle() {
 		if (this.props.params.gameId && this.state.gameLoaded) {
-			return <span>{this.state.game.opponent} <small>on</small> {moment(this.state.game.datetime).format('MMM d')}</span>
+			return <span>{this.state.game.opponent} <small>on</small> {moment(this.state.game.datetime).format('MMM D')}</span>
 		} else if (this.props.params.seasonId && this.state.seasonLoaded) {
 			return this.state.season.name;
 		}

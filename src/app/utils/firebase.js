@@ -16,7 +16,7 @@ export default {
 	},
 	logout() {
 		return firebase.auth().signOut()
-			//.then(() => location.pathname = '/'); // @HACK: why needed?
+			.then(() => location.pathname = '/'); // @HACK/@TODO: why needed?
 	},
 
 	requireAuth(nextState, replace, callback) {
