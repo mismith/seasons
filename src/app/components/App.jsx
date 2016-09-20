@@ -15,6 +15,7 @@ import PowerSettingsIcon from 'material-ui/svg-icons/action/power-settings-new';
 import AppBar from 'material-ui/AppBar';
 import IconButton from 'material-ui/IconButton';
 import InfoIcon from 'material-ui/svg-icons/action/info-outline';
+import DeleteIcon from 'material-ui/svg-icons/action/delete';
 
 import GameItem from './GameItem';
 import Loader from './helpers/Loader';
@@ -142,26 +143,37 @@ export default React.createClass({
 		if (this.state.me) {
 			if (this.props.routes || this.props.routes.length) {
 				let name = this.props.routes[this.props.routes.length - 1].name;
-				if (!name.match(/seat|edit$/)) {
-					switch (name) {
-						case 'season':
-							return (
-								<IconButton
-									containerElement={<Link to={'/season/' + this.props.params.seasonId + '/edit'} />}
-								>
-									<InfoIcon />
-								</IconButton>
-							);
-							break;
-						case 'game':
-							return (
-								<IconButton
-									containerElement={<Link to={'/season/' + this.props.params.seasonId + '/game/' + this.props.params.gameId + '/edit'} />}
-								>
-									<InfoIcon />
-								</IconButton>
-							);
-					}
+				switch (name) {
+					case 'season':
+						return (
+							<IconButton containerElement={<Link to={'/season/' + this.props.params.seasonId + '/edit'} />}>
+								<InfoIcon />
+							</IconButton>
+						);
+						break;
+					case 'game':
+						return (
+							<IconButton containerElement={<Link to={'/season/' + this.props.params.seasonId + '/game/' + this.props.params.gameId + '/edit'} />}>
+								<InfoIcon />
+							</IconButton>
+						);
+					//case 'season.edit':
+					case 'season.seat':
+					case 'season.user':
+					//case 'game.edit':
+						let modelName = name.split('.')[1];
+						const check = e => {
+							if (e.shiftKey || confirm('Are you sure?')) {
+								this.handleChanges(modelName, null);
+								browserHistory.replace(this.getParentUrl());
+							}
+						}
+						return (
+							<IconButton onClick={check}>
+								<DeleteIcon />
+							</IconButton>
+						);
+						break;
 				}
 			}
 		}
@@ -220,19 +232,27 @@ export default React.createClass({
 		this.setState({drawerOpen: false});
 	},
 	handleChanges(name, changes) {
+		let ref = undefined;
 		switch(name) {
 			case 'season':
-				firebase.database().ref('seasons/' + this.props.params.seasonId).update(changes);
+				ref = firebase.database().ref('seasons/' + this.props.params.seasonId);
 				break;
 			case 'game':
-				firebase.database().ref('seasons:games/' + this.props.params.seasonId + '/' + this.props.params.gameId).update(changes);
+				ref = firebase.database().ref('seasons:games/' + this.props.params.seasonId + '/' + this.props.params.gameId);
 				break;
 			case 'seat':
-				firebase.database().ref('seasons/' + this.props.params.seasonId + '/seats/' + this.props.params.seatId).update(changes);
+				ref = firebase.database().ref('seasons/' + this.props.params.seasonId + '/seats/' + this.props.params.seatId);
 				break;
 			case 'user':
-				firebase.database().ref('seasons/' + this.props.params.seasonId + '/users/' + this.props.params.userId).update(changes);
+				ref = firebase.database().ref('seasons/' + this.props.params.seasonId + '/users/' + this.props.params.userId);
 				break;
+		}
+		if (ref) {
+			if (changes === null) {
+				ref.remove();
+			} else {
+				ref.update(changes);
+			}
 		}
 	},
 

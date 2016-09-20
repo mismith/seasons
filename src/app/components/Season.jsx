@@ -7,9 +7,10 @@ import firebase from '../utils/firebase';
 import {Tabs, Tab} from 'material-ui/Tabs';
 import {List, ListItem} from 'material-ui/List';
 import Subheader from 'material-ui/Subheader';
+import FlatButton from 'material-ui/FlatButton';
 import Divider from 'material-ui/Divider';
-import Avatar from 'material-ui/Avatar';
 import TextField from 'material-ui/TextField';
+import Avatar from 'material-ui/Avatar';
 import ChevronRightIcon from 'material-ui/svg-icons/navigation/chevron-right';
 import AddIcon from 'material-ui/svg-icons/content/add';
 
@@ -74,8 +75,8 @@ export const SeasonInfo = React.createClass({
 		return (
 			<div>
 				<div style={{paddingLeft: 16, paddingRight: 16, paddingBottom: 16}}>
-					<TextField value={this.props.season.name || ''} onChange={e=>this.props.handleChanges('season', {name: e.currentTarget.value})} floatingLabelText="Season name" fullWidth={true} />
-					<TextField value={this.props.season.cost || ''} onChange={e=>this.props.handleChanges('season', {cost: e.currentTarget.value})} floatingLabelText="Total cost" fullWidth={true} type="number" />
+					<TextField value={this.props.season.name || ''} onChange={e=>this.props.handleChanges('season', {name: e.currentTarget.value})} floatingLabelText="Season name" fullWidth />
+					<TextField value={this.props.season.cost || ''} onChange={e=>this.props.handleChanges('season', {cost: e.currentTarget.value})} floatingLabelText="Total cost" fullWidth type="number" />
 				</div>
 				<Divider />
 				<List>
@@ -86,11 +87,17 @@ export const SeasonInfo = React.createClass({
 						leftAvatar={<div><SeatAvatar /></div>}
 						rightIcon={<ChevronRightIcon />}
 						containerElement={<Link to={'/season/' + this.props.params.seasonId + '/edit/seat/' + seatId} />}
-					>{`Section ${seat.section}, Row ${seat.row}, Seat ${seat.seat}`}</ListItem>
+						primaryText={`Section ${seat.section}, Row ${seat.row}, Seat ${seat.seat}`}
+					/>
 				)}
-					{/*<Divider inset={true} />
-					<ListItem insetChildren={true} rightIcon={<AddIcon />}>Add new seat</ListItem>*/}
 				</List>
+				<div style={{textAlign: 'right', padding: '0 8px 16px'}}>
+					<FlatButton
+						primary={true}
+						containerElement={<Link to={'/season/' + this.props.params.seasonId + '/edit/seat/' + (this.props.season.seats ? this.props.season.seats.length : 0)} />}
+						label="Add new seat"
+					/>
+				</div>
 				<Divider />
 				<List>
 					<Subheader>Attendees</Subheader>
@@ -100,9 +107,17 @@ export const SeasonInfo = React.createClass({
 						leftAvatar={<div><SeatAvatar user={user} /></div>}
 						rightIcon={<ChevronRightIcon />}
 						containerElement={<Link to={'/season/' + this.props.params.seasonId + '/edit/user/' + userId} />}
-					>{user.name}</ListItem>
+						primaryText={user.name}
+					/>
 				)}
 				</List>
+				<div style={{textAlign: 'right', padding: '0 8px 16px'}}>
+					<FlatButton
+						primary={true}
+						containerElement={<Link to={'/season/' + this.props.params.seasonId + '/edit/user/' + (this.props.season.users ? this.props.season.users.length : 0)} />}
+						label="Add new attendee"
+					/>
+				</div>
 			</div>
 		)
 	},
@@ -119,10 +134,10 @@ export const SeasonSeat = React.createClass({
 	render() {
 		return (
 			<div>
-				<div style={{paddingLeft: 16, paddingRight: 16, paddingBottom: 16}}>
-					<TextField value={this.props.seat.section || ''} onChange={e=>this.props.handleChanges('seat', {section: e.currentTarget.value})} floatingLabelText="Section" fullWidth={true} />
-					<TextField value={this.props.seat.row || ''} onChange={e=>this.props.handleChanges('seat', {row: e.currentTarget.value})} floatingLabelText="Row" fullWidth={true} />
-					<TextField value={this.props.seat.seat || ''} onChange={e=>this.props.handleChanges('seat', {seat: e.currentTarget.value})} floatingLabelText="Seat" fullWidth={true} />
+				<div style={{padding: '0 16px 16px'}}>
+					<TextField value={this.props.seat.section || ''} onChange={e=>this.props.handleChanges('seat', {section: e.currentTarget.value})} floatingLabelText="Section" fullWidth autoFocus />
+					<TextField value={this.props.seat.row || ''} onChange={e=>this.props.handleChanges('seat', {row: e.currentTarget.value})} floatingLabelText="Row" fullWidth />
+					<TextField value={this.props.seat.seat || ''} onChange={e=>this.props.handleChanges('seat', {seat: e.currentTarget.value})} floatingLabelText="Seat" fullWidth />
 				</div>
 			</div>
 		)
@@ -141,7 +156,7 @@ export const SeasonUser = React.createClass({
 		return (
 			<div>
 				<div style={{paddingLeft: 16, paddingRight: 16, paddingBottom: 16}}>
-					<TextField value={this.props.user.name || ''} onChange={e=>this.props.handleChanges('user', {name: e.currentTarget.value})} floatingLabelText="Name" fullWidth={true} />
+					<TextField value={this.props.user.name || ''} onChange={e=>this.props.handleChanges('user', {name: e.currentTarget.value})} floatingLabelText="Name" fullWidth autoFocus />
 				</div>
 			</div>
 		)

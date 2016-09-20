@@ -75,13 +75,13 @@ export const Game = React.createClass({
 				>Sold</ListItem>
 			{game.sold &&
 				<div style={{paddingLeft: 16, paddingRight: 16, paddingBottom: 16}}>
-					<TextField value={game.soldPrice || ''} onChange={e=>this.props.handleChanges('game', {soldPrice: e.currentTarget.value})} floatingLabelText="Sold Price" fullWidth={true} type="number" />
+					<TextField value={game.soldPrice || ''} onChange={e=>this.props.handleChanges('game', {soldPrice: e.currentTarget.value})} floatingLabelText="Sold Price" fullWidth type="number" />
 				</div>
 			}
 
 				<Divider />
 				<div style={{paddingLeft: 16, paddingRight: 16, paddingBottom: 16}}>
-					<TextField value={this.props.game.notes || ''} onChange={e=>this.props.handleChanges('game', {notes: e.currentTarget.value})} floatingLabelText="Notes" multiLine={true} fullWidth={true} />
+					<TextField value={this.props.game.notes || ''} onChange={e=>this.props.handleChanges('game', {notes: e.currentTarget.value})} floatingLabelText="Notes" multiLine={true} fullWidth />
 				</div>
 			</List>
 		);
@@ -110,7 +110,7 @@ export const GameInfo = React.createClass({
 		return (
 			<List>
 				<div style={{paddingLeft: 16, paddingRight: 16, paddingBottom: 16}}>
-					<TextField value={this.props.game.opponent || ''} onChange={e=>this.props.handleChanges('game', {opponent: e.currentTarget.value})} floatingLabelText="Opponent" fullWidth={true} />
+					<TextField value={this.props.game.opponent || ''} onChange={e=>this.props.handleChanges('game', {opponent: e.currentTarget.value})} floatingLabelText="Opponent" fullWidth />
 					<DatePicker value={moment(this.props.game.datetime).toDate()} onChange={(e, date)=>this.handleGameDateTimeChange('date', date)} formatDate={date=>moment(date).format('ddd, MMM D, YYYY')} floatingLabelText="Date" autoOk={true} style={{display: 'inline-flex', width: '50%'}} />
 					<TimePicker value={moment(this.props.game.datetime).toDate()} onChange={(e, date)=>this.handleGameDateTimeChange('time', date)}  floatingLabelText="Time" autoOk={true} pedantic={true} style={{display: 'inline-flex', width: '50%'}} />
 				</div>
