@@ -14,7 +14,7 @@ import firebase from './utils/firebase';
 
 // components
 import App from './components/App';
-import {Home} from './components/Home';
+import {Home, HomeRedirect} from './components/Home';
 import {Season, SeasonInfo, SeasonSeat} from './components/Season';
 import {Game, GameInfo} from './components/Game';
 
@@ -29,7 +29,7 @@ ReactDOM.render(
 	<MuiThemeProvider>
 		<Router history={browserHistory}>
 			<Route path="/" component={App}>
-				<IndexRoute component={Home} name="home" />
+				<IndexRoute component={Home} onEnter={HomeRedirect} name="home" />
 				<Route path="season/:seasonId" onEnter={firebase.requireAuth}>
 					<IndexRoute component={Season} name="season" />
 					<Route path="edit">

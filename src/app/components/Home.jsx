@@ -10,13 +10,6 @@ import RaisedButton from 'material-ui/RaisedButton';
 import Loader from './helpers/Loader';
 
 export const Home = React.createClass({
-	componentWillMount() {
-		firebase.auth().onAuthStateChanged(me => {
-			if (me) {
-				browserHistory.replace('/season/-KRGF6NbHPrSyljL3m3r'); // @TODO: get dynamic season id
-			}
-		});
-	},
 	render() {
 		return (
 			<div style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-around', flexGrow: 1}}>
@@ -43,3 +36,13 @@ export const Home = React.createClass({
 		)
 	}
 });
+
+
+export function HomeRedirect(nextState, replace, callback) {
+	firebase.auth().onAuthStateChanged(me => {
+		if (me) {
+			replace('/season/-KRGF6NbHPrSyljL3m3r'); // @TODO: get dynamic season id
+		}
+		callback();
+	});
+}
