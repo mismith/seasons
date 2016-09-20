@@ -26,6 +26,8 @@ export default React.createClass({
 			params: {
 				seasonId: 0,
 				gameId: 0,
+				seatId: 0,
+				userId: 0,
 			},
 		};
 	},
@@ -53,9 +55,8 @@ export default React.createClass({
 		};
 	},
 
-
 	unbindPageData() {
-		firebase.unsync(this, 'season', 'game', 'seat');
+		firebase.unsync(this, 'season', 'game', 'seat', 'user');
 	},
 	bindPageData(props = this.props) {
 		this.unbindPageData();
@@ -68,6 +69,9 @@ export default React.createClass({
 			}
 			if (props.params.seatId ) {
 				firebase.sync(this, 'seat', 'seasons/' + props.params.seasonId + '/seats/' + props.params.seatId);
+			}
+			if (props.params.userId ) {
+				firebase.sync(this, 'user', 'seasons/' + props.params.seasonId + '/users/' + props.params.userId);
 			}
 		}
 	},
@@ -225,6 +229,9 @@ export default React.createClass({
 				break;
 			case 'seat':
 				firebase.database().ref('seasons/' + this.props.params.seasonId + '/seats/' + this.props.params.seatId).update(changes);
+				break;
+			case 'user':
+				firebase.database().ref('seasons/' + this.props.params.seasonId + '/users/' + this.props.params.userId).update(changes);
 				break;
 		}
 	},

@@ -91,11 +91,22 @@ export const SeasonInfo = React.createClass({
 					{/*<Divider inset={true} />
 					<ListItem insetChildren={true} rightIcon={<AddIcon />}>Add new seat</ListItem>*/}
 				</List>
+				<Divider />
+				<List>
+					<Subheader>Attendees</Subheader>
+				{this.props.season.users && this.props.season.users.map((user, userId) =>
+					<ListItem
+						key={userId}
+						leftAvatar={<div><SeatAvatar user={user} /></div>}
+						rightIcon={<ChevronRightIcon />}
+						containerElement={<Link to={'/season/' + this.props.params.seasonId + '/edit/user/' + userId} />}
+					>{user.name}</ListItem>
+				)}
+				</List>
 			</div>
 		)
 	},
 });
-
 
 export const SeasonSeat = React.createClass({
 	getDefaultProps() {
@@ -112,6 +123,25 @@ export const SeasonSeat = React.createClass({
 					<TextField value={this.props.seat.section || ''} onChange={e=>this.props.handleChanges('seat', {section: e.currentTarget.value})} floatingLabelText="Section" fullWidth={true} />
 					<TextField value={this.props.seat.row || ''} onChange={e=>this.props.handleChanges('seat', {row: e.currentTarget.value})} floatingLabelText="Row" fullWidth={true} />
 					<TextField value={this.props.seat.seat || ''} onChange={e=>this.props.handleChanges('seat', {seat: e.currentTarget.value})} floatingLabelText="Seat" fullWidth={true} />
+				</div>
+			</div>
+		)
+	},
+});
+
+export const SeasonUser = React.createClass({
+	getDefaultProps() {
+		return {
+			user: {},
+			handleChanges: () => {},
+		};
+	},
+
+	render() {
+		return (
+			<div>
+				<div style={{paddingLeft: 16, paddingRight: 16, paddingBottom: 16}}>
+					<TextField value={this.props.user.name || ''} onChange={e=>this.props.handleChanges('user', {name: e.currentTarget.value})} floatingLabelText="Name" fullWidth={true} />
 				</div>
 			</div>
 		)

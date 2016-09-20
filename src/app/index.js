@@ -15,7 +15,7 @@ import firebase from './utils/firebase';
 // components
 import App from './components/App';
 import {Home, HomeRedirect} from './components/Home';
-import {Season, SeasonInfo, SeasonSeat} from './components/Season';
+import {Season, SeasonInfo, SeasonSeat, SeasonUser} from './components/Season';
 import {Game, GameInfo} from './components/Game';
 
 // styles
@@ -36,6 +36,7 @@ if (('standalone' in navigator) && navigator['standalone']) {
 	});
 }
 
+// routes
 ReactDOM.render(
 	<MuiThemeProvider>
 		<Router history={browserHistory}>
@@ -46,6 +47,7 @@ ReactDOM.render(
 					<Route path="edit">
 						<IndexRoute component={SeasonInfo} name="season.edit" />
 						<Route path="seat/:seatId" component={SeasonSeat} name="season.seat" />
+						<Route path="user/:userId" component={SeasonUser} name="season.user" />
 					</Route>
 					<Route path="game/:gameId">
 						<IndexRoute component={Game} name="game" />
