@@ -1,7 +1,8 @@
 const Path = require('path'),
       Webpack = require('webpack'),
-      HtmlWebpackPlugin = require('html-webpack-plugin'),
-      ExtractTextPlugin = require('extract-text-webpack-plugin');
+      HtmlPlugin = require('html-webpack-plugin'),
+      ExtractTextPlugin = require('extract-text-webpack-plugin'),
+      AppCachePlugin = require('appcache-webpack-plugin');
 
 module.exports = (options) => {
 	const ExtractSASS = new ExtractTextPlugin(`/styles/${options.cssFileName}`);
@@ -32,7 +33,7 @@ module.exports = (options) => {
 					NODE_ENV: JSON.stringify(options.isProduction ? 'production' : 'development'),
 				},
 			}),
-			new HtmlWebpackPlugin({
+			new HtmlPlugin({
 				template: Path.join(__dirname, '../src/index.html'),
 			}),
 		],
@@ -49,7 +50,13 @@ module.exports = (options) => {
 					warnings: false,
 				},
 			}),
-			ExtractSASS
+			ExtractSASS,
+			new AppCachePlugin({
+				settings: [
+					'prefer-online',
+				],
+				output: 'cache.manifest',
+			})
 		);
 
 		webpackConfig.module.loaders.push({
