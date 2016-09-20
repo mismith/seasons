@@ -24,7 +24,6 @@ import './styles/bundle.scss';
 // assets
 require('./images/logo.png');
 require('./images/touchicon.png');
-require('./images/startup.png');
 
 // reload at last page on homescreen apps
 if (('standalone' in navigator) && navigator['standalone']) {
