@@ -14,9 +14,7 @@ import PowerSettingsIcon from 'material-ui/svg-icons/action/power-settings-new';
 
 import AppBar from 'material-ui/AppBar';
 import IconButton from 'material-ui/IconButton';
-import IconMenu from 'material-ui/IconMenu';
-import MenuItem from 'material-ui/MenuItem';
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
+import InfoIcon from 'material-ui/svg-icons/action/info-outline';
 
 import GameItem from './GameItem';
 import Loader from './helpers/Loader';
@@ -144,30 +142,20 @@ export default React.createClass({
 					switch (name) {
 						case 'season':
 							return (
-								<IconMenu
-									iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
-									targetOrigin={{horizontal: 'right', vertical: 'top'}}
-									anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+								<IconButton
+									containerElement={<Link to={'/season/' + this.props.params.seasonId + '/edit'} />}
 								>
-									<MenuItem
-										containerElement={<Link to={'/season/' + this.props.params.seasonId + '/edit'} />}
-										primaryText="Edit Details"
-									/>
-								</IconMenu>
+									<InfoIcon />
+								</IconButton>
 							);
 							break;
 						case 'game':
 							return (
-								<IconMenu
-									iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
-									targetOrigin={{horizontal: 'right', vertical: 'top'}}
-									anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+								<IconButton
+									containerElement={<Link to={'/season/' + this.props.params.seasonId + '/game/' + this.props.params.gameId + '/edit'} />}
 								>
-									<MenuItem
-										containerElement={<Link to={'/season/' + this.props.params.seasonId + '/game/' + this.props.params.gameId + '/edit'} />}
-										primaryText="Edit Details"
-									/>
-								</IconMenu>
+									<InfoIcon />
+								</IconButton>
 							);
 					}
 				}
