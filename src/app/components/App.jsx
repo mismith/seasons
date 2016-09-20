@@ -149,7 +149,10 @@ export default React.createClass({
 									targetOrigin={{horizontal: 'right', vertical: 'top'}}
 									anchorOrigin={{horizontal: 'right', vertical: 'top'}}
 								>
-									<MenuItem linkButton={true} containerElement={<Link to={'/season/' + this.props.params.seasonId + '/edit'} />}>Edit Details</MenuItem>
+									<MenuItem
+										containerElement={<Link to={'/season/' + this.props.params.seasonId + '/edit'} />}
+										primaryText="Edit Details"
+									/>
 								</IconMenu>
 							);
 							break;
@@ -160,7 +163,10 @@ export default React.createClass({
 									targetOrigin={{horizontal: 'right', vertical: 'top'}}
 									anchorOrigin={{horizontal: 'right', vertical: 'top'}}
 								>
-									<MenuItem linkButton={true} containerElement={<Link to={'/season/' + this.props.params.seasonId + '/game/' + this.props.params.gameId + '/edit'} />}>Edit Details</MenuItem>
+									<MenuItem
+										containerElement={<Link to={'/season/' + this.props.params.seasonId + '/game/' + this.props.params.gameId + '/edit'} />}
+										primaryText="Edit Details"
+									/>
 								</IconMenu>
 							);
 					}
