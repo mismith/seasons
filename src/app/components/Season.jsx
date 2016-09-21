@@ -93,7 +93,7 @@ export const SeasonInfo = React.createClass({
 				</List>
 				<div style={{textAlign: 'right', padding: '0 8px 16px'}}>
 					<FlatButton
-						primary={true}
+						primary
 						containerElement={<Link to={'/season/' + this.props.params.seasonId + '/edit/seat/' + (this.props.season.seats ? this.props.season.seats.length : 0)} />}
 						label="Add new seat"
 					/>
@@ -113,7 +113,7 @@ export const SeasonInfo = React.createClass({
 				</List>
 				<div style={{textAlign: 'right', padding: '0 8px 16px'}}>
 					<FlatButton
-						primary={true}
+						primary
 						containerElement={<Link to={'/season/' + this.props.params.seasonId + '/edit/user/' + (this.props.season.users ? this.props.season.users.length : 0)} />}
 						label="Add new attendee"
 					/>
@@ -135,7 +135,7 @@ export const SeasonSeat = React.createClass({
 		return (
 			<div>
 				<div style={{padding: '0 16px 16px'}}>
-					<TextField value={this.props.seat.section || ''} onChange={e=>this.props.handleChanges('seat', {section: e.currentTarget.value})} floatingLabelText="Section" fullWidth autoFocus />
+					<TextField value={this.props.seat.section || ''} onChange={e=>this.props.handleChanges('seat', {section: e.currentTarget.value})} floatingLabelText="Section" fullWidth />
 					<TextField value={this.props.seat.row || ''} onChange={e=>this.props.handleChanges('seat', {row: e.currentTarget.value})} floatingLabelText="Row" fullWidth />
 					<TextField value={this.props.seat.seat || ''} onChange={e=>this.props.handleChanges('seat', {seat: e.currentTarget.value})} floatingLabelText="Seat" fullWidth />
 				</div>
@@ -156,7 +156,7 @@ export const SeasonUser = React.createClass({
 		return (
 			<div>
 				<div style={{paddingLeft: 16, paddingRight: 16, paddingBottom: 16}}>
-					<TextField value={this.props.user.name || ''} onChange={e=>this.props.handleChanges('user', {name: e.currentTarget.value})} floatingLabelText="Name" fullWidth autoFocus />
+					<TextField value={this.props.user.name || ''} onChange={e=>this.props.handleChanges('user', {name: e.currentTarget.value})} floatingLabelText="Name" fullWidth />
 				</div>
 			</div>
 		)

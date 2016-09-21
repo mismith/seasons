@@ -264,7 +264,7 @@ export default React.createClass({
 			{this.state.me && 
 				<Drawer
 					docked={false}
-					disableSwipeToOpen={true}
+					disableSwipeToOpen
 					open={this.state.drawerOpen}
 					onRequestChange={this.handleDrawerClose}
 					containerStyle={{display: 'flex', flexDirection: 'column'}}

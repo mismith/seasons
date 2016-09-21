@@ -70,7 +70,7 @@ export const Game = React.createClass({
 			}
 
 				<ListItem
-					leftAvatar={<div><SeatAvatar sold={true} setBackgroundColor={game.sold > 0} /></div>}
+					leftAvatar={<div><SeatAvatar sold setBackgroundColor={game.sold > 0} /></div>}
 					rightToggle={<Toggle toggled={!!game.sold} onToggle={e=>this.handleGameUserToggle(e, 'sold')} />}
 				>Sold</ListItem>
 			{game.sold &&
@@ -81,7 +81,7 @@ export const Game = React.createClass({
 
 				<Divider />
 				<div style={{paddingLeft: 16, paddingRight: 16, paddingBottom: 16}}>
-					<TextField value={this.props.game.notes || ''} onChange={e=>this.props.handleChanges('game', {notes: e.currentTarget.value})} floatingLabelText="Notes" multiLine={true} fullWidth />
+					<TextField value={this.props.game.notes || ''} onChange={e=>this.props.handleChanges('game', {notes: e.currentTarget.value})} floatingLabelText="Notes" multiLine fullWidth />
 				</div>
 			</List>
 		);
@@ -111,8 +111,8 @@ export const GameInfo = React.createClass({
 			<List>
 				<div style={{paddingLeft: 16, paddingRight: 16, paddingBottom: 16}}>
 					<TextField value={this.props.game.opponent || ''} onChange={e=>this.props.handleChanges('game', {opponent: e.currentTarget.value})} floatingLabelText="Opponent" fullWidth />
-					<DatePicker value={moment(this.props.game.datetime).toDate()} onChange={(e, date)=>this.handleGameDateTimeChange('date', date)} formatDate={date=>moment(date).format('ddd, MMM D, YYYY')} floatingLabelText="Date" autoOk={true} style={{display: 'inline-flex', width: '50%'}} />
-					<TimePicker value={moment(this.props.game.datetime).toDate()} onChange={(e, date)=>this.handleGameDateTimeChange('time', date)}  floatingLabelText="Time" autoOk={true} pedantic={true} style={{display: 'inline-flex', width: '50%'}} />
+					<DatePicker value={moment(this.props.game.datetime).toDate()} onChange={(e, date)=>this.handleGameDateTimeChange('date', date)} formatDate={date=>moment(date).format('ddd, MMM D, YYYY')} floatingLabelText="Date" autoOk style={{display: 'inline-flex', width: '50%'}} />
+					<TimePicker value={moment(this.props.game.datetime).toDate()} onChange={(e, date)=>this.handleGameDateTimeChange('time', date)}  floatingLabelText="Time" autoOk pedantic style={{display: 'inline-flex', width: '50%'}} />
 				</div>
 			</List>
 		);
