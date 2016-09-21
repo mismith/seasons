@@ -2,7 +2,10 @@
   "name": "seasons",
   "version": "0.1.0",
   "description": "Track your season tickets",
-  "repo": "https://github.com/mismith/seasons",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mismith/seasons"
+  },
   "main": "index.js",
   "scripts": {
     "dev": "webpack-dev-server --config ./webpack/webpack-dev.config.js --watch --colors",
@@ -40,11 +43,11 @@
   },
   "dependencies": {
     "firebase": "^3.4.0",
-    "material-ui": "^0.15.2",
-    "moment": "^2.14.1",
-    "react": "^15.3.1",
-    "react-dom": "^15.3.1",
-    "react-router": "^2.7.0",
+    "material-ui": "^0.15.4",
+    "moment": "^2.15.1",
+    "react": "^15.3.2",
+    "react-dom": "^15.3.2",
+    "react-router": "^2.8.1",
     "react-tap-event-plugin": "^1.0.0",
     "reactfire": "^1.0.0"
   },
