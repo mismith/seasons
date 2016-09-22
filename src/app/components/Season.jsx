@@ -9,6 +9,7 @@ import {List, ListItem} from 'material-ui/List';
 import Subheader from 'material-ui/Subheader';
 import FlatButton from 'material-ui/FlatButton';
 import Divider from 'material-ui/Divider';
+import Toggle from 'material-ui/Toggle';
 import TextField from 'material-ui/TextField';
 import Avatar from 'material-ui/Avatar';
 import ChevronRightIcon from 'material-ui/svg-icons/navigation/chevron-right';
@@ -104,7 +105,7 @@ export const SeasonInfo = React.createClass({
 				{this.props.season.users && this.props.season.users.map((user, userId) =>
 					<ListItem
 						key={userId}
-						leftAvatar={<div><SeatAvatar user={user} /></div>}
+						leftAvatar={<div><SeatAvatar user={user} setBackgroundColor={!!user.isActive} /></div>}
 						rightIcon={<ChevronRightIcon />}
 						containerElement={<Link to={'/season/' + this.props.params.seasonId + '/edit/user/' + userId} />}
 						primaryText={user.name}
@@ -154,11 +155,14 @@ export const SeasonUser = React.createClass({
 
 	render() {
 		return (
-			<div>
+			<List>
 				<div style={{paddingLeft: 16, paddingRight: 16, paddingBottom: 16}}>
 					<TextField value={this.props.user.name || ''} onChange={e=>this.props.handleChanges('user', {name: e.currentTarget.value})} floatingLabelText="Name" fullWidth />
 				</div>
-			</div>
+				<ListItem
+					rightToggle={<Toggle toggled={!!this.props.user.isActive} onToggle={e=>this.props.handleChanges('user', {isActive: e.currentTarget.checked})} />}
+				>Active</ListItem>
+			</List>
 		)
 	},
 });

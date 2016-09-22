@@ -58,7 +58,7 @@ export const Game = React.createClass({
 						<span>Attendees</span>
 						<span>{!game.sold && game.seats ? game.seats.length : 0} / {season.seats ? season.seats.length : 0}</span>
 					</Subheader>
-				{season.users && season.users.map((user, userId) => 
+				{season.users && season.users.filter((user, userId) => user.isActive || this.getUserSeatIndex(userId) >= 0).map((user, userId) => 
 					<ListItem
 						key={userId}
 						leftAvatar={<div><SeatAvatar user={user} setBackgroundColor={!game.sold && this.getUserSeatIndex(userId) >= 0} /></div>}
