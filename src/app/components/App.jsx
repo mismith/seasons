@@ -25,10 +25,10 @@ export default React.createClass({
 	getDefaultProps() {
 		return {
 			params: {
-				seasonId: 0,
-				gameId: 0,
-				seatId: 0,
-				userId: 0,
+				seasonId: undefined,
+				gameId: undefined,
+				seatId: undefined,
+				userId: undefined,
 			},
 		};
 	},

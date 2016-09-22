@@ -42,6 +42,10 @@ export default {
 		});
 	},
 
+	key() {
+		return firebase.database().ref().push().key;
+	},
+
 	toArray(obj) {
 		return obj ? Object.keys(obj)
 			.filter(key => key.match(/^[a-z0-9-_]+$/i))

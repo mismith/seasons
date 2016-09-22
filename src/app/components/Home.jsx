@@ -20,7 +20,7 @@ export const Home = React.createClass({
 					<br />
 				</div>
 			{!this.props.me &&
-				<div style={{textAlign: 'center'}}>
+				<div style={{textAlign: 'center', paddingBottom: 16}}>
 				{this.props.authLoaded ?
 					<RaisedButton
 						label="Login with Google"
