@@ -44,11 +44,11 @@ export const Home = React.createClass({
 					<SwipeableViews
 						onChangeIndex={index=>this.setState({slideIndex: index})}
 					>
-						<div className="slide" style={styles.slide}>
+						<div style={styles.slide}>
 							<img src={LogoImg} />
 							<h3>Track your season tickets</h3>
 						</div>
-						<div className="slide" style={styles.slide}>
+						<div style={styles.slide}>
 							<Paper>
 								<List>
 									<ListItem
@@ -70,7 +70,7 @@ export const Home = React.createClass({
 							</Paper>
 							<h3>Record who attends each game</h3>
 						</div>
-						<div className="slide" style={styles.slide}>
+						<div style={styles.slide}>
 							<Paper>
 								<List>
 									<ListItem

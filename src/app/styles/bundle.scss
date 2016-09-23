@@ -51,15 +51,3 @@ h1,
 h3 {
 	text-align: center;
 }
-
-.slide {
-	> * {
-		&:first-child {
-			margin-top: auto;
-			margin-bottom: auto;
-		}
-		&:last-child {
-			margin-top: auto;
-		}
-	}
-}
