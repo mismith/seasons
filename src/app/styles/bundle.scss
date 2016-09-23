@@ -53,11 +53,6 @@ h3 {
 }
 
 .slide {
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
-	height: 100%;
-
 	> * {
 		&:first-child {
 			margin-top: auto;

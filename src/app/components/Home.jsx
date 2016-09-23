@@ -22,6 +22,12 @@ const styles = {
 		justifyContent: 'center',
 		alignItems: 'center',
 	},
+	slide: {
+		display: 'flex',
+		flexDirection: 'column',
+		justifyContent: 'space-between',
+		height: '100%',
+	},
 };
 
 export const Home = React.createClass({
@@ -38,11 +44,11 @@ export const Home = React.createClass({
 					<SwipeableViews
 						onChangeIndex={index=>this.setState({slideIndex: index})}
 					>
-						<div className="slide">
+						<div className="slide" style={styles.slide}>
 							<img src={LogoImg} />
 							<h3>Track your season tickets</h3>
 						</div>
-						<div className="slide">
+						<div className="slide" style={styles.slide}>
 							<Paper>
 								<List>
 									<ListItem
@@ -64,7 +70,7 @@ export const Home = React.createClass({
 							</Paper>
 							<h3>Record who attends each game</h3>
 						</div>
-						<div className="slide">
+						<div className="slide" style={styles.slide}>
 							<Paper>
 								<List>
 									<ListItem
