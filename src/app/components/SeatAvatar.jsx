@@ -1,6 +1,6 @@
 import React from 'react';
 
-import getInitials from './helpers/getInitials';
+import getInitials from '../utils/getInitials';
 
 import Avatar from 'material-ui/Avatar';
 

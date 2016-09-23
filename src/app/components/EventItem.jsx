@@ -1,7 +1,7 @@
 import React from 'react';
 
 import firebase from '../utils/firebase';
-import formatDate from './helpers/formatDate';
+import formatDate from '../utils/formatDate';
 
 import {ListItem} from 'material-ui/List';
 import Avatar from 'material-ui/Avatar';
