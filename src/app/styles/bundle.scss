@@ -23,3 +23,48 @@ body,
 	flex-direction: column;
 	flex-grow: 1;
 }
+
+
+.dots {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	.dot {
+		display: inline-flex;
+		width: 6px;
+		height: 6px;
+		transition: background-color 300ms;
+		border: solid 1px #000;
+		border-radius: 3px;
+		margin: 3px;
+		opacity: .5;
+
+		&.active {
+			background-color: #000;
+			opacity: .75;
+		}
+	}
+}
+
+h1,
+h3 {
+	text-align: center;
+}
+
+.slide {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	height: 100%;
+
+	> * {
+		&:first-child {
+			margin-top: auto;
+			margin-bottom: auto;
+		}
+		&:last-child {
+			margin-top: auto;
+		}
+	}
+}
