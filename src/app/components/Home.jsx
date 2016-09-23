@@ -15,21 +15,6 @@ import SeatAvatar from './SeatAvatar';
 import RaisedButton from 'material-ui/RaisedButton';
 import Loader from './helpers/Loader';
 
-const styles = {
-	centered: {
-		display: 'flex',
-		flexDirection: 'column',
-		justifyContent: 'center',
-		alignItems: 'center',
-	},
-	slide: {
-		display: 'flex',
-		flexDirection: 'column',
-		justifyContent: 'space-between',
-		height: '100%',
-	},
-};
-
 export const Home = React.createClass({
 	getInitialState() {
 		return {
@@ -38,17 +23,21 @@ export const Home = React.createClass({
 	},
 	render() {
 		return (
-			<div style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-around', flexGrow: 1}}>
-				<div>
-					<h1 style={{marginTop: 0}}>Seasons</h1>
+			<div style={{display: 'flex', flexDirection: 'column', flexGrow: 1}}>
+				<div style={{display: 'flex', flexDirection: 'column', flex: 1}}>
+					<h1 style={{display: 'flex', justifyContent: 'center', alignItems: 'center', flex: 1}}>Seasons</h1>
 					<SwipeableViews
 						onChangeIndex={index=>this.setState({slideIndex: index})}
+						style={{flex: 1}}
 					>
-						<div style={styles.slide}>
-							<img src={LogoImg} />
+						<div>
 							<h3>Track your season tickets</h3>
+							<div style={{textAlign: 'center'}}>
+								<img src={LogoImg} />
+							</div>
 						</div>
-						<div style={styles.slide}>
+						<div>
+							<h3>Record who attends each event</h3>
 							<Paper>
 								<List>
 									<ListItem
@@ -68,9 +57,9 @@ export const Home = React.createClass({
 									/>
 								</List>
 							</Paper>
-							<h3>Record who attends each game</h3>
 						</div>
-						<div style={styles.slide}>
+						<div>
+							<h3>Log which tickets you sell</h3>
 							<Paper>
 								<List>
 									<ListItem
@@ -80,18 +69,22 @@ export const Home = React.createClass({
 									/>
 								</List>
 							</Paper>
-							<h3>Log which tickets you sell</h3>
+						</div>
+						<div>
+							<h3>Simply login to get started</h3>
+							<div style={{textAlign: 'center'}}>
+								<img src={LogoImg} />
+							</div>
 						</div>
 					</SwipeableViews>
-					<br />
 					<div className="dots">
-					{[0,1, 2].map(index => 
+					{[0,1,2,3].map(index => 
 						<span key={index} className={'dot' + (this.state.slideIndex === index ? ' active' : '')} />
 					)}
 					</div>
 				</div>
 			{!this.props.me &&
-				<div style={{textAlign: 'center', paddingBottom: 32}}>
+				<div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', textAlign: 'center', padding: 32, flex: 1}}>
 				{this.props.authLoaded ?
 					<RaisedButton
 						label="Login with Google"
