@@ -8,12 +8,9 @@
   },
   "main": "index.js",
   "scripts": {
-    "dev": "webpack-dev-server --config ./webpack/webpack-dev.config.js --watch --colors",
-    "build": "rm -rf html && webpack --config ./webpack/webpack-prod.config.js --colors",
+    "dev": "webpack-dev-server --config ./web/webpack-dev.config.js --watch --colors",
+    "build": "rm -rf web/build && webpack --config ./web/webpack-prod.config.js --colors",
     "deploy": "npm run build && firebase deploy",
-    "start": "PORT=8080 pm2 start ./www.js",
-    "test": "mocha --compilers js:babel-core/register --require ./test/test_helper.js --recursive ./test",
-    "test:watch": "npm run test -- --watch"
   },
   "author": "Murray Smith",
   "license": "ISC",

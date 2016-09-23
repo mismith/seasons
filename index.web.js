@@ -10,20 +10,20 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin();
 
 // firebase
-import firebase from './utils/firebase';
+import firebase from './web/utils/firebase';
 
 // components
-import App from './components/App';
-import {Home, HomeRedirect} from './components/Home';
-import {Season, SeasonInfo, SeasonSeat, SeasonUser} from './components/Season';
-import {Event, EventInfo} from './components/Event';
+import App from './web/components/App';
+import {Home, HomeRedirect} from './web/components/Home';
+import {Season, SeasonInfo, SeasonSeat, SeasonUser} from './web/components/Season';
+import {Event, EventInfo} from './web/components/Event';
 
 // styles
-import './styles/bundle.scss';
+import './web/styles/bundle.scss';
 
 // assets
-require('./images/logo.png');
-require('./images/touchicon.png');
+require('./web/images/logo.png');
+require('./web/images/touchicon.png');
 
 // reload at last page on homescreen apps
 if (('standalone' in navigator) && navigator['standalone']) {

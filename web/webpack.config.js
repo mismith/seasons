@@ -5,15 +5,14 @@ const Path = require('path'),
       AppCachePlugin = require('appcache-webpack-plugin');
 
 module.exports = (options) => {
-	const ExtractSASS = new ExtractTextPlugin(`/styles/${options.cssFileName}`);
 
 	const webpackConfig = {
 		devtool: options.devtool,
 		entry: [
-			Path.join(__dirname, '../src/app/index'),
+			Path.join(__dirname, '../index.web'),
 		],
 		output: {
-			path: Path.join(__dirname, '../html'),
+			path: Path.join(__dirname, '../web/build'),
 			filename: `/scripts/${options.jsFileName}`,
 		},
 		resolve: {
@@ -21,10 +20,26 @@ module.exports = (options) => {
 		},
 		module: {
 			loaders: [
-				{test: /\.jsx?$/i, include: Path.join(__dirname, '../src/app'), loader: 'babel'},
-				{test: /\.css$/i, loader: 'style!css'},
-				{test: /\.(svg)(\?v=.+?)?$/i, loader: 'file?name=/images/[name].[ext]&mimetype=image/svg+xml'},
-				{test: /\.(png|gif|jpe?g)(\?v=.+?)?$/i, loader: 'file?name=/images/[name].[ext]'},
+				{
+					test: /\.jsx?$/i,
+					include: [
+						Path.join(__dirname, '../index.web'),
+						Path.join(__dirname, '../web')
+					],
+					loader: 'babel',
+				},
+				{
+					test: /\.css$/i,
+					loader: 'style!css',
+				},
+				{
+					test: /\.(svg)(\?v=.+?)?$/i,
+					loader: 'file?name=/images/[name].[ext]&mimetype=image/svg+xml',
+				},
+				{
+					test: /\.(png|gif|jpe?g)(\?v=.+?)?$/i,
+					loader: 'file?name=/images/[name].[ext]',
+				},
 			],
 		},
 		plugins: [
@@ -34,12 +49,13 @@ module.exports = (options) => {
 				},
 			}),
 			new HtmlPlugin({
-				template: Path.join(__dirname, '../src/index.html'),
+				template: Path.join(__dirname, '../web/index.html'),
 			}),
 		],
 	};
 
 	if (options.isProduction) {
+		const ExtractSASS = new ExtractTextPlugin(`/styles/${options.cssFileName}`);
 		webpackConfig.plugins.push(
 			new Webpack.optimize.DedupePlugin(),
 			new Webpack.optimize.OccurenceOrderPlugin(),
@@ -67,7 +83,7 @@ module.exports = (options) => {
 		webpackConfig.entry = [
 			`webpack-dev-server/client?http://localhost:${+options.port}`,
 			'webpack/hot/dev-server',
-			Path.join(__dirname, '../src/app/index'),
+			Path.join(__dirname, '../index.web'),
 		];
 
 		webpackConfig.plugins.push(
@@ -80,7 +96,7 @@ module.exports = (options) => {
 		});
 
 		webpackConfig.devServer = {
-			contentBase: Path.join(__dirname, '../'),
+			contentBase: Path.join(__dirname, '../web/'),
 			hot: true,
 			port: options.port,
 			inline: true,
