@@ -27,6 +27,7 @@ export const Home = React.createClass({
 				<div style={{display: 'flex', flexDirection: 'column', justifyContent: 'stretch', flexGrow: 1}}>
 					<h1 style={{display: 'flex', justifyContent: 'center', alignItems: 'center', flexGrow: 1}}>Seasons</h1>
 					<SwipeableViews
+						index={this.state.slideIndex}
 						onChangeIndex={index=>this.setState({slideIndex: index})}
 						style={{flexGrow: 1}}
 					>
@@ -79,7 +80,11 @@ export const Home = React.createClass({
 					</SwipeableViews>
 					<div className="dots">
 					{[0,1,2,3].map(index => 
-						<span key={index} className={'dot' + (this.state.slideIndex === index ? ' active' : '')} />
+						<span
+							key={index}
+							onClick={e=>this.setState({slideIndex: index})}
+							className={'dot' + (this.state.slideIndex === index ? ' active' : '')}
+						/>
 					)}
 					</div>
 				</div>
