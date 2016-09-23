@@ -90,6 +90,13 @@ export default React.createClass({
 			if (me) {
 				this.bindGlobalData();
 				this.bindPageData();
+
+				firebase.database().ref('users/' + me.uid).update({
+					email: me.email,
+					displayName: me.displayName,
+					photoURL: me.photoURL,
+					timestamp: moment().format(),
+				});
 			} else {
 				this.unbindGlobalData();
 				this.unbindPageData();
