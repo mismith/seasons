@@ -24,11 +24,11 @@ export const Home = React.createClass({
 	render() {
 		return (
 			<div style={{display: 'flex', flexDirection: 'column', flexGrow: 1}}>
-				<div style={{display: 'flex', flexDirection: 'column', flex: 1}}>
-					<h1 style={{display: 'flex', justifyContent: 'center', alignItems: 'center', flex: 1}}>Seasons</h1>
+				<div style={{display: 'flex', flexDirection: 'column', justifyContent: 'stretch', flexGrow: 1}}>
+					<h1 style={{display: 'flex', justifyContent: 'center', alignItems: 'center', flexGrow: 1}}>Seasons</h1>
 					<SwipeableViews
 						onChangeIndex={index=>this.setState({slideIndex: index})}
-						style={{flex: 1}}
+						style={{flexGrow: 1}}
 					>
 						<div>
 							<h3>Track your season tickets</h3>
@@ -84,7 +84,7 @@ export const Home = React.createClass({
 					</div>
 				</div>
 			{!this.props.me &&
-				<div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', textAlign: 'center', padding: 32, flex: 1}}>
+				<div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', textAlign: 'center', padding: 32, flexGrow: 1}}>
 				{this.props.authLoaded ?
 					<RaisedButton
 						label="Login with Google"
