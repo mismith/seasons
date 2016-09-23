@@ -12,22 +12,22 @@ export default React.createClass({
 	getDefaultProps() {
 		return {
 			season: {},
-			game: {},
+			event:  {},
 			showDayAvatar: true,
 		};
 	},
 
 	render() {
-		let {game, season, showDayAvatar, ...props} = this.props;
+		let {event, season, showDayAvatar, ...props} = this.props;
 		let seasonSeats = firebase.toArray(season.seats);
 		return (
 			<ListItem
-				primaryText={game.opponent + (game.notes ? ' 📝' : '')}
-				secondaryText={formatDate(game.datetime)}
-				leftAvatar={showDayAvatar ? <Avatar>{game.$datetime.format('D')}</Avatar> : null}
+				primaryText={event.opponent + (event.notes ? ' 📝' : '')}
+				secondaryText={formatDate(event.datetime)}
+				leftAvatar={showDayAvatar ? <Avatar>{event.$datetime.format('D')}</Avatar> : null}
 				rightAvatar={<div style={{display: 'inline-flex', marginTop: 6}}>
 				{seasonSeats.map(seat => 
-					<SeatAvatar key={seat.$id} size={30} user={season.users && game.seats && game.seats[seat.$id] ? season.users[game.seats[seat.$id]] : undefined} sold={game.sold} />
+					<SeatAvatar key={seat.$id} size={30} user={season.users && event.seats && event.seats[seat.$id] ? season.users[event.seats[seat.$id]] : undefined} sold={event.sold} />
 				)}
 				</div>}
 				innerDivStyle={{paddingRight: 56 + 12 + 32 * (seasonSeats.length ? seasonSeats.length - 1 : 0)}}

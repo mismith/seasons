@@ -16,7 +16,7 @@ import Avatar from 'material-ui/Avatar';
 import ChevronRightIcon from 'material-ui/svg-icons/navigation/chevron-right';
 import AddIcon from 'material-ui/svg-icons/content/add';
 
-import GameItem from './GameItem';
+import EventItem from './EventItem';
 import SeatAvatar from './SeatAvatar';
 
 
@@ -24,38 +24,38 @@ export const Season = React.createClass({
 	getDefaultProps() {
 		return {
 			season: {},
-			games:  {},
+			events: {},
 		};
 	},
 
-	groupGamesByMonth() {
-		let gamesByMonth = [],
+	groupEventsByMonth() {
+		let eventsByMonth = [],
 			previousMonthId;
-		firebase.toArray(this.props.games[this.props.params.seasonId]).map(game => {
-			game.$datetime = moment(game.datetime);
+		firebase.toArray(this.props.events[this.props.params.seasonId]).map(event => {
+			event.$datetime = moment(event.datetime);
 
-			let monthId = game.$datetime.format('YYYY-MM');
+			let monthId = event.$datetime.format('YYYY-MM');
 			if (monthId !== previousMonthId) {
-				gamesByMonth.push([]);
+				eventsByMonth.push([]);
 				previousMonthId = monthId;
 			}
-			gamesByMonth[gamesByMonth.length - 1].push(game);
+			eventsByMonth[eventsByMonth.length - 1].push(event);
 		});
-		return gamesByMonth;
+		return eventsByMonth;
 	},
 
 	render() {
 		return (
 			<List>
-			{this.groupGamesByMonth().map((games, monthIndex) =>
+			{this.groupEventsByMonth().map((events, monthIndex) =>
 				<div key={monthIndex}>
-					<Subheader>{games[0].$datetime.format('MMMM')} {games[0].$datetime.format('M') === '1' && games[0].$datetime.format('YYYY')}</Subheader>
-				{games.map(game => 
-					<GameItem
-						key={game.$id}
-						game={game}
+					<Subheader>{events[0].$datetime.format('MMMM')} {events[0].$datetime.format('M') === '1' && events[0].$datetime.format('YYYY')}</Subheader>
+				{events.map(event => 
+					<EventItem
+						key={event.$id}
+						event={event}
 						season={this.props.season}
-						containerElement={<Link to={'/season/' + this.props.params.seasonId + '/game/' + game.$id} />}
+						containerElement={<Link to={'/season/' + this.props.params.seasonId + '/event/' + event.$id} />}
 					/>
 				)}
 				</div>

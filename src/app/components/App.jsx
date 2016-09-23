@@ -17,7 +17,7 @@ import IconButton from 'material-ui/IconButton';
 import InfoIcon from 'material-ui/svg-icons/action/info-outline';
 import DeleteIcon from 'material-ui/svg-icons/action/delete';
 
-import GameItem from './GameItem';
+import EventItem from './EventItem';
 import Loader from './helpers/Loader';
 
 export default React.createClass({
@@ -26,9 +26,9 @@ export default React.createClass({
 		return {
 			params: {
 				seasonId: undefined,
-				gameId: undefined,
-				seatId: undefined,
-				userId: undefined,
+				eventId:  undefined,
+				seatId:   undefined,
+				userId:   undefined,
 			},
 		};
 	},
@@ -39,25 +39,25 @@ export default React.createClass({
 			me: null,
 
 			season:  {},
-			game:    {},
+			event:   {},
 			seat:    {},
-			games:   {},
+			events:  {},
 			seasons: {},
 
 			seasonLoaded:  false,
-			gameLoaded:    false,
+			eventLoaded:   false,
 			seatLoaded:    false,
 			seasonsLoaded: false,
-			gamesLoaded:   false,
+			eventsLoaded:  false,
 
 			authLoaded: false,
 
-			relevantGames: [],
+			relevantEvents: [],
 		};
 	},
 
 	unbindPageData() {
-		firebase.unsync(this, 'season', 'game', 'seat', 'user');
+		firebase.unsync(this, 'season', 'event', 'seat', 'user');
 	},
 	bindPageData(props = this.props) {
 		this.unbindPageData();
@@ -65,8 +65,8 @@ export default React.createClass({
 		if (props.params.seasonId) {
 			firebase.sync(this, 'season', 'seasons/' + props.params.seasonId)
 
-			if (props.params.gameId) {
-				firebase.sync(this, 'game', 'seasons:games/' + props.params.seasonId + '/' + props.params.gameId);
+			if (props.params.eventId) {
+				firebase.sync(this, 'event', 'seasons:events/' + props.params.seasonId + '/' + props.params.eventId);
 			}
 			if (props.params.seatId ) {
 				firebase.sync(this, 'seat', 'seasons/' + props.params.seasonId + '/seats/' + props.params.seatId);
@@ -77,13 +77,13 @@ export default React.createClass({
 		}
 	},
 	unbindGlobalData() {
-		firebase.unsync(this, 'seasons', 'games');
+		firebase.unsync(this, 'seasons', 'events');
 	},
 	bindGlobalData() {
 		this.unbindGlobalData();
 
 		firebase.sync(this, 'seasons', 'seasons');
-		firebase.sync(this, 'games', 'seasons:games');
+		firebase.sync(this, 'events', 'seasons:events');
 	},
 	componentWillMount() {
 		firebase.auth().onAuthStateChanged(me => {
@@ -110,8 +110,8 @@ export default React.createClass({
 	},
 
 	isLoaded() {
-		if (this.props.params.gameId) {
-			return this.state.gameLoaded;
+		if (this.props.params.eventId) {
+			return this.state.eventLoaded;
 		} else if (this.props.params.seasonId) {
 			return this.state.seasonLoaded;
 		} else {
@@ -119,8 +119,8 @@ export default React.createClass({
 		}
 	},
 	getTitle() {
-		if (this.props.params.gameId && this.state.gameLoaded) {
-			return <span>{this.state.game.opponent} <small>on</small> {moment(this.state.game.datetime).format('MMM D')}</span>
+		if (this.props.params.eventId && this.state.eventLoaded) {
+			return <span>{this.state.event.opponent} <small>on</small> {moment(this.state.event.datetime).format('MMM D')}</span>
 		} else if (this.props.params.seasonId && this.state.seasonLoaded) {
 			return this.state.season.name;
 		}
@@ -151,16 +151,16 @@ export default React.createClass({
 							</IconButton>
 						);
 						break;
-					case 'game':
+					case 'event':
 						return (
-							<IconButton containerElement={<Link to={'/season/' + this.props.params.seasonId + '/game/' + this.props.params.gameId + '/edit'} />}>
+							<IconButton containerElement={<Link to={'/season/' + this.props.params.seasonId + '/event/' + this.props.params.eventId + '/edit'} />}>
 								<InfoIcon />
 							</IconButton>
 						);
 					//case 'season.edit':
 					case 'season.seat':
 					case 'season.user':
-					//case 'game.edit':
+					//case 'event.edit':
 						let modelName = name.split('.')[1];
 						const check = e => {
 							if (e.shiftKey || confirm('Are you sure?')) {
@@ -179,50 +179,50 @@ export default React.createClass({
 		}
 		return;
 	},
-	getRelevantGames() {
-		let relevantGames = [],
-			upcomingGames = [],
+	getRelevantEvents() {
+		let relevantEvents = [],
+			upcomingEvents = [],
 			seasons = this.state.seasons;
 
 		if (seasons) {
-			firebase.toArray(this.state.games).map(games => {
-				firebase.toArray(games).filter(game => {
+			firebase.toArray(this.state.events).map(events => {
+				firebase.toArray(events).filter(event => {
 					// store for later
-					game.$season = seasons[games.$id];
-					game.$season.$id = games.$id;
+					event.$season = seasons[events.$id];
+					event.$season.$id = events.$id;
 
-					let dayDiff = -1 * moment().diff(game.datetime, 'days');
+					let dayDiff = -1 * moment().diff(event.datetime, 'days');
 					if (dayDiff < 0) {
-						// game has passed
-						if(!game.seats && !game.sold) {
+						// event has passed
+						if(!event.seats && !event.sold) {
 							// we don't know if sold or attended yet
 							return true;
 						} else if (dayDiff > -3) {
-							// game was in the past 3 days
+							// event was in the past 3 days
 							return true;
 						}
 					} else {
-						// game is upcoming
-						upcomingGames.push(game);
+						// event is upcoming
+						upcomingEvents.push(event);
 
-						// game is upcoming soon
+						// event is upcoming soon
 						if (dayDiff < 3) {
-							// game is in the next 3 days
+							// event is in the next 3 days
 							return true;
 						}
 					}
-				}).map(game => {
-					relevantGames.push(game);
+				}).map(event => {
+					relevantEvents.push(event);
 				});
 			});
 
-			// pad with upcoming games, if under 3 games
-			while (relevantGames.length < 3 && upcomingGames.length) {
-				relevantGames.push(upcomingGames.shift());
+			// pad with upcoming events, if under 3 events
+			while (relevantEvents.length < 3 && upcomingEvents.length) {
+				relevantEvents.push(upcomingEvents.shift());
 			}
 		}
 
-		return relevantGames;
+		return relevantEvents;
 	},
 
 	handleDrawerToggle() {
@@ -237,8 +237,8 @@ export default React.createClass({
 			case 'season':
 				ref = firebase.database().ref('seasons/' + this.props.params.seasonId);
 				break;
-			case 'game':
-				ref = firebase.database().ref('seasons:games/' + this.props.params.seasonId + '/' + this.props.params.gameId);
+			case 'event':
+				ref = firebase.database().ref('seasons:events/' + this.props.params.seasonId + '/' + this.props.params.eventId);
 				break;
 			case 'seat':
 				ref = firebase.database().ref('seasons/' + this.props.params.seasonId + '/seats/' + this.props.params.seatId);
@@ -257,7 +257,7 @@ export default React.createClass({
 	},
 
 	render() {
-		let relevantGames = this.getRelevantGames();
+		let relevantEvents = this.getRelevantEvents();
 
 		return (
 			<div id="viewport">
@@ -286,16 +286,16 @@ export default React.createClass({
 						<Divider />
 					</List>
 
-				{relevantGames.length > 0 && 
+				{relevantEvents.length > 0 && 
 					<List onTouchTap={this.handleDrawerClose}>
-						<Subheader>Games</Subheader>
-					{this.state.gamesLoaded ? relevantGames.map((game, gameIndex) => 
-						<GameItem
-							key={gameIndex}
-							game={game}
-							season={game.$season}
+						<Subheader>Events</Subheader>
+					{this.state.eventsLoaded ? relevantEvents.map((event, eventIndex) => 
+						<EventItem
+							key={eventIndex}
+							event={event}
+							season={event.$season}
 							showDayAvatar={false}
-							containerElement={<Link to={'/season/' + game.$season.$id + '/game/' + game.$id} />}
+							containerElement={<Link to={'/season/' + event.$season.$id + '/event/' + event.$id} />}
 						/>
 					) : <Loader />}
 						<Divider />

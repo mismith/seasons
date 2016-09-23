@@ -15,24 +15,24 @@ import TextField from 'material-ui/TextField';
 import SeatAvatar from './SeatAvatar';
 
 
-export const Game = React.createClass({
+export const Event = React.createClass({
 	getDefaultProps() {
 		return {
 			season: {},
-			game:   {},
+			event:  {},
 			handleChanges: () => {},
 		};
 	},
 
 	getUserSeat(userId) {
-		if (this.props.game && this.props.game.seats) {
-			for (let seatId in this.props.game.seats) {
-				if (this.props.game.seats[seatId] === userId) return seatId;
+		if (this.props.event && this.props.event.seats) {
+			for (let seatId in this.props.event.seats) {
+				if (this.props.event.seats[seatId] === userId) return seatId;
 			}
 		}
 		return null;
 	},
-	handleGameUserToggle(e, userId) {
+	handleEventUserToggle(e, userId) {
 		if (userId === 'sold') {
 			let sold;
 
@@ -41,9 +41,9 @@ export const Game = React.createClass({
 			} else {
 				sold = null;
 			}
-			this.props.handleChanges('game', {sold});
+			this.props.handleChanges('event', {sold});
 		} else {
-			let seats = {...this.props.game.seats};
+			let seats = {...this.props.event.seats};
 
 			if (e.currentTarget.checked) {
 				let nextSeatId;
@@ -55,29 +55,29 @@ export const Game = React.createClass({
 			} else {
 				delete seats[this.getUserSeat(userId)];
 			}
-			this.props.handleChanges('game', {seats});
+			this.props.handleChanges('event', {seats});
 		}
 	},
 
 	render() {
-		let {season, game} = this.props;
+		let {season, event} = this.props;
 		let users       = firebase.toArray(season.users),
 		    seasonSeats = firebase.toArray(season.seats),
-		    gameSeats   = firebase.toArray(game.seats);
+		    eventSeats  = firebase.toArray(event.seats);
 
 		return (
 			<List>
-			{!game.sold &&
+			{!event.sold &&
 				<div>
 					<Subheader style={{display: 'flex', justifyContent: 'space-between', paddingRight: 16}}>
 						<span>Attendees</span>
-						<span>{!game.sold ? gameSeats.length : 0} / {seasonSeats.length}</span>
+						<span>{!event.sold ? eventSeats.length : 0} / {seasonSeats.length}</span>
 					</Subheader>
 				{users.filter(user => user.isActive || this.getUserSeat(user.$id)).map(user =>
 					<ListItem
 						key={user.$id}
-						leftAvatar={<div><SeatAvatar user={user} setBackgroundColor={!game.sold && this.getUserSeat(user.$id)} /></div>}
-						rightToggle={<Toggle toggled={!game.sold && !!this.getUserSeat(user.$id)} onToggle={e=>this.handleGameUserToggle(e, user.$id)} disabled={!!game.sold || (!this.getUserSeat(user.$id) && gameSeats.length >= seasonSeats.length)} />}
+						leftAvatar={<div><SeatAvatar user={user} setBackgroundColor={!event.sold && this.getUserSeat(user.$id)} /></div>}
+						rightToggle={<Toggle toggled={!event.sold && !!this.getUserSeat(user.$id)} onToggle={e=>this.handleEventUserToggle(e, user.$id)} disabled={!!event.sold || (!this.getUserSeat(user.$id) && eventSeats.length >= seasonSeats.length)} />}
 						primaryText={user.name}
 					/>
 				)}
@@ -86,15 +86,15 @@ export const Game = React.createClass({
 			}
 
 				<ListItem
-					leftAvatar={<div><SeatAvatar sold setBackgroundColor={!!game.sold} /></div>}
-					rightToggle={<Toggle toggled={!!game.sold} onToggle={e=>this.handleGameUserToggle(e, 'sold')} />}
+					leftAvatar={<div><SeatAvatar sold setBackgroundColor={!!event.sold} /></div>}
+					rightToggle={<Toggle toggled={!!event.sold} onToggle={e=>this.handleEventUserToggle(e, 'sold')} />}
 					primaryText="Sold"
 				/>
-			{game.sold &&
+			{event.sold &&
 				<ListContainer>
 					<TextField
-						value={game.soldPrice || ''}
-						onChange={e=>this.props.handleChanges('game', {soldPrice: e.currentTarget.value})}
+						value={event.soldPrice || ''}
+						onChange={e=>this.props.handleChanges('event', {soldPrice: e.currentTarget.value})}
 						floatingLabelText="Sold Price"
 						fullWidth
 						type="number"
@@ -105,8 +105,8 @@ export const Game = React.createClass({
 				<Divider />
 				<ListContainer>
 					<TextField
-						value={this.props.game.notes || ''}
-						onChange={e=>this.props.handleChanges('game', {notes: e.currentTarget.value})}
+						value={this.props.event.notes || ''}
+						onChange={e=>this.props.handleChanges('event', {notes: e.currentTarget.value})}
 						floatingLabelText="Notes"
 						multiLine
 						fullWidth
@@ -117,22 +117,22 @@ export const Game = React.createClass({
 	},
 });
 
-export const GameInfo = React.createClass({
+export const EventInfo = React.createClass({
 	getDefaultProps() {
 		return {
 			season: {},
-			game:   {},
+			event:  {},
 			handleChanges: () => {},
 		};
 	},
 
-	handleGameDateTimeChange(type, date) {
+	handleEventDateTimeChange(type, date) {
 		let $datetime = moment(date);
 		if (type === 'date') {
 			// prevent clearing the existing time
-			$datetime = moment($datetime.format('YYYY-MM-DD') + ' ' + moment(this.props.game.datetime).format('h:mma'), 'YYYY-MM-DD h:mma');
+			$datetime = moment($datetime.format('YYYY-MM-DD') + ' ' + moment(this.props.event.datetime).format('h:mma'), 'YYYY-MM-DD h:mma');
 		}
-		this.props.handleChanges('game', {datetime: $datetime.format()});
+		this.props.handleChanges('event', {datetime: $datetime.format()});
 	},
 
 	render() {
@@ -140,22 +140,22 @@ export const GameInfo = React.createClass({
 			<List>
 				<ListContainer>
 					<TextField
-						value={this.props.game.opponent || ''}
-						onChange={e=>this.props.handleChanges('game', {opponent: e.currentTarget.value})}
+						value={this.props.event.opponent || ''}
+						onChange={e=>this.props.handleChanges('event', {opponent: e.currentTarget.value})}
 						floatingLabelText="Opponent"
 						fullWidth
 					/>
 					<DatePicker
-						value={moment(this.props.game.datetime).toDate()}
-						onChange={(e, date)=>this.handleGameDateTimeChange('date', date)}
+						value={moment(this.props.event.datetime).toDate()}
+						onChange={(e, date)=>this.handleEventDateTimeChange('date', date)}
 						formatDate={date=>moment(date).format('ddd, MMM D, YYYY')}
 						floatingLabelText="Date"
 						autoOk
 						style={{display: 'inline-flex', width: '50%'}}
 					/>
 					<TimePicker
-						value={moment(this.props.game.datetime).toDate()}
-						onChange={(e, date)=>this.handleGameDateTimeChange('time', date)}
+						value={moment(this.props.event.datetime).toDate()}
+						onChange={(e, date)=>this.handleEventDateTimeChange('time', date)}
 						floatingLabelText="Time"
 						autoOk
 						pedantic

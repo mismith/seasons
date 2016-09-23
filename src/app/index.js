@@ -16,7 +16,7 @@ import firebase from './utils/firebase';
 import App from './components/App';
 import {Home, HomeRedirect} from './components/Home';
 import {Season, SeasonInfo, SeasonSeat, SeasonUser} from './components/Season';
-import {Game, GameInfo} from './components/Game';
+import {Event, EventInfo} from './components/Event';
 
 // styles
 import './styles/bundle.scss';
@@ -49,10 +49,10 @@ ReactDOM.render(
 						<Route path="seat/:seatId" component={SeasonSeat} name="season.seat" />
 						<Route path="user/:userId" component={SeasonUser} name="season.user" />
 					</Route>
-					<Route path="game/:gameId">
-						<IndexRoute component={Game} name="game" />
+					<Route path="event/:eventId">
+						<IndexRoute component={Event} name="event" />
 						<Route path="edit">
-							<IndexRoute component={GameInfo} name="game.edit" />
+							<IndexRoute component={EventInfo} name="event.edit" />
 						</Route>
 					</Route>
 				</Route>
