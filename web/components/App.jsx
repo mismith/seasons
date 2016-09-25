@@ -326,10 +326,10 @@ export default React.createClass({
 					onTitleTouchTap={e=>browserHistory.push(this.getParentUrl())}
 					onLeftIconButtonTouchTap={this.handleDrawerToggle}
 					iconElementRight={this.getRightButton()}
-					style={{position: 'fixed'}}
+					style={{flexShrink: 0}}
 				/>
 			}
-				<main id="main" style={{paddingTop: this.state.me ? 64 : 0}}>{
+				<main id="main">{
 					this.isLoaded() ?
 						React.cloneElement(this.props.children, {...this.state, handleChanges: this.handleChanges})
 					:
