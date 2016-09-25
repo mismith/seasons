@@ -3,6 +3,9 @@ $yellow: #FFCC39;
 $green:  #6CB132;
 $red:    #C83E31;
 
+*:not(html) { /* @HACK to fix disappearing elements on scroll */
+	-webkit-transform: translate3d(0, 0, 0);
+}
 html,
 body {
 	width: 100%;
