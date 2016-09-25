@@ -2,4 +2,4 @@
 
 Track your season tickets
 
-https://season.mismith.io/
+https://seasons.mismith.io/
