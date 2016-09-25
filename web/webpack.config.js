@@ -48,6 +48,12 @@ module.exports = (options) => {
 					NODE_ENV: JSON.stringify(options.isProduction ? 'production' : 'development'),
 				},
 			}),
+			new AppCachePlugin({
+				settings: [
+					'prefer-online',
+				],
+				output: 'cache.manifest',
+			}),
 			new HtmlPlugin({
 				template: Path.join(__dirname, '../web/index.html'),
 			}),
@@ -66,13 +72,7 @@ module.exports = (options) => {
 					warnings: false,
 				},
 			}),
-			ExtractSASS,
-			new AppCachePlugin({
-				settings: [
-					'prefer-online',
-				],
-				output: 'cache.manifest',
-			})
+			ExtractSASS
 		);
 
 		webpackConfig.module.loaders.push({
