@@ -55,4 +55,10 @@ export default {
 				return item;
 			}) : [];
 	},
+
+	sortByDatetime(array) {
+		array.sort((a, b) => a.datetime < b.datetime ? -1 : 1);
+		
+		return array;
+	},
 };

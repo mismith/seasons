@@ -127,9 +127,9 @@ export default React.createClass({
 	},
 	getTitle() {
 		if (this.props.params.eventId && this.state.eventLoaded) {
-			return <span>{this.state.event.opponent} <small>on</small> {moment(this.state.event.datetime).format('MMM D')}</span>
+			return this.state.event.opponent ? <span>{this.state.event.opponent} <small>on</small> {moment(this.state.event.datetime).format('MMM D')}</span> : 'Event name';
 		} else if (this.props.params.seasonId && this.state.seasonLoaded) {
-			return this.state.season.name;
+			return this.state.season.name || 'Season name';
 		}
 		return '';
 	},
@@ -193,40 +193,44 @@ export default React.createClass({
 
 		if (seasons) {
 			firebase.toArray(this.state.events).map(events => {
-				firebase.toArray(events).filter(event => {
-					// store for later
-					event.$season = seasons[events.$id];
-					event.$season.$id = events.$id;
+				firebase.toArray(events)
+					.filter(event => {
+						// store for later
+						event.$season = seasons[events.$id];
+						event.$season.$id = events.$id;
 
-					let dayDiff = -1 * moment().diff(event.datetime, 'days');
-					if (dayDiff < 0) {
-						// event has passed
-						if(!event.seats && !event.sold) {
-							// we don't know if sold or attended yet
-							return true;
-						} else if (dayDiff > -3) {
-							// event was in the past 3 days
-							return true;
-						}
-					} else {
-						// event is upcoming
-						upcomingEvents.push(event);
+						let dayDiff = -1 * moment().diff(event.datetime, 'days');
+						if (dayDiff < 0) {
+							// event has passed
+							if(!event.seats && !event.sold) {
+								// we don't know if sold or attended yet
+								return true;
+							} else if (dayDiff > -3) {
+								// event was in the past 3 days
+								return true;
+							}
+						} else {
+							// event is upcoming
+							upcomingEvents.push(event);
 
-						// event is upcoming soon
-						if (dayDiff < 3) {
-							// event is in the next 3 days
-							return true;
+							// event is upcoming soon
+							if (dayDiff < 3) {
+								// event is in the next 3 days
+								return true;
+							}
 						}
-					}
-				}).map(event => {
-					relevantEvents.push(event);
-				});
+					}).map(event => {
+						relevantEvents.push(event);
+					});
 			});
 
 			// pad with upcoming events, if under 3 events
 			while (relevantEvents.length < 3 && upcomingEvents.length) {
 				relevantEvents.push(upcomingEvents.shift());
 			}
+
+			firebase.sortByDatetime(relevantEvents);
+			firebase.sortByDatetime(upcomingEvents);
 		}
 
 		return relevantEvents;
