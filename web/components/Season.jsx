@@ -69,6 +69,7 @@ export const SeasonInfo = React.createClass({
 	getDefaultProps() {
 		return {
 			season: {},
+			events: {},
 			handleChanges: () => {},
 		};
 	},
@@ -129,6 +130,21 @@ export const SeasonInfo = React.createClass({
 						primary
 						containerElement={<Link to={'/season/' + this.props.params.seasonId + '/edit/user/' + firebase.key()} />}
 						label="Add new attendee"
+					/>
+				</ListContainer>
+				<Divider />
+				<List>
+					<Subheader>Events</Subheader>
+					<ListItem
+						primaryText="Total events"
+						rightIcon={<div>{firebase.toArray(this.props.events[this.props.params.seasonId]).length}</div>}
+					/>
+				</List>
+				<ListContainer style={{textAlign: 'right'}}>
+					<FlatButton
+						primary
+						containerElement={<Link to={'/season/' + this.props.params.seasonId + '/event/' + firebase.key() + '/edit'} />}
+						label="Add new event"
 					/>
 				</ListContainer>
 			</div>

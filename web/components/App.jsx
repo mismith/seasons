@@ -230,7 +230,7 @@ export default React.createClass({
 			}
 
 			firebase.sortByDatetime(relevantEvents);
-			firebase.sortByDatetime(upcomingEvents);
+			//firebase.sortByDatetime(upcomingEvents);
 		}
 
 		return relevantEvents;
