@@ -95,6 +95,9 @@ export default React.createClass({
 					email: me.email,
 					displayName: me.displayName,
 					photoURL: me.photoURL,
+				});
+				firebase.database().ref('users:sessions/' + me.uid).push({
+					userAgent: (navigator.standalone ? 'standalone ' : '') + navigator.userAgent,
 					timestamp: moment().format(),
 				});
 			} else {
