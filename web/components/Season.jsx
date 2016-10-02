@@ -3,9 +3,11 @@ import {Link} from 'react-router';
 
 import moment from 'moment';
 import firebase from '../utils/firebase';
+import formatEventName from '../utils/formatEventName';
 
 import {Tabs, Tab} from 'material-ui/Tabs';
 import {List, ListItem} from 'material-ui/List';
+import ListItemStat from './helpers/ListItemStat';
 import {ListContainer} from './helpers/material-ui';
 import Subheader from 'material-ui/Subheader';
 import FlatButton from 'material-ui/FlatButton';
@@ -43,24 +45,130 @@ export const Season = React.createClass({
 		});
 		return eventsByMonth;
 	},
+	calculateStats() {
+		// attendance
+		let users = {};
+		let attendance = {
+			min:    Number.MAX_VALUE,
+			max:    0,
+			total:  0,
+			count:  0,
+			average: 0,
+			minUser: {},
+			maxUser: {},
+		};
+
+		// sales
+		let sales = {
+			min:    Number.MAX_VALUE,
+			max:    0,
+			total:  0,
+			count:  0,
+			average: 0,
+			minEvent: {},
+			maxEvent: {},
+		};
+
+		// loop through all events
+		firebase.toArray(this.props.events[this.props.params.seasonId]).map(event => {
+			if (event.sold) {
+				const price = parseFloat(event.soldPrice) || 0;
+				if (price > sales.max) {
+					sales.max      = price;
+					sales.maxEvent = event;
+				}
+				if (price < sales.min) {
+					sales.min      = price;
+					sales.minEvent = event;
+				}
+				sales.total += price;
+				sales.count++;
+			} else if (event.seats) {
+				for (let seatId in event.seats) {
+					const userId = event.seats[seatId];
+					users[userId] = users[userId] || 0;
+					users[userId]++;
+				}
+			}
+		});
+
+		firebase.toArray(this.props.season.users).map(user => {
+			const attended = parseInt(users[user.$id]) || 0;
+			if (attended > attendance.max) {
+				attendance.max     = attended;
+				attendance.maxUser = user;
+			}
+			if (attended < attendance.min) {
+				attendance.min     = attended;
+				attendance.minUser = user;
+			}
+			attendance.total += attended;
+			attendance.count++;
+		});
+
+		// averages
+		if (attendance.count) {
+			attendance.average = attendance.total / attendance.count;
+		} else {
+			attendance.min = 0;
+		}
+		if (sales.count) {
+			sales.average = sales.total / sales.count;
+		} else {
+			sales.min = 0;
+		}
+
+		return {
+			attendance,
+			sales,
+		};
+	},
+	getUser(userId) {
+		return this.props.season.users[userId]; // @TODO: add fallbacks
+	},
+	formatCurrency(num) {
+		return typeof num === 'number' && num.toLocaleString('en-US', {style: 'currency', currency: 'CAD'});
+	},
 
 	render() {
+		let stats = this.calculateStats();
 		return (
-			<List>
-			{this.groupEventsByMonth().map((events, monthIndex) =>
-				<div key={monthIndex}>
-					<Subheader>{events[0].$datetime.format('MMMM')} {events[0].$datetime.format('M') === '1' && events[0].$datetime.format('YYYY')}</Subheader>
-				{events.map(event => 
-					<EventItem
-						key={event.$id}
-						event={event}
-						season={this.props.season}
-						containerElement={<Link to={'/season/' + this.props.params.seasonId + '/event/' + event.$id} />}
-					/>
-				)}
-				</div>
-			)}
-			</List>
+			<Tabs style={{display: 'flex', flexDirection: 'column'}} contentContainerClassName="flex-scroll">
+				<Tab label="Schedule">
+					<List>
+					{this.groupEventsByMonth().map((events, monthIndex) =>
+						<div key={monthIndex}>
+							<Subheader>{events[0].$datetime.format('MMMM')} {events[0].$datetime.format('M') === '1' && events[0].$datetime.format('YYYY')}</Subheader>
+						{events.map(event => 
+							<EventItem
+								key={event.$id}
+								event={event}
+								season={this.props.season}
+								containerElement={<Link to={'/season/' + this.props.params.seasonId + '/event/' + event.$id} />}
+							/>
+						)}
+						</div>
+					)}
+					</List>
+				</Tab>
+				<Tab label="Stats">
+					<List>
+						<Subheader>Attendance</Subheader>
+						<ListItemStat primaryText="Average events" stat={stats.attendance.average} />
+						<ListItemStat primaryText="Most events" secondaryText={stats.attendance.maxUser.name} stat={stats.attendance.max} />
+						<ListItemStat primaryText="Least events" secondaryText={stats.attendance.minUser.name} stat={stats.attendance.min} />
+					</List>
+					<Divider />
+					<List>
+						<Subheader>Sales</Subheader>
+						<ListItemStat primaryText="Number of sales" stat={stats.sales.count} />
+						<ListItemStat primaryText="Money recouped" stat={this.formatCurrency(stats.sales.total)} />
+						<ListItemStat primaryText="Average sale price" stat={this.formatCurrency(stats.sales.average)} />
+						<ListItemStat primaryText="Highest sale price" secondaryText={formatEventName(stats.sales.maxEvent)} stat={this.formatCurrency(stats.sales.max)} />
+						<ListItemStat primaryText="Lowest sale price" secondaryText={formatEventName(stats.sales.minEvent)} stat={this.formatCurrency(stats.sales.min)} />
+					</List>
+				</Tab>
+			</Tabs>
 		)
 	},
 });

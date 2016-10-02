@@ -15,6 +15,7 @@ import SeatAvatar from './SeatAvatar';
 import RaisedButton from 'material-ui/RaisedButton';
 import Loader from './helpers/Loader';
 
+
 export const Home = React.createClass({
 	getInitialState() {
 		return {

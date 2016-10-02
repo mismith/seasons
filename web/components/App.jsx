@@ -21,6 +21,7 @@ import DeleteIcon from 'material-ui/svg-icons/action/delete';
 import EventItem from './EventItem';
 import Loader from './helpers/Loader';
 
+
 export default React.createClass({
 	mixins: [ReactFireMixin],
 	getDefaultProps() {
