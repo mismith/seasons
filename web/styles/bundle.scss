@@ -31,11 +31,17 @@ body,
 	max-width: 500px;
 	margin-left: auto;
 	margin-right: auto;
-	overflow-y: auto;
-	-webkit-overflow-scrolling: touch;
 }
 
 
+h3 {
+	text-align: center;
+}
+.flex-scroll {
+	overflow-y: auto;
+	-webkit-overflow-scrolling: touch;
+	flex: 1;
+}
 .dots {
 	display: flex;
 	justify-content: center;
@@ -57,8 +63,4 @@ body,
 			opacity: .75;
 		}
 	}
-}
-
-h3 {
-	text-align: center;
 }

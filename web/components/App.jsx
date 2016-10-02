@@ -337,7 +337,7 @@ export default React.createClass({
 					style={{flexShrink: 0}}
 				/>
 			}
-				<main id="main">{
+				<main id="main" className="flex-scroll">{
 					this.isLoaded() ?
 						React.cloneElement(this.props.children, {...this.state, handleChanges: this.handleChanges})
 					:
