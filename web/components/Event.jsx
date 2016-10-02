@@ -11,6 +11,8 @@ import Toggle from 'material-ui/Toggle';
 import DatePicker from 'material-ui/DatePicker';
 import TimePicker from 'material-ui/TimePicker';
 import TextField from 'material-ui/TextField';
+import SelectField from 'material-ui/SelectField';
+import MenuItem from 'material-ui/MenuItem';
 
 import SeatAvatar from './SeatAvatar';
 
@@ -99,6 +101,22 @@ export const Event = React.createClass({
 						fullWidth
 						type="number"
 					/>
+					<TextField
+						value={event.soldTo || ''}
+						onChange={e=>this.props.handleChanges('event', {soldTo: e.currentTarget.value})}
+						floatingLabelText="Sold To"
+						fullWidth
+					/>
+					<SelectField
+						value={event.soldPaidTo || ''}
+						onChange={(e,i,value)=>this.props.handleChanges('event', {soldPaidTo: value})}
+						floatingLabelText="Paid To"
+						fullWidth
+					>
+					{users.map(user =>
+						<MenuItem key={user.$id} value={user.$id} primaryText={user.name} />
+					)}
+					</SelectField>
 				</ListContainer>
 			}
 
