@@ -51,14 +51,15 @@ export default {
 			.filter(key => key.match(/^[a-z0-9-_]+$/i))
 			.map(key => {
 				let item = obj[key];
-				if (typeof item === 'object') item.$id = key;
+				if (typeof item !== 'object') item = {$value: item};
+				item.$id = key;
 				return item;
 			}) : [];
 	},
 
 	sortByDatetime(array) {
 		array.sort((a, b) => a.datetime < b.datetime ? -1 : 1);
-		
+
 		return array;
 	},
 };
