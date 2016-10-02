@@ -4,6 +4,7 @@ import {Link, browserHistory} from 'react-router';
 import moment from 'moment';
 import firebase from '../utils/firebase';
 import ReactFireMixin from 'reactfire';
+import formatEventName from '../utils/formatEventName';
 
 import Drawer from 'material-ui/Drawer';
 import {List, ListItem} from 'material-ui/List';
@@ -130,7 +131,7 @@ export default React.createClass({
 	},
 	getTitle() {
 		if (this.props.params.eventId && this.state.eventLoaded) {
-			return this.state.event.opponent ? <span>{this.state.event.opponent} <small>on</small> {moment(this.state.event.datetime).format('MMM D')}</span> : 'Event name';
+			return formatEventName(this.state.event);
 		} else if (this.props.params.seasonId && this.state.seasonLoaded) {
 			return this.state.season.name || 'Season name';
 		}
