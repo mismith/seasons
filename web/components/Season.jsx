@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import {Link} from 'react-router';
 
 import moment from 'moment';
@@ -32,7 +33,8 @@ export const Season = React.createClass({
 
 	groupEventsByMonth() {
 		let eventsByMonth = [],
-			previousMonthId;
+			previousMonthId,
+			nextEventFound;
 		firebase.sortByDatetime(firebase.toArray(this.props.events[this.props.params.seasonId])).map(event => {
 			event.$datetime = moment(event.datetime);
 
@@ -40,6 +42,9 @@ export const Season = React.createClass({
 			if (monthId !== previousMonthId) {
 				eventsByMonth.push([]);
 				previousMonthId = monthId;
+			}
+			if (!nextEventFound && event.$datetime.diff(undefined, 'days') >= 0) {
+				event.isNext = nextEventFound = true;
 			}
 			eventsByMonth[eventsByMonth.length - 1].push(event);
 		});
@@ -129,6 +134,12 @@ export const Season = React.createClass({
 	formatCurrency(num) {
 		return typeof num === 'number' && num.toLocaleString('en-US', {style: 'currency', currency: 'CAD'});
 	},
+	scrollEventIntoView(ref, event) {
+		if (event.isNext) {
+			const el = ReactDOM.findDOMNode(ref);
+			if (el) el.scrollIntoView();
+		}
+	},
 
 	render() {
 		let stats = this.calculateStats();
@@ -145,6 +156,7 @@ export const Season = React.createClass({
 								event={event}
 								season={this.props.season}
 								containerElement={<Link to={'/season/' + this.props.params.seasonId + '/event/' + event.$id} />}
+								ref={ref=>this.scrollEventIntoView(ref, event)}
 							/>
 						)}
 						</div>
