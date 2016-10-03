@@ -53,15 +53,6 @@ export const Season = React.createClass({
 	calculateStats() {
 		// attendance
 		let users = {};
-		let attendance = {
-			min:    Number.MAX_VALUE,
-			max:    0,
-			total:  0,
-			count:  0,
-			average: 0,
-			minUser: {},
-			maxUser: {},
-		};
 
 		// sales
 		let sales = {
@@ -91,32 +82,20 @@ export const Season = React.createClass({
 			} else if (event.seats) {
 				for (let seatId in event.seats) {
 					const userId = event.seats[seatId];
-					users[userId] = users[userId] || 0;
-					users[userId]++;
+					if (!users[userId]) {
+						if (this.props.season.users && this.props.season.users[userId]) {
+							users[userId] = {...this.props.season.users[userId]};
+						} else {
+							users[userId] = {};
+						}
+						users[userId].attendance = 0;
+					}
+					users[userId].attendance++;
 				}
 			}
 		});
 
-		firebase.toArray(this.props.season.users).map(user => {
-			const attended = parseInt(users[user.$id]) || 0;
-			if (attended > attendance.max) {
-				attendance.max     = attended;
-				attendance.maxUser = user;
-			}
-			if (attended < attendance.min) {
-				attendance.min     = attended;
-				attendance.minUser = user;
-			}
-			attendance.total += attended;
-			attendance.count++;
-		});
-
 		// averages
-		if (attendance.count) {
-			attendance.average = attendance.total / attendance.count;
-		} else {
-			attendance.min = 0;
-		}
 		if (sales.count) {
 			sales.average = sales.total / sales.count;
 		} else {
@@ -124,7 +103,7 @@ export const Season = React.createClass({
 		}
 
 		return {
-			attendance,
+			users,
 			sales,
 		};
 	},
@@ -168,10 +147,15 @@ export const Season = React.createClass({
 				</Tab>
 				<Tab label="Stats">
 					<List>
-						<Subheader>Attendance</Subheader>
-						<ListItemStat primaryText="Average events" stat={stats.attendance.average} />
-						<ListItemStat primaryText="Most events" secondaryText={stats.attendance.maxUser.name} stat={stats.attendance.max} />
-						<ListItemStat primaryText="Least events" secondaryText={stats.attendance.minUser.name} stat={stats.attendance.min} />
+						<Subheader>Events Attended</Subheader>
+					{firebase.sortByKey(firebase.toArray(stats.users), 'attendance', true).map(user =>
+						<ListItemStat
+							key={user.$id}
+							primaryText={user.name}
+							leftAvatar={<div><SeatAvatar user={user} /></div>}
+							stat={user.attendance}
+						/>
+					)}
 					</List>
 					<Divider />
 					<List>
