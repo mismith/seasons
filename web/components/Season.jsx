@@ -144,7 +144,10 @@ export const Season = React.createClass({
 	render() {
 		let stats = this.calculateStats();
 		return (
-			<Tabs style={{display: 'flex', flexDirection: 'column'}} contentContainerClassName="flex-scroll">
+			<Tabs
+				contentContainerClassName="flex-scroll"
+				style={{display: 'flex', flexDirection: 'column'}}
+			>
 				<Tab label="Schedule">
 					<List>
 					{this.groupEventsByMonth().map((events, monthIndex) =>
