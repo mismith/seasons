@@ -57,8 +57,8 @@ export default {
 			}) : [];
 	},
 
-	sortByDatetime(array) {
-		array.sort((a, b) => a.datetime < b.datetime ? -1 : 1);
+	sortByKey(array, key, reverse) {
+		array.sort((a, b) => (a[key] < b[key] ? -1 : 1) * (reverse ? -1 : 1));
 
 		return array;
 	},

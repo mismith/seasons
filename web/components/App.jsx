@@ -234,7 +234,7 @@ export default React.createClass({
 				relevantEvents.push(upcomingEvents.shift());
 			}
 
-			firebase.sortByDatetime(relevantEvents);
+			firebase.sortByKey(relevantEvents, 'datetime');
 			//firebase.sortByDatetime(upcomingEvents);
 		}
 

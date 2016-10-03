@@ -35,7 +35,7 @@ export const Season = React.createClass({
 		let eventsByMonth = [],
 			previousMonthId,
 			nextEventFound;
-		firebase.sortByDatetime(firebase.toArray(this.props.events[this.props.params.seasonId])).map(event => {
+		firebase.sortByKey(firebase.toArray(this.props.events[this.props.params.seasonId]), 'datetime').map(event => {
 			event.$datetime = moment(event.datetime);
 
 			let monthId = event.$datetime.format('YYYY-MM');
