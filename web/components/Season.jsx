@@ -33,8 +33,7 @@ export const Season = React.createClass({
 
 	groupEventsByMonth() {
 		let eventsByMonth = [],
-			previousMonthId,
-			nextEventFound;
+			previousMonthId;
 		firebase.sortByKey(firebase.toArray(this.props.events[this.props.params.seasonId]), 'datetime').map(event => {
 			event.$datetime = moment(event.datetime);
 
@@ -42,9 +41,6 @@ export const Season = React.createClass({
 			if (monthId !== previousMonthId) {
 				eventsByMonth.push([]);
 				previousMonthId = monthId;
-			}
-			if (!nextEventFound && event.$datetime.diff(undefined, 'days') >= 0) {
-				event.isNext = nextEventFound = true;
 			}
 			eventsByMonth[eventsByMonth.length - 1].push(event);
 		});
@@ -113,8 +109,8 @@ export const Season = React.createClass({
 	formatCurrency(num) {
 		return typeof num === 'number' && num.toLocaleString('en-US', {style: 'currency', currency: 'CAD'});
 	},
-	scrollEventIntoView(ref, event) {
-		if (event.isNext) {
+	scrollIntoView(ref, ifTrue) {
+		if (ifTrue) {
 			const el = ReactDOM.findDOMNode(ref);
 			if (el) el.scrollIntoView();
 		}
@@ -130,7 +126,7 @@ export const Season = React.createClass({
 				<Tab label="Schedule">
 					<List>
 					{this.groupEventsByMonth().map((events, monthIndex) =>
-						<div key={monthIndex}>
+						<div key={monthIndex} ref={ref=>this.scrollIntoView(ref, events[0].$datetime.isSame(undefined, 'month'))}>
 							<Subheader>{events[0].$datetime.format('MMMM')} {events[0].$datetime.format('M') === '1' && events[0].$datetime.format('YYYY')}</Subheader>
 						{events.map(event => 
 							<EventItem
@@ -138,7 +134,6 @@ export const Season = React.createClass({
 								event={event}
 								season={this.props.season}
 								containerElement={<Link to={'/season/' + this.props.params.seasonId + '/event/' + event.$id} />}
-								ref={ref=>this.scrollEventIntoView(ref, event)}
 							/>
 						)}
 						</div>
