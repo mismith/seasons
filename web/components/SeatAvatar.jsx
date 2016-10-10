@@ -27,7 +27,7 @@ const SeatAvatar = React.createClass({
 		return;
 	},
 	render() {
-		let {size, sold, user, props, backgroundColor} = this.props;
+		let {size, sold, user, setBackgroundColor, ...props} = this.props;
 		return (
 			<Avatar size={size} backgroundColor={this.getBackgroundColor()} {...props}>
 			{sold &&
