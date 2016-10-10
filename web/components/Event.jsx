@@ -97,7 +97,7 @@ export const Event = React.createClass({
 					<TextField
 						value={event.soldPrice || ''}
 						onChange={e=>this.props.handleChanges('event', {soldPrice: e.currentTarget.value})}
-						floatingLabelText="Sold Price"
+						floatingLabelText="Money Recouped"
 						fullWidth
 						type="number"
 					/>
