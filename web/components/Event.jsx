@@ -4,18 +4,15 @@ import moment from 'moment';
 import firebase from '../utils/firebase';
 
 import {List, ListItem} from 'material-ui/List';
-import {ListContainer} from './helpers/material-ui';
 import Subheader from 'material-ui/Subheader';
 import Divider from 'material-ui/Divider';
 import Toggle from 'material-ui/Toggle';
 import DatePicker from 'material-ui/DatePicker';
 import TimePicker from 'material-ui/TimePicker';
 import TextField from 'material-ui/TextField';
-import SelectField from 'material-ui/SelectField';
-import MenuItem from 'material-ui/MenuItem';
 
+import {ListContainer, ListItemPicker} from './helpers/material-ui';
 import SeatAvatar from './SeatAvatar';
-
 
 export const Event = React.createClass({
 	getDefaultProps() {
@@ -57,26 +54,13 @@ export const Event = React.createClass({
 				      user   = this.getUser(userId);
 
 				return (
-				<ListItem
+				<ListItemPicker
 					key={seat.$id}
 					leftIcon={<div><SeatAvatar data={user} setBackgroundColor={!!user} /></div>}
-					primaryText={
-						<div style={{marginTop: -10, marginBottom: -10}}>
-							<SelectField
-								value={event.seats && event.seats[seat.$id]}
-								onChange={(e,i,value)=>this.handleSeatChanges(e, seat.$id, value)}
-								hintText={`Section ${seat.section}, Row ${seat.row}, Seat ${seat.seat}`}
-								fullWidth
-							>
-							{users.map(user =>
-								<MenuItem key={user.$id} value={user.$id} primaryText={user.name} />
-							)}
-								<Divider />
-								<MenuItem value={null} primaryText={<em>Clear seat</em>} />
-							</SelectField>
-						</div>
-					}
-					disabled
+					hintText={`Section ${seat.section}, Row ${seat.row}, Seat ${seat.seat}`}
+					items={users}
+					value={event.seats && event.seats[seat.$id]}
+					onChange={(e,i,value)=>this.handleSeatChanges(e, seat.$id, value)}
 				/>
 				);
 			})}
@@ -87,40 +71,41 @@ export const Event = React.createClass({
 					primaryText="Sold"
 				/>
 			{event.sold &&
-				<ListContainer>
+				<ListContainer insetChildren>
 					<TextField
+						floatingLabelText="Money Recouped"
 						value={event.soldPrice || ''}
 						onChange={e=>this.props.handleChanges('event', {soldPrice: e.currentTarget.value || null})}
-						floatingLabelText="Money Recouped"
 						fullWidth
 						type="number"
 					/>
+				</ListContainer>
+			}
+			{event.sold &&
+				<ListContainer insetChildren>
 					<TextField
+						floatingLabelText="Sold To"
 						value={event.soldTo || ''}
 						onChange={e=>this.props.handleChanges('event', {soldTo: e.currentTarget.value || null})}
-						floatingLabelText="Sold To"
 						fullWidth
 					/>
-					<SelectField
-						value={event.soldPaidTo || ''}
-						onChange={(e,i,value)=>this.props.handleChanges('event', {soldPaidTo: value || null})}
-						floatingLabelText="Paid To"
-						fullWidth
-					>
-					{users.map(user =>
-						<MenuItem key={user.$id} value={user.$id} primaryText={user.name} />
-					)}
-						<Divider />
-						<MenuItem value={null} primaryText={<em>Clear user</em>} />
-					</SelectField>
 				</ListContainer>
+			}
+			{event.sold &&
+				<ListItemPicker
+					leftIcon={<div><SeatAvatar data={this.getUser(event.soldPaidTo)} setBackgroundColor={!!this.getUser(event.soldPaidTo)} /></div>}
+					floatingLabelText="Paid To"
+					items={users}
+					value={event.soldPaidTo || ''}
+					onChange={(e,i,value)=>this.props.handleChanges('event', {soldPaidTo: value || null})}
+				/>
 			}
 				<Divider />
 				<ListContainer>
 					<TextField
+						floatingLabelText="Notes"
 						value={this.props.event.notes || ''}
 						onChange={e=>this.props.handleChanges('event', {notes: e.currentTarget.value || null})}
-						floatingLabelText="Notes"
 						multiLine
 						fullWidth
 					/>

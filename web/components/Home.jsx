@@ -42,20 +42,18 @@ export const Home = React.createClass({
 							<h3>Record who attends each event</h3>
 							<Paper>
 								<List>
+								{[
+									{name: 'John Smith'},
+									{name: 'Jane Doe'},
+									{name: 'Sam Smith'},
+								].map((user, i) => 
+									<ListItemPicker items="users" />
+								)}
+									<Divider />
 									<ListItem
-										leftAvatar={<div><SeatAvatar user={{name: 'John Smith'}} /></div>}
-										rightToggle={<Toggle defaultToggled={true} />}
-										primaryText="John Smith"
-									/>
-									<ListItem
-										leftAvatar={<div><SeatAvatar user={{name: 'Jane Doe'}} /></div>}
-										rightToggle={<Toggle defaultToggled={true} />}
-										primaryText="Jane Doe"
-									/>
-									<ListItem
-										leftAvatar={<div><SeatAvatar user={{name: 'Sam Smith'}} /></div>}
-										rightToggle={<Toggle defaultToggled={false} />}
-										primaryText="Sam Smith"
+										leftAvatar={<div><SeatAvatar sold data={{soldPrice: true, soldTo: true, soldPaidTo: true}} /></div>}
+										rightToggle={<Toggle disabled />}
+										primaryText="Sold"
 									/>
 								</List>
 							</Paper>
