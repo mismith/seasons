@@ -65,6 +65,7 @@ export const Season = React.createClass({
 		firebase.toArray(this.props.events[this.props.params.seasonId]).map(event => {
 			if (event.sold) {
 				const price = parseFloat(event.soldPrice) || 0;
+				
 				if (price > sales.max) {
 					sales.max      = price;
 					sales.maxEvent = event;
@@ -73,11 +74,16 @@ export const Season = React.createClass({
 					sales.min      = price;
 					sales.minEvent = event;
 				}
+
 				sales.total += price;
 				sales.count++;
 			} else if (event.seats) {
+				let seatedUserIds = []; // if a user takes multiple seats at one event, only count it as one attendance
 				for (let seatId in event.seats) {
 					const userId = event.seats[seatId];
+
+					if (seatedUserIds.indexOf(userId) >= 0) continue;
+
 					if (!users[userId]) {
 						if (this.props.season.users && this.props.season.users[userId]) {
 							users[userId] = {...this.props.season.users[userId]};
@@ -86,7 +92,10 @@ export const Season = React.createClass({
 						}
 						users[userId].attendance = 0;
 					}
+
 					users[userId].attendance++;
+
+					seatedUserIds.push(userId);
 				}
 			}
 		});

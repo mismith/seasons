@@ -26,39 +26,22 @@ export const Event = React.createClass({
 		};
 	},
 
-	getUserSeat(userId) {
+	getSeatedUserId(seatId) {
 		if (this.props.event && this.props.event.seats) {
-			for (let seatId in this.props.event.seats) {
-				if (this.props.event.seats[seatId] === userId) return seatId;
-			}
+			return this.props.event.seats[seatId];
 		}
-		return null;
 	},
-	handleEventUserToggle(e, userId) {
-		if (userId === 'sold') {
-			let sold;
-
-			if (e.currentTarget.checked) {
-				sold = true;
-			} else {
-				sold = null;
-			}
-			this.props.handleChanges('event', {sold});
-		} else {
-			let seats = {...this.props.event.seats};
-
-			if (e.currentTarget.checked) {
-				let nextSeatId;
-				for(let seatId in this.props.season.seats) {
-					if (!seats[seatId]) nextSeatId = seatId;
-				}
-				if (nextSeatId) seats[nextSeatId] = userId;
-				else throw new Error('No seats left to claim');
-			} else {
-				delete seats[this.getUserSeat(userId)];
-			}
-			this.props.handleChanges('event', {seats});
+	getUser(userId) {
+		if (this.props.season.users) {
+			return this.props.season.users[userId];
 		}
+	},
+	handleSeatChanges(e, seatId, value) {
+		let seats = {...this.props.event.seats};
+
+		seats[seatId] = value || null;
+
+		this.props.handleChanges('event', {seats});
 	},
 
 	render() {
@@ -69,27 +52,38 @@ export const Event = React.createClass({
 
 		return (
 			<List>
-			{!event.sold &&
-				<div>
-					<Subheader style={{display: 'flex', justifyContent: 'space-between', paddingRight: 16}}>
-						<span>Attendees</span>
-						<span>{!event.sold ? eventSeats.length : 0} / {seasonSeats.length}</span>
-					</Subheader>
-				{users.filter(user => user.isActive || this.getUserSeat(user.$id)).map(user =>
-					<ListItem
-						key={user.$id}
-						leftAvatar={<div><SeatAvatar user={user} setBackgroundColor={!event.sold && this.getUserSeat(user.$id)} /></div>}
-						rightToggle={<Toggle toggled={!event.sold && !!this.getUserSeat(user.$id)} onToggle={e=>this.handleEventUserToggle(e, user.$id)} disabled={!!event.sold || (!this.getUserSeat(user.$id) && eventSeats.length >= seasonSeats.length)} />}
-						primaryText={user.name}
-					/>
-				)}
-					<Divider />
-				</div>
-			}
+			{!event.sold && seasonSeats.map(seat => {
+				const userId = this.getSeatedUserId(seat.$id),
+				      user   = this.getUser(userId);
 
+				return (
+				<ListItem
+					key={seat.$id}
+					leftIcon={<div><SeatAvatar user={user} setBackgroundColor={!!user} /></div>}
+					primaryText={
+						<div style={{marginTop: -10, marginBottom: -10}}>
+							<SelectField
+								value={event.seats && event.seats[seat.$id]}
+								onChange={(e,i,value)=>this.handleSeatChanges(e, seat.$id, value)}
+								hintText={`Section ${seat.section}, Row ${seat.row}, Seat ${seat.seat}`}
+								fullWidth
+							>
+							{users.map(user =>
+								<MenuItem key={user.$id} value={user.$id} primaryText={user.name} />
+							)}
+								<Divider />
+								<MenuItem value={null} primaryText={<em>Clear seat</em>} />
+							</SelectField>
+						</div>
+					}
+					disabled
+				/>
+				);
+			})}
+				<Divider />
 				<ListItem
 					leftAvatar={<div><SeatAvatar sold setBackgroundColor={!!event.sold} /></div>}
-					rightToggle={<Toggle toggled={!!event.sold} onToggle={e=>this.handleEventUserToggle(e, 'sold')} />}
+					rightToggle={<Toggle toggled={!!event.sold} onToggle={e=>this.props.handleChanges('event', {sold: e.currentTarget.checked})} />}
 					primaryText="Sold"
 				/>
 			{event.sold &&
@@ -119,7 +113,6 @@ export const Event = React.createClass({
 					</SelectField>
 				</ListContainer>
 			}
-
 				<Divider />
 				<ListContainer>
 					<TextField
