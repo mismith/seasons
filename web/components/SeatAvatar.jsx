@@ -10,7 +10,7 @@ const SeatAvatar = React.createClass({
 	getDefaultProps() {
 		return {
 			sold: false,
-			user: undefined,
+			data: undefined,
 			size: undefined,
 			setBackgroundColor: true,
 		};
@@ -19,24 +19,31 @@ const SeatAvatar = React.createClass({
 		let backgroundColor;
 		if (this.props.setBackgroundColor) {
 			if (this.props.sold) {
-				return '#6CB132';
-			} else if (this.props.user) {
+				if (this.props.data) {
+					if (this.props.data.soldPrice && this.props.data.soldTo && this.props.data.soldPaidTo) {
+						return '#6CB132';
+					} else if (this.props.data.soldPrice || this.props.data.soldTo || this.props.data.soldPaidTo) {
+						return '#FFCC39';
+					}
+				}
+				return '#C83E31';
+			} else if (this.props.data) {
 				return '#5176C7';
 			}
 		}
 		return;
 	},
 	render() {
-		let {size, sold, user, setBackgroundColor, ...props} = this.props;
+		let {size, sold, data, setBackgroundColor, ...props} = this.props;
 		return (
 			<Avatar size={size} backgroundColor={this.getBackgroundColor()} {...props}>
 			{sold &&
 				<span>$</span>
 			}
-			{!sold && user &&
-				getInitials(user.name) 
+			{!sold && data &&
+				getInitials(data.name) 
 			}
-			{!sold && !user &&
+			{!sold && !data &&
 				<img src={SeatIcon} height="18" style={{opacity: .5}} />
 			}
 			</Avatar>

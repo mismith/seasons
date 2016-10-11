@@ -65,7 +65,7 @@ export const Season = React.createClass({
 		firebase.toArray(this.props.events[this.props.params.seasonId]).map(event => {
 			if (event.sold) {
 				const price = parseFloat(event.soldPrice) || 0;
-				
+
 				if (price > sales.max) {
 					sales.max      = price;
 					sales.maxEvent = event;
@@ -156,7 +156,7 @@ export const Season = React.createClass({
 						<ListItemStat
 							key={user.$id}
 							primaryText={user.name}
-							leftAvatar={<div><SeatAvatar user={user} /></div>}
+							leftAvatar={<div><SeatAvatar data={user} /></div>}
 							stat={user.attendance}
 						/>
 					)}
@@ -191,13 +191,13 @@ export const SeasonInfo = React.createClass({
 				<ListContainer>
 					<TextField
 						value={this.props.season.name || ''}
-						onChange={e=>this.props.handleChanges('season', {name: e.currentTarget.value})}
+						onChange={e=>this.props.handleChanges('season', {name: e.currentTarget.value || null})}
 						floatingLabelText="Season name"
 						fullWidth
 					/>
 					<TextField 
 						value={this.props.season.cost || ''}
-						onChange={e=>this.props.handleChanges('season', {cost: e.currentTarget.value})}
+						onChange={e=>this.props.handleChanges('season', {cost: e.currentTarget.value || null})}
 						floatingLabelText="Total cost"
 						fullWidth
 						type="number"
@@ -229,7 +229,7 @@ export const SeasonInfo = React.createClass({
 				{firebase.toArray(this.props.season.users).map(user =>
 					<ListItem
 						key={user.$id}
-						leftAvatar={<div><SeatAvatar user={user} setBackgroundColor={!!user.isActive} /></div>}
+						leftAvatar={<div><SeatAvatar data={user} setBackgroundColor={!!user.isActive} /></div>}
 						rightIcon={<ChevronRightIcon />}
 						containerElement={<Link to={'/season/' + this.props.params.seasonId + '/edit/user/' + user.$id} />}
 						primaryText={user.name}
@@ -277,19 +277,19 @@ export const SeasonSeat = React.createClass({
 				<ListContainer>
 					<TextField
 						value={this.props.seat.section || ''}
-						onChange={e=>this.props.handleChanges('seat', {section: e.currentTarget.value})}
+						onChange={e=>this.props.handleChanges('seat', {section: e.currentTarget.value || null})}
 						floatingLabelText="Section"
 						fullWidth
 					/>
 					<TextField
 						value={this.props.seat.row || ''}
-						onChange={e=>this.props.handleChanges('seat', {row: e.currentTarget.value})}
+						onChange={e=>this.props.handleChanges('seat', {row: e.currentTarget.value || null})}
 						floatingLabelText="Row"
 						fullWidth
 					/>
 					<TextField
 						value={this.props.seat.seat || ''}
-						onChange={e=>this.props.handleChanges('seat', {seat: e.currentTarget.value})}
+						onChange={e=>this.props.handleChanges('seat', {seat: e.currentTarget.value || null})}
 						floatingLabelText="Seat"
 						fullWidth
 					/>
@@ -313,13 +313,13 @@ export const SeasonUser = React.createClass({
 				<ListContainer>
 					<TextField
 						value={this.props.user.name || ''}
-						onChange={e=>this.props.handleChanges('user', {name: e.currentTarget.value})}
+						onChange={e=>this.props.handleChanges('user', {name: e.currentTarget.value || null})}
 						floatingLabelText="Name"
 						fullWidth
 					/>
 				</ListContainer>
 				<ListItem
-					rightToggle={<Toggle toggled={!!this.props.user.isActive} onToggle={e=>this.props.handleChanges('user', {isActive: e.currentTarget.checked})} />}
+					rightToggle={<Toggle toggled={!!this.props.user.isActive} onToggle={e=>this.props.handleChanges('user', {isActive: e.currentTarget.checked || null})} />}
 					primaryText="Active"
 				/>
 			</List>

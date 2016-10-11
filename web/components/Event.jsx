@@ -59,7 +59,7 @@ export const Event = React.createClass({
 				return (
 				<ListItem
 					key={seat.$id}
-					leftIcon={<div><SeatAvatar user={user} setBackgroundColor={!!user} /></div>}
+					leftIcon={<div><SeatAvatar data={user} setBackgroundColor={!!user} /></div>}
 					primaryText={
 						<div style={{marginTop: -10, marginBottom: -10}}>
 							<SelectField
@@ -82,34 +82,36 @@ export const Event = React.createClass({
 			})}
 				<Divider />
 				<ListItem
-					leftAvatar={<div><SeatAvatar sold setBackgroundColor={!!event.sold} /></div>}
-					rightToggle={<Toggle toggled={!!event.sold} onToggle={e=>this.props.handleChanges('event', {sold: e.currentTarget.checked})} />}
+					leftAvatar={<div><SeatAvatar sold data={event} setBackgroundColor={!!event.sold} /></div>}
+					rightToggle={<Toggle toggled={!!event.sold} onToggle={e=>this.props.handleChanges('event', {sold: e.currentTarget.checked || null})} />}
 					primaryText="Sold"
 				/>
 			{event.sold &&
 				<ListContainer>
 					<TextField
 						value={event.soldPrice || ''}
-						onChange={e=>this.props.handleChanges('event', {soldPrice: e.currentTarget.value})}
+						onChange={e=>this.props.handleChanges('event', {soldPrice: e.currentTarget.value || null})}
 						floatingLabelText="Money Recouped"
 						fullWidth
 						type="number"
 					/>
 					<TextField
 						value={event.soldTo || ''}
-						onChange={e=>this.props.handleChanges('event', {soldTo: e.currentTarget.value})}
+						onChange={e=>this.props.handleChanges('event', {soldTo: e.currentTarget.value || null})}
 						floatingLabelText="Sold To"
 						fullWidth
 					/>
 					<SelectField
 						value={event.soldPaidTo || ''}
-						onChange={(e,i,value)=>this.props.handleChanges('event', {soldPaidTo: value})}
+						onChange={(e,i,value)=>this.props.handleChanges('event', {soldPaidTo: value || null})}
 						floatingLabelText="Paid To"
 						fullWidth
 					>
 					{users.map(user =>
 						<MenuItem key={user.$id} value={user.$id} primaryText={user.name} />
 					)}
+						<Divider />
+						<MenuItem value={null} primaryText={<em>Clear user</em>} />
 					</SelectField>
 				</ListContainer>
 			}
@@ -117,7 +119,7 @@ export const Event = React.createClass({
 				<ListContainer>
 					<TextField
 						value={this.props.event.notes || ''}
-						onChange={e=>this.props.handleChanges('event', {notes: e.currentTarget.value})}
+						onChange={e=>this.props.handleChanges('event', {notes: e.currentTarget.value || null})}
 						floatingLabelText="Notes"
 						multiLine
 						fullWidth
@@ -152,7 +154,7 @@ export const EventInfo = React.createClass({
 				<ListContainer>
 					<TextField
 						value={this.props.event.opponent || ''}
-						onChange={e=>this.props.handleChanges('event', {opponent: e.currentTarget.value})}
+						onChange={e=>this.props.handleChanges('event', {opponent: e.currentTarget.value || null})}
 						floatingLabelText="Opponent"
 						fullWidth
 					/>
