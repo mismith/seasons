@@ -158,17 +158,18 @@ export const Season = React.createClass({
 							primaryText={user.name}
 							leftAvatar={<div><SeatAvatar data={user} /></div>}
 							stat={user.attendance}
+							disabled
 						/>
 					)}
 					</List>
 					<Divider />
 					<List>
 						<Subheader>Sales</Subheader>
-						<ListItemStat primaryText="Number of sales" stat={stats.sales.count} />
-						<ListItemStat primaryText="Money recouped" stat={this.formatCurrency(stats.sales.total)} />
-						<ListItemStat primaryText="Average sale price" stat={this.formatCurrency(stats.sales.average)} />
-						<ListItemStat primaryText="Highest sale price" secondaryText={formatEventName(stats.sales.maxEvent)} stat={this.formatCurrency(stats.sales.max)} />
-						<ListItemStat primaryText="Lowest sale price" secondaryText={formatEventName(stats.sales.minEvent)} stat={this.formatCurrency(stats.sales.min)} />
+						<ListItemStat primaryText="Number of sales" stat={stats.sales.count} disabled />
+						<ListItemStat primaryText="Money recouped" stat={this.formatCurrency(stats.sales.total)} disabled />
+						<ListItemStat primaryText="Average sale price" stat={this.formatCurrency(stats.sales.average)} disabled />
+						<ListItemStat primaryText="Highest sale price" secondaryText={formatEventName(stats.sales.maxEvent)} stat={this.formatCurrency(stats.sales.max)} disabled />
+						<ListItemStat primaryText="Lowest sale price" secondaryText={formatEventName(stats.sales.minEvent)} stat={this.formatCurrency(stats.sales.min)} disabled />
 					</List>
 				</Tab>
 			</Tabs>
