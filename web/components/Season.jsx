@@ -5,6 +5,7 @@ import {Link} from 'react-router';
 import moment from 'moment';
 import firebase from '../utils/firebase';
 import formatEventName from '../utils/formatEventName';
+import LocalStorageMixin from 'react-localstorage';
 
 import {Tabs, Tab} from 'material-ui/Tabs';
 import {List, ListItem} from 'material-ui/List';
@@ -24,10 +25,20 @@ import SeatAvatar from './SeatAvatar';
 
 
 export const Season = React.createClass({
+	mixins: [
+		LocalStorageMixin,
+	],
+
 	getDefaultProps() {
 		return {
 			season: {},
 			events: {},
+		};
+	},
+	getInitialState() {
+		return {
+			activeTabIndex:  0,
+			scrollPositions: {},
 		};
 	},
 
@@ -118,26 +129,36 @@ export const Season = React.createClass({
 	formatCurrency(num) {
 		return typeof num === 'number' && num.toLocaleString('en-US', {style: 'currency', currency: 'CAD'});
 	},
-	scrollIntoView(ref, ifTrue) {
-		if (ifTrue) {
-			const el = ReactDOM.findDOMNode(ref);
-			if (el) el.scrollIntoView();
-		}
+
+	handleTabChange(value, event, tab) {
+		this.setState({
+			activeTabIndex: tab.props.index,
+		}, () => {
+			this.restoreScrollPosition();
+		});
 	},
-	storeScrollPosition() {
-		if (this.state.tabsEl) {
-			const scrollContainer = this.state.tabsEl.querySelector('.flex-scroll');
-			if (scrollContainer) {
-				console.log('cWU', scrollContainer.scrollTop);
+	rememberScrollPositions(ref) {
+		if (!this.scrollContainer) {
+			const el = ReactDOM.findDOMNode(ref);
+			if (el) {
+				this.scrollContainer = el.querySelector('.flex-scroll');
+				if (this.scrollContainer) {
+					this.scrollContainer.addEventListener('scroll', e => {
+						this.setState({
+							scrollPositions: {
+								...this.state.scrollPositions || {},
+								[this.state.activeTabIndex]: e.target.scrollTop,
+							},
+						});
+					});
+				}
 			}
 		}
 	},
-
-	componentWillMount() {
-		
-	},
-	componentWillUnmount() {
-		this.storeScrollPosition();
+	restoreScrollPosition() {
+		if (this.scrollContainer && this.state.scrollPositions) {
+			this.scrollContainer.scrollTop = this.state.scrollPositions[this.state.activeTabIndex] || 0;
+		}
 	},
 
 	render() {
@@ -146,12 +167,13 @@ export const Season = React.createClass({
 			<Tabs
 				contentContainerClassName="flex-scroll"
 				style={{display: 'flex', flexDirection: 'column'}}
-				ref={ref=>this.setState({tabsEl: ref})}
+				ref={ref=>this.rememberScrollPositions(ref)}
+				onChange={this.handleTabChange}
 			>
 				<Tab label="Schedule">
 					<List>
 					{this.groupEventsByMonth().map((events, monthIndex) =>
-						<div key={monthIndex} ref={ref=>this.scrollIntoView(ref, events[0].$datetime.isSame(undefined, 'month'))}>
+						<div key={monthIndex}>
 							<Subheader>{events[0].$datetime.format('MMMM')} {events[0].$datetime.format('M') === '1' && events[0].$datetime.format('YYYY')}</Subheader>
 						{events.map(event => 
 							<EventItem
