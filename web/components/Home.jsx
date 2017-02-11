@@ -6,6 +6,7 @@ import firebase from '../utils/firebase';
 import GoogleGIcon from '../images/googleg.svg';
 import LogoImg from '../images/logo.svg';
 
+import Divider from 'material-ui/Divider';
 import SwipeableViews from 'react-swipeable-views';
 import Paper from 'material-ui/Paper';
 import {List, ListItem} from 'material-ui/List';
@@ -14,6 +15,7 @@ import SeatAvatar from './SeatAvatar';
 
 import RaisedButton from 'material-ui/RaisedButton';
 import Loader from './helpers/Loader';
+import {ListItemPicker} from './helpers/material-ui';
 
 
 export const Home = React.createClass({
@@ -23,6 +25,12 @@ export const Home = React.createClass({
 		};
 	},
 	render() {
+		const fakeUsers = [
+			{$id: 0, name: 'John Smith'},
+			{$id: 1, name: 'Jane Doe'},
+			{$id: 2, name: 'Sam Smith'},
+		];
+
 		return (
 			<div style={{display: 'flex', flexDirection: 'column', flexGrow: 1}}>
 				<div style={{display: 'flex', flexDirection: 'column', justifyContent: 'stretch', flexGrow: 1}}>
@@ -42,18 +50,15 @@ export const Home = React.createClass({
 							<h3>Record who attends each event</h3>
 							<Paper>
 								<List>
-								{[
-									{name: 'John Smith'},
-									{name: 'Jane Doe'},
-									{name: 'Sam Smith'},
-								].map((user, i) => 
-									<ListItemPicker items="users" />
-								)}
-									<Divider />
-									<ListItem
-										leftAvatar={<div><SeatAvatar sold data={{soldPrice: true, soldTo: true, soldPaidTo: true}} /></div>}
-										rightToggle={<Toggle disabled />}
-										primaryText="Sold"
+									<ListItemPicker
+										leftIcon={<div><SeatAvatar data={fakeUsers[0]} setBackgroundColor={!!fakeUsers[0]} /></div>}
+										items={fakeUsers}
+										value={0}
+									/>
+									<ListItemPicker
+										leftIcon={<div><SeatAvatar data={fakeUsers[1]} setBackgroundColor={!!fakeUsers[1]} /></div>}
+										items={fakeUsers}
+										value={1}
 									/>
 								</List>
 							</Paper>
