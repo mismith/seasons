@@ -34,10 +34,16 @@ export const Season = React.createClass({
     };
   },
   getInitialState() {
-    return {
-      activeTabIndex:  0,
+    let state = {
+      activeTabIndex:  undefined,
       scrollPositions: {},
     };
+    try {
+      // manually override react-localstorage's auto-initializing because <Tabs initialSelectedIndex> needs to be set only once, so waiting until componentDidMount won't work
+      return JSON.parse(localStorage.getItem('Season')) || {};
+    } catch (err) {
+      return state;
+    }
   },
 
   groupEventsByMonth() {
@@ -161,12 +167,16 @@ export const Season = React.createClass({
 
   render() {
     let stats = this.calculateStats();
+
+    this.restoreScrollPosition(); // @HACK? mightn't this cause an overflow somehow?
+
     return (
       <Tabs
         contentContainerClassName="flex-scroll"
         style={{display: 'flex', flexDirection: 'column'}}
         ref={ref=>this.rememberScrollPositions(ref)}
         onChange={this.handleTabChange}
+        initialSelectedIndex={this.state.activeTabIndex}
       >
         <Tab label="Schedule">
           <List>
