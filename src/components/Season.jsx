@@ -85,7 +85,7 @@ export const Season = React.createClass({
           sales.max      = price;
           sales.maxEvent = event;
         }
-        if (price < sales.min) {
+        if (price > 0 && price < sales.min) {
           sales.min      = price;
           sales.minEvent = event;
         }
