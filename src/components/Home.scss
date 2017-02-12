@@ -1,0 +1,28 @@
+h3 {
+  text-align: center;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.dots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: -16px;
+
+  .dot {
+    display: inline-flex;
+    width: 6px;
+    height: 6px;
+    transition: background-color 300ms;
+    border: solid 1px #000;
+    border-radius: 3px;
+    margin: 3px;
+    opacity: .5;
+
+    &.active {
+      background-color: #000;
+      opacity: .75;
+    }
+  }
+}

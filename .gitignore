@@ -13,3 +13,4 @@ jspm_packages
 #
 build/
 .DS_Store
+src/**/*.css

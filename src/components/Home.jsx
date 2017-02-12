@@ -1,12 +1,10 @@
 import React from 'react';
-import {browserHistory} from 'react-router';
 
 import firebase from '../utils/firebase';
 
 import GoogleGIcon from '../images/googleg.svg';
 import LogoImg from '../images/logo.svg';
 
-import Divider from 'material-ui/Divider';
 import SwipeableViews from 'react-swipeable-views';
 import Paper from 'material-ui/Paper';
 import {List, ListItem} from 'material-ui/List';
@@ -16,6 +14,8 @@ import SeatAvatar from './SeatAvatar';
 import RaisedButton from 'material-ui/RaisedButton';
 import Loader from './helpers/Loader';
 import {ListItemPicker} from './helpers/material-ui';
+
+import './Home.css';
 
 
 export const Home = React.createClass({
@@ -43,7 +43,7 @@ export const Home = React.createClass({
 						<div>
 							<h3>Track your season tickets</h3>
 							<div style={{textAlign: 'center'}}>
-								<img src={LogoImg} />
+								<img src={LogoImg} role="presentation" />
 							</div>
 						</div>
 						<div>
@@ -78,7 +78,7 @@ export const Home = React.createClass({
 						<div>
 							<h3>Simply login to get started</h3>
 							<div style={{textAlign: 'center'}}>
-								<img src={LogoImg} />
+								<img src={LogoImg} role="presentation" />
 							</div>
 						</div>
 					</SwipeableViews>
@@ -97,7 +97,7 @@ export const Home = React.createClass({
 				{this.props.authLoaded ?
 					<RaisedButton
 						label="Login with Google"
-						icon={<img src={GoogleGIcon} style={{marginTop: -2}} />}
+						icon={<img src={GoogleGIcon} alt="Google Logo" style={{marginTop: -2}} />}
 						onTouchTap={firebase.login}
 					/>
 				:

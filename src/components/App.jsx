@@ -1,6 +1,10 @@
 import React from 'react';
 import {Link, browserHistory} from 'react-router';
 
+import Helmet from 'react-helmet';
+import LogoImg from '../images/logo.png';
+import TouchiconImg from '../images/touchicon.png';
+
 import moment from 'moment';
 import firebase from '../utils/firebase';
 import ReactFireMixin from 'reactfire';
@@ -10,7 +14,6 @@ import Drawer from 'material-ui/Drawer';
 import {List, ListItem} from 'material-ui/List';
 import Subheader from 'material-ui/Subheader';
 import Divider from 'material-ui/Divider';
-import AddIcon from 'material-ui/svg-icons/content/add';
 import PowerSettingsIcon from 'material-ui/svg-icons/action/power-settings-new';
 
 import AppBar from 'material-ui/AppBar';
@@ -20,6 +23,7 @@ import DeleteIcon from 'material-ui/svg-icons/action/delete';
 
 import EventItem from './EventItem';
 import Loader from './helpers/Loader';
+import './App.css';
 
 
 export default React.createClass({
@@ -151,7 +155,7 @@ export default React.createClass({
 		}
 		return path;
 	},
-	getRightButton() {
+	getRightMenuButton() {
 		if (this.state.me) {
 			if (this.props.routes || this.props.routes.length) {
 				let name = this.props.routes[this.props.routes.length - 1].name;
@@ -162,7 +166,6 @@ export default React.createClass({
 								<InfoIcon />
 							</IconButton>
 						);
-						break;
 					case 'event':
 						return (
 							<IconButton containerElement={<Link to={'/season/' + this.props.params.seasonId + '/event/' + this.props.params.eventId + '/edit'} />}>
@@ -185,7 +188,8 @@ export default React.createClass({
 								<DeleteIcon />
 							</IconButton>
 						);
-						break;
+					default:
+						return;
 				}
 			}
 		}
@@ -197,7 +201,7 @@ export default React.createClass({
 			seasons = this.state.seasons;
 
 		if (seasons) {
-			firebase.toArray(this.state.events).map(events => {
+			firebase.toArray(this.state.events).forEach(events => {
 				firebase.toArray(events)
 					.filter(event => {
 						// store for later
@@ -224,7 +228,8 @@ export default React.createClass({
 								return true;
 							}
 						}
-					}).map(event => {
+						return false;
+					}).forEach(event => {
 						relevantEvents.push(event);
 					});
 			});
@@ -262,6 +267,9 @@ export default React.createClass({
 			case 'user':
 				ref = firebase.database().ref('seasons/' + this.props.params.seasonId + '/users/' + this.props.params.userId);
 				break;
+			default:
+				// ignore
+				break;
 		}
 		if (ref) {
 			if (changes === null) {
@@ -277,6 +285,11 @@ export default React.createClass({
 
 		return (
 			<div id="viewport">
+				<Helmet link={[
+						{rel: 'shortcut icon', href: LogoImg},
+						{rel: 'apple-touch-icon', href: TouchiconImg},
+					]}
+				/>
 			{this.state.me && 
 				<Drawer
 					docked={false}
@@ -334,7 +347,7 @@ export default React.createClass({
 					showMenuIconButton={!!this.state.me}
 					onTitleTouchTap={e=>browserHistory.push(this.getParentUrl())}
 					onLeftIconButtonTouchTap={this.handleDrawerToggle}
-					iconElementRight={this.getRightButton()}
+					iconElementRight={this.getRightMenuButton()}
 					style={{flexShrink: 0}}
 				/>
 			}

@@ -4,7 +4,6 @@ import moment from 'moment';
 import firebase from '../utils/firebase';
 
 import {List, ListItem} from 'material-ui/List';
-import Subheader from 'material-ui/Subheader';
 import Divider from 'material-ui/Divider';
 import Toggle from 'material-ui/Toggle';
 import DatePicker from 'material-ui/DatePicker';
@@ -44,8 +43,7 @@ export const Event = React.createClass({
 	render() {
 		let {season, event} = this.props;
 		let users       = firebase.toArray(season.users),
-		    seasonSeats = firebase.toArray(season.seats),
-		    eventSeats  = firebase.toArray(event.seats);
+		    seasonSeats = firebase.toArray(season.seats);
 
 		return (
 			<List>

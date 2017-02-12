@@ -16,9 +16,7 @@ import FlatButton from 'material-ui/FlatButton';
 import Divider from 'material-ui/Divider';
 import Toggle from 'material-ui/Toggle';
 import TextField from 'material-ui/TextField';
-import Avatar from 'material-ui/Avatar';
 import ChevronRightIcon from 'material-ui/svg-icons/navigation/chevron-right';
-import AddIcon from 'material-ui/svg-icons/content/add';
 
 import EventItem from './EventItem';
 import SeatAvatar from './SeatAvatar';
@@ -45,7 +43,7 @@ export const Season = React.createClass({
 	groupEventsByMonth() {
 		let eventsByMonth = [],
 			previousMonthId;
-		firebase.sortByKey(firebase.toArray(this.props.events[this.props.params.seasonId]), 'datetime').map(event => {
+		firebase.sortByKey(firebase.toArray(this.props.events[this.props.params.seasonId]), 'datetime').forEach(event => {
 			event.$datetime = moment(event.datetime);
 
 			let monthId = event.$datetime.format('YYYY-MM');
@@ -73,7 +71,7 @@ export const Season = React.createClass({
 		};
 
 		// loop through all events
-		firebase.toArray(this.props.events[this.props.params.seasonId]).map(event => {
+		firebase.toArray(this.props.events[this.props.params.seasonId]).forEach(event => {
 			if (event.sold) {
 				const price = parseFloat(event.soldPrice) || 0;
 
@@ -90,10 +88,10 @@ export const Season = React.createClass({
 				sales.count++;
 			} else if (event.seats) {
 				let seatedUserIds = []; // if a user takes multiple seats at one event, only count it as one attendance
-				for (let seatId in event.seats) {
+				Object.entries(event.seats).forEach(([seatId, seat]) => {
 					const userId = event.seats[seatId];
 
-					if (seatedUserIds.indexOf(userId) >= 0) continue;
+					if (seatedUserIds.indexOf(userId) >= 0) return;
 
 					if (!users[userId]) {
 						if (this.props.season.users && this.props.season.users[userId]) {
@@ -107,7 +105,7 @@ export const Season = React.createClass({
 					users[userId].attendance++;
 
 					seatedUserIds.push(userId);
-				}
+				});
 			}
 		});
 
