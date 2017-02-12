@@ -23,36 +23,36 @@ import './index.css';
 
 // reload at last page on homescreen apps
 if (('standalone' in navigator) && navigator['standalone']) {
-	const lastPath = localStorage.getItem('lastPath');
-	//console.log(lastPath, location.pathname);
-	if (lastPath && lastPath !== location.pathname) browserHistory.push(lastPath);
+  const lastPath = localStorage.getItem('lastPath');
+  //console.log(lastPath, location.pathname);
+  if (lastPath && lastPath !== location.pathname) browserHistory.push(lastPath);
 
-	browserHistory.listen(function(e) {
-		localStorage.setItem('lastPath', e.pathname);
-	});
+  browserHistory.listen(function(e) {
+    localStorage.setItem('lastPath', e.pathname);
+  });
 }
 
 // routes
 ReactDOM.render(
-	<MuiThemeProvider>
-		<Router history={browserHistory}>
-			<Route path="/" component={App}>
-				<IndexRoute component={Home} onEnter={HomeRedirect} name="home" />
-				<Route path="season/:seasonId" onEnter={firebase.requireAuth}>
-					<IndexRoute component={Season} name="season" />
-					<Route path="edit">
-						<IndexRoute component={SeasonInfo} name="season.edit" />
-						<Route path="seat/:seatId" component={SeasonSeat} name="season.seat" />
-						<Route path="user/:userId" component={SeasonUser} name="season.user" />
-					</Route>
-					<Route path="event/:eventId">
-						<IndexRoute component={Event} name="event" />
-						<Route path="edit">
-							<IndexRoute component={EventInfo} name="event.edit" />
-						</Route>
-					</Route>
-				</Route>
-			</Route>
-		</Router>
-	</MuiThemeProvider>
+  <MuiThemeProvider>
+    <Router history={browserHistory}>
+      <Route path="/" component={App}>
+        <IndexRoute component={Home} onEnter={HomeRedirect} name="home" />
+        <Route path="season/:seasonId" onEnter={firebase.requireAuth}>
+          <IndexRoute component={Season} name="season" />
+          <Route path="edit">
+            <IndexRoute component={SeasonInfo} name="season.edit" />
+            <Route path="seat/:seatId" component={SeasonSeat} name="season.seat" />
+            <Route path="user/:userId" component={SeasonUser} name="season.user" />
+          </Route>
+          <Route path="event/:eventId">
+            <IndexRoute component={Event} name="event" />
+            <Route path="edit">
+              <IndexRoute component={EventInfo} name="event.edit" />
+            </Route>
+          </Route>
+        </Route>
+      </Route>
+    </Router>
+  </MuiThemeProvider>
 , document.getElementById('app'));
