@@ -10,8 +10,8 @@
   "scripts": {
     "build-css": "node-sass src/ -o src/ --output-style compressed",
     "watch-css": "npm run build-css && node-sass src/ -o src/ --watch --output-style compressed",
-    "start": "react-scripts start & npm run watch-css",
-    "build": "react-scripts build && npm run build-css",
+    "start": "npm run watch-css & react-scripts start",
+    "build": "npm run build-css && react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "deploy": "npm run build && firebase deploy"
