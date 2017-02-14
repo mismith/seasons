@@ -10,6 +10,8 @@ import firebase from '../utils/firebase';
 import ReactFireMixin from 'reactfire';
 import formatEventName from '../utils/formatEventName';
 
+import SwipeBack from './helpers/SwipeBack';
+
 import Drawer from 'material-ui/Drawer';
 import {List, ListItem} from 'material-ui/List';
 import Subheader from 'material-ui/Subheader';
@@ -284,7 +286,7 @@ export default React.createClass({
     let relevantEvents = this.getRelevantEvents();
 
     return (
-      <div id="viewport">
+      <SwipeBack id="viewport">
         <Helmet link={[
             {rel: 'shortcut icon', href: LogoImg},
             {rel: 'apple-touch-icon', href: TouchiconImg},
@@ -357,7 +359,7 @@ export default React.createClass({
           :
             <Loader style={{padding: 40}} />
         }</main>
-      </div>
+      </SwipeBack>
     );
   },
 });
