@@ -39,7 +39,7 @@ export default class SwipeBack extends Component {
         {...props}
       >
         <div />
-        <div style={{display: 'flex', flexDirection: 'column', height: '100%'}}>{children}</div>
+        <div style={{display: 'flex', flexDirection: 'column', minHeight: '100%'}}>{children}</div>
       </SwipeableViews>
     );
   }
