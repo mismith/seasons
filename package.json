@@ -6,7 +6,7 @@
     "type": "git",
     "url": "https://github.com/mismith/seasons"
   },
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
     "build-css": "node-sass src/ -o src/ --output-style compressed",
     "watch-css": "npm run build-css && node-sass src/ -o src/ --watch --output-style compressed",
@@ -35,12 +35,5 @@
     "react-swipeable-views": "^0.10.7",
     "react-tap-event-plugin": "^2.0.1",
     "reactfire": "^1.0.0"
-  },
-  "babel": {
-    "presets": [
-      "react",
-      "es2015",
-      "stage-1"
-    ]
   }
 }

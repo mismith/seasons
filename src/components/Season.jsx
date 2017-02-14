@@ -94,7 +94,7 @@ export const Season = React.createClass({
         sales.count++;
       } else if (event.seats) {
         let seatedUserIds = []; // if a user takes multiple seats at one event, only count it as one attendance
-        Object.entries(event.seats).forEach(([seatId, seat]) => {
+        Object.keys(event.seats).forEach(seatId => {
           const userId = event.seats[seatId];
 
           if (seatedUserIds.indexOf(userId) >= 0) return;
