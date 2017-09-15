@@ -254,7 +254,7 @@ export default React.createClass({
   handleDrawerClose() {
     this.setState({drawerOpen: false});
   },
-  handleChanges(name, changes) {
+  handleChanges(name, changes, duplicate = false) {
     let ref = undefined;
     switch(name) {
       case 'season':
@@ -274,12 +274,22 @@ export default React.createClass({
         break;
     }
     if (ref) {
-      if (changes === null) {
-        ref.remove();
+      if (duplicate) {
+        return ref.once('value')
+          .then(snap => snap.val())
+          .then(val => ref.parent.push(val))
+          .then(ref => {
+            return browserHistory.push(`/${name}/${ref.key}/edit`);
+          });
       } else {
-        ref.update(changes);
+        if (changes === null) {
+          return ref.remove();
+        } else {
+          return ref.update(changes);
+        }
       }
     }
+    return Promise.reject('Could not save changes');
   },
 
   render() {

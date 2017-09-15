@@ -305,6 +305,15 @@ export const SeasonInfo = React.createClass({
             label="Add new event"
           />
         </ListContainer>
+        <Divider />
+        <Subheader>Meta</Subheader>
+        <ListContainer>
+          <FlatButton
+            secondary
+            onClick={e=>this.props.handleChanges('season', this.season, true)}
+            label="Duplicate season"
+          />
+        </ListContainer>
       </div>
     )
   },
