@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {Link} from 'react-router';
+import {Link, browserHistory} from 'react-router';
 
 import moment from 'moment';
 import firebase from '../utils/firebase';
@@ -18,6 +18,7 @@ import Toggle from 'material-ui/Toggle';
 import TextField from 'material-ui/TextField';
 import ChevronRightIcon from 'material-ui/svg-icons/navigation/chevron-right';
 
+import Loader from './helpers/Loader';
 import EventItem from './EventItem';
 import SeatAvatar from './SeatAvatar';
 
@@ -232,11 +233,35 @@ export const SeasonInfo = React.createClass({
     };
   },
 
+  getInitialState() {
+    return {
+      duplicateLoading: false,
+    };
+  },
+
+  handleDuplicate() {
+    this.setState({
+      duplicateLoading: true,
+    });
+    return this.props.handleChanges('season', this.season, true)
+      .then(ref => browserHistory.push(`/season/${ref.key}/edit`))
+      .then(() => fetch('/api/v1/scrapeEvents'))
+      .then(res => res.json())
+      .then(events => this.props.handleChanges('events', events))
+      .then(() => {
+        this.setState({
+          duplicateLoading: false,
+        });
+        if (this.seasonNameInput) this.seasonNameInput.focus();
+      });
+  },
+
   render() {
     return (
       <div>
         <ListContainer>
           <TextField
+            ref={el => this.seasonNameInput = el}
             value={this.props.season.name || ''}
             onChange={e=>this.props.handleChanges('season', {name: e.currentTarget.value || null})}
             floatingLabelText="Season name"
@@ -307,12 +332,16 @@ export const SeasonInfo = React.createClass({
         </ListContainer>
         <Divider />
         <Subheader>Meta</Subheader>
-        <ListContainer>
+        <ListContainer style={{textAlign: 'right'}}>
+        {!this.state.duplicateLoading ?
           <FlatButton
             secondary
-            onClick={e=>this.props.handleChanges('season', this.season, true)}
+            onClick={this.handleDuplicate}
             label="Duplicate season"
           />
+        :
+          <Loader />
+        }
         </ListContainer>
       </div>
     )

@@ -260,6 +260,9 @@ export default React.createClass({
       case 'season':
         ref = firebase.database().ref('seasons/' + this.props.params.seasonId);
         break;
+      case 'events':
+        ref = firebase.database().ref('seasons:events/' + this.props.params.seasonId);
+        break;
       case 'event':
         ref = firebase.database().ref('seasons:events/' + this.props.params.seasonId + '/' + this.props.params.eventId);
         break;
@@ -277,13 +280,12 @@ export default React.createClass({
       if (duplicate) {
         return ref.once('value')
           .then(snap => snap.val())
-          .then(val => ref.parent.push(val))
-          .then(ref => {
-            return browserHistory.push(`/${name}/${ref.key}/edit`);
-          });
+          .then(val => ref.parent.push(val));
       } else {
         if (changes === null) {
           return ref.remove();
+        } else if (changes instanceof Array) {
+          return Promise.all(changes.map(change => ref.push(change)));
         } else {
           return ref.update(changes);
         }
