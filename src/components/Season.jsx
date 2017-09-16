@@ -194,6 +194,11 @@ export const Season = React.createClass({
             )}
             </div>
           )}
+          {!this.groupEventsByMonth().length &&
+            <div style={{textAlign: 'center', padding: '33% 0'}}>
+              <em>No events yet.</em>
+            </div>
+          }
           </List>
         </Tab>
         <Tab label="Stats">
