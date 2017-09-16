@@ -241,6 +241,7 @@ export const SeasonInfo = React.createClass({
   getInitialState() {
     return {
       duplicateLoading: false,
+      deleteLoading: false,
     };
   },
 
@@ -259,6 +260,22 @@ export const SeasonInfo = React.createClass({
         });
         if (this.seasonNameInput) this.seasonNameInput.focus();
       });
+  },
+  handleDelete() {
+    if (confirm('Are you sure?')) {
+      this.setState({
+        deleteLoading: true,
+      });
+      return this.props.handleChanges('season', null)
+        .then(() => this.props.handleChanges('events', null))
+        .then(() => {
+          browserHistory.push(`/`);
+          this.setState({
+            deleteLoading: false,
+          });
+        });
+    }
+    return Promise.reject('User cancelled');
   },
 
   render() {
@@ -337,7 +354,16 @@ export const SeasonInfo = React.createClass({
         </ListContainer>
         <Divider />
         <Subheader>Meta</Subheader>
-        <ListContainer style={{textAlign: 'right'}}>
+        <ListContainer style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+        {!this.state.deleteLoading ?
+          <FlatButton
+            labelStyle={{color: 'red'}}
+            onClick={this.handleDelete}
+            label="Delete season"
+          />
+        :
+          <Loader />
+        }
         {!this.state.duplicateLoading ?
           <FlatButton
             secondary
