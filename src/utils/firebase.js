@@ -4,15 +4,15 @@ firebase.initializeApp({
   apiKey: "AIzaSyB9ZedTL4kWLogLr0IT5FandZJGmDHCjT8",
   authDomain: "seasons-d6de7.firebaseapp.com",
   databaseURL: "https://seasons-d6de7.firebaseio.com",
-  storageBucket: "seasons-d6de7.appspot.com",
-  messagingSenderId: "652680972740",
+  // storageBucket: "seasons-d6de7.appspot.com",
+  // messagingSenderId: "652680972740",
 });
 export default {
   ...firebase,
 
   // helpers
   login() {
-    return firebase.auth().signInWithRedirect(new firebase.auth.GoogleAuthProvider());
+    return firebase.auth().signInWithRedirect(new firebase.auth.FacebookAuthProvider());
   },
   logout() {
     return firebase.auth().signOut()

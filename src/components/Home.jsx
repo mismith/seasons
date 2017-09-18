@@ -2,7 +2,7 @@ import React from 'react';
 
 import firebase from '../utils/firebase';
 
-import GoogleGIcon from '../images/googleg.svg';
+import FacebookIcon from '../images/facebook.svg';
 import LogoImg from '../images/logo.svg';
 
 import SwipeableViews from 'react-swipeable-views';
@@ -96,9 +96,11 @@ export const Home = React.createClass({
         <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', textAlign: 'center', padding: 32, flexGrow: 1}}>
         {this.props.authLoaded ?
           <RaisedButton
-            label="Login with Google"
-            icon={<img src={GoogleGIcon} alt="Google Logo" style={{marginTop: -2}} />}
+            label="Login with Facebook"
+            icon={<img src={FacebookIcon} alt="Facebook Logo" width="16" height="16" style={{marginTop: -2}} />}
             onTouchTap={firebase.login}
+            labelColor="#FFF"
+            backgroundColor="#3C5A99"
           />
         :
           <Loader />
