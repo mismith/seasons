@@ -99,15 +99,7 @@ export default React.createClass({
         this.bindGlobalData();
         this.bindPageData();
 
-        firebase.database().ref('users/' + me.uid).update({
-          email: me.email,
-          displayName: me.displayName,
-          photoURL: me.photoURL,
-        });
-        firebase.database().ref('users:sessions/' + me.uid).push({
-          userAgent: (navigator.standalone ? 'standalone ' : '') + navigator.userAgent,
-          timestamp: moment().format(),
-        });
+        firebase.database().ref('users/' + me.uid).update(me.providerData[0]);
       } else {
         this.unbindGlobalData();
         this.unbindPageData();
