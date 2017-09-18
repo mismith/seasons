@@ -8,3 +8,5 @@ exports.scrapeEvents = functions.https.onRequest((req, res) => {
       res.json(data);
     });
 });
+
+// scrapeEvents(2017);

@@ -15,9 +15,12 @@ module.exports = function scrapeEvents(year) {
     .then(page => page.rows.map(row => row.row)) // make it an CSV-like array
     .then(rows => rows.filter(row => !/^@/.test(row[3]))) // only home games
     .then(rows => rows.map(row => {
+      const monthNum = moment(row[1], 'MMM D').format('M');
+      const adjustedYear = parseInt(year, 10) + (monthNum < 8 ? 1 : 0);
       return {
-        datetime: moment(`${row[1]} ${year}, ${row[2]}`, 'MMM D YYYY, H:mm A').format(),
+        datetime: moment(`${row[1]} ${adjustedYear}, ${row[2]}`, 'MMM D YYYY, H:mm A').format(),
         opponent: row[3].replace(/^vs /, ''),
       };
-    }));
+    }))
+    // .then(console.log);
 };
