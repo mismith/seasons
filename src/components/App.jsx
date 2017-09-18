@@ -304,6 +304,22 @@ export default React.createClass({
           onRequestChange={this.handleDrawerClose}
           containerStyle={{display: 'flex', flexDirection: 'column'}}
         >
+        {relevantEvents.length > 0 && 
+          <List onTouchTap={this.handleDrawerClose}>
+            <Subheader>Events</Subheader>
+          {this.state.eventsLoaded ? relevantEvents.map((event, eventIndex) => 
+            <EventItem
+              key={eventIndex}
+              event={event}
+              season={event.$season}
+              showDayAvatar={false}
+              containerElement={<Link to={'/season/' + event.$season.$id + '/event/' + event.$id} />}
+            />
+          ) : <Loader />}
+            <Divider />
+          </List>
+        }
+        
           <List onTouchTap={this.handleDrawerClose}>
             <Subheader>Seasons</Subheader>
           {this.state.seasonsLoaded ? firebase.toArray(this.state.seasons).map(season => 
@@ -320,22 +336,6 @@ export default React.createClass({
             />*/}
             <Divider />
           </List>
-
-        {relevantEvents.length > 0 && 
-          <List onTouchTap={this.handleDrawerClose}>
-            <Subheader>Events</Subheader>
-          {this.state.eventsLoaded ? relevantEvents.map((event, eventIndex) => 
-            <EventItem
-              key={eventIndex}
-              event={event}
-              season={event.$season}
-              showDayAvatar={false}
-              containerElement={<Link to={'/season/' + event.$season.$id + '/event/' + event.$id} />}
-            />
-          ) : <Loader />}
-            <Divider />
-          </List>
-        }
 
           <List onTouchTap={this.handleDrawerClose} style={{marginTop: 'auto'}}>
             <Subheader>Account</Subheader>
