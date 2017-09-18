@@ -22,14 +22,14 @@ export const Event = React.createClass({
     };
   },
 
-  getSeatedUserId(seatId) {
+  getSeatedAttendeeId(seatId) {
     if (this.props.event && this.props.event.seats) {
       return this.props.event.seats[seatId];
     }
   },
-  getUser(userId) {
-    if (this.props.season.users) {
-      return this.props.season.users[userId];
+  getAttendee(attendeeId) {
+    if (this.props.season.attendees) {
+      return this.props.season.attendees[attendeeId];
     }
   },
   handleSeatChanges(e, seatId, value) {
@@ -42,21 +42,21 @@ export const Event = React.createClass({
 
   render() {
     let {season, event} = this.props;
-    let users       = firebase.toArray(season.users),
+    let attendees   = firebase.toArray(season.attendees),
         seasonSeats = firebase.toArray(season.seats);
 
     return (
       <List>
       {!event.sold && seasonSeats.map(seat => {
-        const userId = this.getSeatedUserId(seat.$id),
-              user   = this.getUser(userId);
+        const attendeeId = this.getSeatedAttendeeId(seat.$id),
+              attendee   = this.getAttendee(attendeeId);
 
         return (
         <ListItemPicker
           key={seat.$id}
-          leftIcon={<div><SeatAvatar data={user} setBackgroundColor={!!user} /></div>}
+          leftIcon={<div><SeatAvatar data={attendee} setBackgroundColor={!!attendee} /></div>}
           hintText={`Section ${seat.section}, Row ${seat.row}, Seat ${seat.seat}`}
-          items={users}
+          items={attendees}
           value={event.seats && event.seats[seat.$id]}
           onChange={(e,i,value)=>this.handleSeatChanges(e, seat.$id, value)}
         />
@@ -91,9 +91,9 @@ export const Event = React.createClass({
       }
       {event.sold &&
         <ListItemPicker
-          leftIcon={<div><SeatAvatar data={this.getUser(event.soldPaidTo)} setBackgroundColor={!!this.getUser(event.soldPaidTo)} /></div>}
+          leftIcon={<div><SeatAvatar data={this.getAttendee(event.soldPaidTo)} setBackgroundColor={!!this.getAttendee(event.soldPaidTo)} /></div>}
           floatingLabelText="Paid To"
-          items={users}
+          items={attendees}
           value={event.soldPaidTo || ''}
           onChange={(e,i,value)=>this.props.handleChanges('event', {soldPaidTo: value || null})}
         />

@@ -33,10 +33,10 @@ export default React.createClass({
   getDefaultProps() {
     return {
       params: {
-        seasonId: undefined,
-        eventId:  undefined,
-        seatId:   undefined,
-        userId:   undefined,
+        seasonId:   undefined,
+        eventId:    undefined,
+        seatId:     undefined,
+        attendeeId: undefined,
       },
     };
   },
@@ -65,7 +65,7 @@ export default React.createClass({
   },
 
   unbindPageData() {
-    firebase.unsync(this, 'season', 'event', 'seat', 'user');
+    firebase.unsync(this, 'season', 'event', 'seat', 'attendee');
   },
   bindPageData(props = this.props) {
     this.unbindPageData();
@@ -79,8 +79,8 @@ export default React.createClass({
       if (props.params.seatId ) {
         firebase.sync(this, 'seat', 'seasons/' + props.params.seasonId + '/seats/' + props.params.seatId);
       }
-      if (props.params.userId ) {
-        firebase.sync(this, 'user', 'seasons/' + props.params.seasonId + '/users/' + props.params.userId);
+      if (props.params.attendeeId ) {
+        firebase.sync(this, 'attendee', 'seasons/' + props.params.seasonId + '/attendees/' + props.params.attendeeId);
       }
     }
   },
@@ -176,7 +176,7 @@ export default React.createClass({
             );
           //case 'season.edit':
           case 'season.seat':
-          case 'season.user':
+          case 'season.attendee':
           //case 'event.edit':
             let modelName = name.split('.')[1];
             const check = e => {
@@ -269,8 +269,8 @@ export default React.createClass({
       case 'seat':
         ref = firebase.database().ref('seasons/' + this.props.params.seasonId + '/seats/' + this.props.params.seatId);
         break;
-      case 'user':
-        ref = firebase.database().ref('seasons/' + this.props.params.seasonId + '/users/' + this.props.params.userId);
+      case 'attendee':
+        ref = firebase.database().ref('seasons/' + this.props.params.seasonId + '/attendees/' + this.props.params.attendeeId);
         break;
       default:
         // ignore

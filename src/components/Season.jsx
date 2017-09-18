@@ -64,7 +64,7 @@ export const Season = React.createClass({
   },
   calculateStats() {
     // attendance
-    let users = {};
+    let attendees = {};
 
     // sales
     let sales = {
@@ -94,24 +94,24 @@ export const Season = React.createClass({
         sales.total += price;
         sales.count++;
       } else if (event.seats) {
-        let seatedUserIds = []; // if a user takes multiple seats at one event, only count it as one attendance
+        let seatedAttendeeIds = []; // if a attendee takes multiple seats at one event, only count it as one attendance
         Object.keys(event.seats).forEach(seatId => {
-          const userId = event.seats[seatId];
+          const attendeeId = event.seats[seatId];
 
-          if (seatedUserIds.indexOf(userId) >= 0) return;
+          if (seatedAttendeeIds.indexOf(attendeeId) >= 0) return;
 
-          if (!users[userId]) {
-            if (this.props.season.users && this.props.season.users[userId]) {
-              users[userId] = {...this.props.season.users[userId]};
+          if (!attendees[attendeeId]) {
+            if (this.props.season.attendees && this.props.season.attendees[attendeeId]) {
+              attendees[attendeeId] = {...this.props.season.attendees[attendeeId]};
             } else {
-              users[userId] = {};
+              attendees[attendeeId] = {};
             }
-            users[userId].attendance = 0;
+            attendees[attendeeId].attendance = 0;
           }
 
-          users[userId].attendance++;
+          attendees[attendeeId].attendance++;
 
-          seatedUserIds.push(userId);
+          seatedAttendeeIds.push(attendeeId);
         });
       }
     });
@@ -124,12 +124,12 @@ export const Season = React.createClass({
     }
 
     return {
-      users,
+      attendees,
       sales,
     };
   },
-  getUser(userId) {
-    return this.props.season.users[userId]; // @TODO: add fallbacks
+  getAttendee(attendeeId) {
+    return this.props.season.attendees[attendeeId]; // @TODO: add fallbacks
   },
   formatCurrency(num) {
     return typeof num === 'number' && num.toLocaleString('en-US', {style: 'currency', currency: 'CAD'});
@@ -204,12 +204,12 @@ export const Season = React.createClass({
         <Tab label="Stats">
           <List>
             <Subheader>Events Attended</Subheader>
-          {firebase.sortByKey(firebase.toArray(stats.users), 'attendance', true).map(user =>
+          {firebase.sortByKey(firebase.toArray(stats.attendees), 'attendance', true).map(attendee =>
             <ListItemStat
-              key={user.$id}
-              primaryText={user.name}
-              leftAvatar={<div><SeatAvatar data={user} /></div>}
-              stat={user.attendance}
+              key={attendee.$id}
+              primaryText={attendee.name}
+              leftAvatar={<div><SeatAvatar data={attendee} /></div>}
+              stat={attendee.attendance}
               disabled
             />
           )}
@@ -320,20 +320,20 @@ export const SeasonInfo = React.createClass({
         <Divider />
         <List>
           <Subheader>Attendees</Subheader>
-        {firebase.toArray(this.props.season.users).map(user =>
+        {firebase.toArray(this.props.season.attendees).map(attendee =>
           <ListItem
-            key={user.$id}
-            leftAvatar={<div><SeatAvatar data={user} setBackgroundColor={!!user.isActive} /></div>}
+            key={attendee.$id}
+            leftAvatar={<div><SeatAvatar data={attendee} setBackgroundColor={!!attendee.isActive} /></div>}
             rightIcon={<ChevronRightIcon />}
-            containerElement={<Link to={'/season/' + this.props.params.seasonId + '/edit/user/' + user.$id} />}
-            primaryText={user.name}
+            containerElement={<Link to={'/season/' + this.props.params.seasonId + '/edit/attendee/' + attendee.$id} />}
+            primaryText={attendee.name}
           />
         )}
         </List>
         <ListContainer style={{textAlign: 'right'}}>
           <FlatButton
             primary
-            containerElement={<Link to={'/season/' + this.props.params.seasonId + '/edit/user/' + firebase.key()} />}
+            containerElement={<Link to={'/season/' + this.props.params.seasonId + '/edit/attendee/' + firebase.key()} />}
             label="Add new attendee"
           />
         </ListContainer>
@@ -415,10 +415,10 @@ export const SeasonSeat = React.createClass({
   },
 });
 
-export const SeasonUser = React.createClass({
+export const SeasonAttendee = React.createClass({
   getDefaultProps() {
     return {
-      user: {},
+      attendee: {},
       handleChanges: () => {},
     };
   },
@@ -428,14 +428,14 @@ export const SeasonUser = React.createClass({
       <List>
         <ListContainer>
           <TextField
-            value={this.props.user.name || ''}
-            onChange={e=>this.props.handleChanges('user', {name: e.currentTarget.value || null})}
+            value={this.props.attendee.name || ''}
+            onChange={e=>this.props.handleChanges('attendee', {name: e.currentTarget.value || null})}
             floatingLabelText="Name"
             fullWidth
           />
         </ListContainer>
         <ListItem
-          rightToggle={<Toggle toggled={!!this.props.user.isActive} onToggle={e=>this.props.handleChanges('user', {isActive: e.currentTarget.checked || null})} />}
+          rightToggle={<Toggle toggled={!!this.props.attendee.isActive} onToggle={e=>this.props.handleChanges('attendee', {isActive: e.currentTarget.checked || null})} />}
           primaryText="Active"
         />
       </List>

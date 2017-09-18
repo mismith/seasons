@@ -25,7 +25,7 @@ export const Home = React.createClass({
     };
   },
   render() {
-    const fakeUsers = [
+    const fakeAttendees = [
       {$id: 0, name: 'John Smith'},
       {$id: 1, name: 'Jane Doe'},
       {$id: 2, name: 'Sam Smith'},
@@ -51,13 +51,13 @@ export const Home = React.createClass({
               <Paper>
                 <List>
                   <ListItemPicker
-                    leftIcon={<div><SeatAvatar data={fakeUsers[0]} setBackgroundColor={!!fakeUsers[0]} /></div>}
-                    items={fakeUsers}
+                    leftIcon={<div><SeatAvatar data={fakeAttendees[0]} setBackgroundColor={!!fakeAttendees[0]} /></div>}
+                    items={fakeAttendees}
                     value={0}
                   />
                   <ListItemPicker
-                    leftIcon={<div><SeatAvatar data={fakeUsers[1]} setBackgroundColor={!!fakeUsers[1]} /></div>}
-                    items={fakeUsers}
+                    leftIcon={<div><SeatAvatar data={fakeAttendees[1]} setBackgroundColor={!!fakeAttendees[1]} /></div>}
+                    items={fakeAttendees}
                     value={1}
                   />
                 </List>
