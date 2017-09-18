@@ -1,5 +1,5 @@
 const scrapeIt = require('scrape-it');
-const moment = require('moment-mini');
+const moment = require('moment-timezone');
 
 module.exports = function scrapeEvents(year) {
   return scrapeIt(`https://www.nhl.com/flames/schedule/${year}/MT/print`, {
@@ -18,9 +18,9 @@ module.exports = function scrapeEvents(year) {
       const monthNum = moment(row[1], 'MMM D').format('M');
       const adjustedYear = parseInt(year, 10) + (monthNum < 8 ? 1 : 0);
       return {
-        datetime: moment(`${row[1]} ${adjustedYear}, ${row[2]}`, 'MMM D YYYY, H:mm A').format(),
+        datetime: moment.tz(`${row[1]} ${adjustedYear}, ${row[2]}`, 'MMM D YYYY, H:mm A', 'America/Edmonton').format(),
         opponent: row[3].replace(/^vs /, ''),
       };
-    }))
+    }));
     // .then(console.log);
 };

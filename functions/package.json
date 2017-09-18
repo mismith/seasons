@@ -5,7 +5,7 @@
     "csv-parse": "^1.2.2",
     "firebase-admin": "~5.2.1",
     "firebase-functions": "^0.6.2",
-    "moment-mini": "^2.18.1",
+    "moment-timezone": "^0.5.13",
     "scrape-it": "^3.3.3"
   },
   "private": true
