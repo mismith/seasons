@@ -112,12 +112,17 @@ export const Home = React.createClass({
   }
 });
 
-
 export function HomeRedirect(nextState, replace, callback) {
   firebase.auth().onAuthStateChanged(me => {
     if (me) {
-      replace('/season/-KRGF6NbHPrSyljL3m3r'); // @TODO: get dynamic season id
+      firebase.database().ref('seasons').limitToLast(1).once('child_added')
+        .then(snap => snap.key)
+        .then(latestSeasonId => {
+          replace(`/season/${latestSeasonId}`);
+          callback();
+        });
+    } else {
+      callback();
     }
-    callback();
   });
 }
