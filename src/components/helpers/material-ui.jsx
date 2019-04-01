@@ -31,9 +31,11 @@ export function ListItemPicker(props) {
         fullWidth
         style={{marginTop: -10, ...selectStyle}}
       >
-      {items.map(item =>
-        <MenuItem key={item.$id} value={item.$id} primaryText={item.name} />
-      )}
+      {items.map((item, index) => (
+        item === null
+          ? <Divider key={index} />
+          : <MenuItem key={item.$id} value={item.$id} primaryText={item.name} />
+      ))}
         <Divider />
         <MenuItem value={null} primaryText={<em>Clear field</em>} />
       </SelectField>
