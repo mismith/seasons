@@ -43,7 +43,7 @@ export const Home = React.createClass({
             <div>
               <h3>Track your season tickets</h3>
               <div style={{textAlign: 'center'}}>
-                <img src={LogoImg} role="presentation" />
+                <img src={LogoImg} alt="Seasons" />
               </div>
             </div>
             <div>
@@ -78,7 +78,7 @@ export const Home = React.createClass({
             <div>
               <h3>Simply login to get started</h3>
               <div style={{textAlign: 'center'}}>
-                <img src={LogoImg} role="presentation" />
+                <img src={LogoImg} alt="Seasons" />
               </div>
             </div>
           </SwipeableViews>

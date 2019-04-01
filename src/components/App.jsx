@@ -172,7 +172,7 @@ export default React.createClass({
           //case 'event.edit':
             let modelName = name.split('.')[1];
             const check = e => {
-              if (e.shiftKey || confirm('Are you sure?')) {
+              if (e.shiftKey || confirm('Are you sure?')) { // eslint-disable-line no-restricted-globals
                 this.handleChanges(modelName, null);
                 browserHistory.replace(this.getParentUrl());
               }

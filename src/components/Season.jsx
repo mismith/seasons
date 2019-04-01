@@ -267,7 +267,7 @@ export const SeasonInfo = React.createClass({
       });
   },
   handleDelete() {
-    if (confirm('Are you sure?')) {
+    if (confirm('Are you sure?')) { // eslint-disable-line no-restricted-globals
       this.setState({
         deleteLoading: true,
       });

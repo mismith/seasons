@@ -47,7 +47,7 @@ const SeatAvatar = React.createClass({
         data.guest ? '+1' : getInitials(data.name)
       )}
       {!sold && !data &&
-        <img src={SeatIcon} height="18" role="presentation" style={{opacity: .5}} />
+        <img src={SeatIcon} height="18" alt="Seat" style={{opacity: .5}} />
       }
       </Avatar>
     );

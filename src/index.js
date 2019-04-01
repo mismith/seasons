@@ -7,7 +7,6 @@ import {Router, Route, IndexRoute, browserHistory} from 'react-router';
 // material-ui
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import injectTapEventPlugin from 'react-tap-event-plugin';
-injectTapEventPlugin();
 
 // firebase
 import firebase from './utils/firebase';
@@ -21,11 +20,16 @@ import {Event, EventInfo} from './components/Event';
 // styles
 import './index.css';
 
+// polyfills/fixes
+injectTapEventPlugin();
+
 // reload at last page on homescreen apps
 if (('standalone' in navigator) && navigator['standalone']) {
   const lastPath = localStorage.getItem('lastPath');
   //console.log(lastPath, location.pathname);
-  if (lastPath && lastPath !== location.pathname) browserHistory.push(lastPath);
+  if (lastPath && lastPath !== window.location.pathname) {
+    browserHistory.push(lastPath);
+  }
 
   browserHistory.listen(function(e) {
     localStorage.setItem('lastPath', e.pathname);

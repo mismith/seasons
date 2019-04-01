@@ -13,6 +13,7 @@
     "build-css": "node-sass src/ -o src/ --output-style compressed",
     "watch-css": "npm run build-css && node-sass src/ -o src/ --watch --output-style compressed",
     "start": "npm run watch-css & react-scripts start",
+    "dev": "yarn run start",
     "build": "npm run build-css && react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
@@ -20,21 +21,27 @@
   },
   "proxy": "https://seasons-d6de7.firebaseapp.com/",
   "devDependencies": {
-    "react-scripts": "^0.9.0"
+    "react-scripts": "^2.1.8"
   },
   "dependencies": {
     "firebase": "^3.6.4",
     "material-ui": "^0.15.4",
     "moment": "^2.17.1",
-    "node-sass": "^4.5.0",
+    "node-sass": "^4.11.0",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
-    "react-helmet": "^4.0.0",
+    "react-helmet": "^5.2.0",
     "react-localstorage": "^0.3.0",
     "react-motion": "^0.4.7",
     "react-router": "^2.8.1",
-    "react-swipeable-views": "^0.10.7",
+    "react-swipeable-views": "^0.13.1",
     "react-tap-event-plugin": "^2.0.1",
     "reactfire": "^1.0.0"
-  }
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
 }
