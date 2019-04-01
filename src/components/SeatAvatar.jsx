@@ -26,7 +26,11 @@ const SeatAvatar = React.createClass({
           }
         }
         return '#C83E31';
-      } else if (this.props.data) {
+      }
+      if (this.props.data) {
+        if (this.props.data.guest) {
+          return '#FFCC39';
+        }
         return '#5176C7';
       }
     }
@@ -39,9 +43,9 @@ const SeatAvatar = React.createClass({
       {sold &&
         <span>$</span>
       }
-      {!sold && data &&
-        getInitials(data.name) 
-      }
+      {!sold && data && (
+        data.guest ? '+1' : getInitials(data.name)
+      )}
       {!sold && !data &&
         <img src={SeatIcon} height="18" role="presentation" style={{opacity: .5}} />
       }

@@ -27,13 +27,22 @@ export const Event = React.createClass({
       return this.props.event.seats[seatId];
     }
   },
-  getAttendee(attendeeId) {
+  getAttendee(attendeeId, attendees = undefined) {
+    if (attendees) {
+      return attendees.find(attendee => attendee && attendee.$id === attendeeId);
+    }
     if (this.props.season.attendees) {
       return this.props.season.attendees[attendeeId];
     }
   },
   handleSeatChanges(e, seatId, value) {
     let seats = {...this.props.event.seats};
+
+    if (value === '+1') {
+      value = {
+        guest: true,
+      };
+    }
 
     seats[seatId] = value || null;
 
@@ -47,19 +56,45 @@ export const Event = React.createClass({
 
     return (
       <List>
-      {!event.sold && seasonSeats.map(seat => {
-        const attendeeId = this.getSeatedAttendeeId(seat.$id),
-              attendee   = this.getAttendee(attendeeId);
+      {!event.sold && seasonSeats.map((seat, index) => {
+        const items = attendees.concat(index ? [null, {
+          $id: '+1',
+          name: 'Guest',
+        }] : []);
+        let attendeeId = this.getSeatedAttendeeId(seat.$id);
+        let attendee = this.getAttendee(attendeeId, items);
+        if (typeof attendeeId === 'object') {
+          attendee = attendeeId;
+          attendeeId = '+1';
+        }
 
         return (
-        <ListItemPicker
-          key={seat.$id}
-          leftIcon={<div><SeatAvatar data={attendee} setBackgroundColor={!!attendee} /></div>}
-          hintText={`Section ${seat.section}, Row ${seat.row}, Seat ${seat.seat}`}
-          items={attendees}
-          value={event.seats && event.seats[seat.$id]}
-          onChange={(e,i,value)=>this.handleSeatChanges(e, seat.$id, value)}
-        />
+          <div key={seat.$id}>
+            <ListItemPicker
+              leftIcon={<div><SeatAvatar data={attendee} setBackgroundColor={!!attendee} /></div>}
+              hintText={`Section ${seat.section}, Row ${seat.row}, Seat ${seat.seat}`}
+              items={items}
+              value={attendeeId}
+              onChange={(e,i,value)=>this.handleSeatChanges(e, seat.$id, value)}
+            />
+            {event.seats && attendeeId === '+1' &&
+              <ListContainer insetChildren style={{paddingTop: 0, marginTop: -16}}>
+                <TextField
+                  floatingLabelText="Guest Name"
+                  fullWidth
+                  value={attendee.name || ''}
+                  onChange={e=>this.handleSeatChanges(e, seat.$id, {...attendee, name: e.currentTarget.value})}
+                />
+                <TextField
+                  floatingLabelText="Money Recouped"
+                  fullWidth
+                  type="number"
+                  value={attendee.price || ''}
+                  onChange={e=>this.handleSeatChanges(e, seat.$id, {...attendee, price: e.currentTarget.value})}
+                />
+              </ListContainer>
+            }
+          </div>
         );
       })}
         <Divider />
