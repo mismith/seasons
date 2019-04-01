@@ -98,6 +98,11 @@ export const Season = React.createClass({
         Object.keys(event.seats).forEach(seatId => {
           const attendeeId = event.seats[seatId];
 
+          // add guest price to total recouped (but don't include it in any other calculations)
+          if (typeof attendeeId === 'object') {
+            sales.total += parseFloat(attendeeId.price) || 0;
+          }
+
           if (seatedAttendeeIds.indexOf(attendeeId) >= 0) return;
 
           if (!attendees[attendeeId]) {
