@@ -21,6 +21,7 @@
   },
   "proxy": "https://seasons-d6de7.firebaseapp.com/",
   "devDependencies": {
+    "firebase-tools": "^7.6.2",
     "react-scripts": "^2.1.8"
   },
   "dependencies": {
